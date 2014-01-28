@@ -1,0 +1,26 @@
+from waflib import TaskGen
+
+def build(bld):
+    if bld.env.STATIC:
+        obj = bld(features='cxx cxxstlib')
+    else:
+        obj = bld(features='cxx cxxshlib')
+
+    obj.name = 'libsub'
+    obj.target = 'sub'
+    obj.export_includes = ['.']
+    obj.source = """
+                 reader.cc
+                 stl_reader.cc
+                 sub_time.cc
+                 """
+
+    headers = """
+              reader.h
+              stl_reader.h
+              sub_time.h
+              """
+
+    bld.install_files('${PREFIX}/include/libsub', headers)
+    if bld.env.STATIC:
+        bld.install_files('${PREFIX}/lib', 'libsub.a')

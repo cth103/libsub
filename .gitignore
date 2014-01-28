@@ -1,0 +1,5 @@
+*~
+build
+.waf-*
+.lock-waf*
+src/version.cc

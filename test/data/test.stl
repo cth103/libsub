@@ -1,0 +1,9 @@
+$FontName = Arial
+$Bold = False
+$Italic = False
+$Underlined = False
+$FontSize = 42
+// This is a comment which we should ignore
+// These timecodes are H:M:S:F
+00:00:41:09 , 00:00:42:21 , This is a subtitle | and that's a line break
+00:01:01:01 , 00:01:02:10 , This is some ^Bbold^B and some ^B^Ibold italic^B^I and some ^Uunderlined^U.
