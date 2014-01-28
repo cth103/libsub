@@ -1,0 +1,5 @@
+
+$FontName = Arial
+$FontSize = 42
+0:0:41:9,0:0:42:21, This is a subtitle | and that's a line break
+0:1:1:1,0:1:2:10, This is some ^Bbold^B and some ^B^Ibold italic^B^I and some ^Uunderlined^U.

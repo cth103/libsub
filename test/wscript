@@ -17,6 +17,7 @@ def build(bld):
     obj.use    = 'libsub'
     obj.source = """
                  stl_reader_test.cc
+                 stl_writer_test.cc
                  test.cc
                  """
     obj.target = 'tests'

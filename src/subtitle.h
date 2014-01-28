@@ -33,6 +33,29 @@ public:
 		, bold (false)
 		, italic (false)
 		, underline (false)
+		, line (0)
+	{}
+
+	Subtitle (
+		std::string text,
+		std::string font,
+		int font_size,
+		bool bold,
+		bool italic,
+		bool underline,
+		int line,
+		Time from,
+		Time to
+		)
+		: text (text)
+		, font (font)
+		, font_size (font_size)
+		, bold (bold)
+		, italic (italic)
+		, underline (underline)
+		, line (line)
+		, from (from)
+		, to (to)
 	{}
 	
 	std::string text;
@@ -41,6 +64,7 @@ public:
 	bool bold;
 	bool italic;
 	bool underline;
+	int line;
 	Time from;
 	Time to;
 };

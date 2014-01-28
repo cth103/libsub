@@ -41,6 +41,8 @@ public:
 		, _frames (f)
 	{}
 
+	std::string timecode () const;
+
 private:
 	friend bool operator== (Time const & a, Time const & b);
 	friend std::ostream& operator<< (std::ostream& s, Time const & t);

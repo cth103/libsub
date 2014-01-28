@@ -17,30 +17,6 @@
 
 */
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE libsub_test
-#include <boost/test/unit_test.hpp>
-#include <fstream>
 #include <string>
 
-using std::string;
-using std::ifstream;
-using std::getline;
-
-void
-check_text (string a, string b)
-{
-	ifstream p (a.c_str ());
-	ifstream q (b.c_str ());
-
-	string x;
-	string y;
-	while (p.good() && q.good()) {
-		getline (p, x);
-		getline (q, y);
-		BOOST_CHECK_EQUAL (x, y);
-	}
-
-	BOOST_CHECK (p.good() == false);
-	BOOST_CHECK (q.good() == false);
-}
+void check_text (std::string a, std::string b);

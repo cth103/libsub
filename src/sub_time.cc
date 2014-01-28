@@ -18,9 +18,11 @@
 */
 
 #include "sub_time.h"
+#include "compose.hpp"
 #include <iostream>
 
 using std::ostream;
+using std::string;
 using namespace sub;
 
 bool
@@ -34,4 +36,10 @@ sub::operator<< (ostream& s, Time const & t)
 {
 	s << t._hours << ":" << t._minutes << ":" << t._seconds << ":" << t._frames;
 	return s;
+}
+
+string
+Time::timecode () const
+{
+	return String::compose ("%1:%2:%3:%4", _hours, _minutes, _seconds, _frames);
 }

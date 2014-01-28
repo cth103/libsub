@@ -99,6 +99,7 @@ STLReader::STLReader (istream& in)
 			for (size_t i = 0; i < text.length(); ++i) {
 				if (text[i] == '|') {
 					maybe_push ();
+					_current.line++;
 				} else if (text[i] == '^') {
 					maybe_push ();
 					if ((i + 1) < text.length()) {
@@ -121,6 +122,7 @@ STLReader::STLReader (istream& in)
 			}
 
 			maybe_push ();
+			_current.line = 0;
 		}
 	}
 }
@@ -141,15 +143,15 @@ STLReader::time (string t) const
 void
 STLReader::set (string name, string value)
 {
-	if (name == "FontName") {
+	if (name == "$FontName") {
 		_current.font = value;
-	} else if (name == "Bold") {
+	} else if (name == "$Bold") {
 		_current.bold = value == "True";
-	} else if (name == "Italic") {
+	} else if (name == "$Italic") {
 		_current.italic = value == "True";
-	} else if (name == "Underlined") {
+	} else if (name == "$Underlined") {
 		_current.underline = value == "True";
-	} else if (name == "FontSize") {
+	} else if (name == "$FontSize") {
 		_current.font_size = lexical_cast<int> (value);
 	}
 }

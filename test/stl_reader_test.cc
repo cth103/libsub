@@ -35,83 +35,108 @@ BOOST_AUTO_TEST_CASE (stl_reader_test)
 	list<sub::Subtitle>::iterator i = subs.begin ();
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 0, 41, 9));
-	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 0, 42, 21));
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
 	BOOST_CHECK_EQUAL (i->text, " This is a subtitle ");
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
+	BOOST_CHECK_EQUAL (i->bold, false);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	BOOST_CHECK_EQUAL (i->underline, false);
+	BOOST_CHECK_EQUAL (i->line, 0);
 	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 0, 41, 9));
 	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 0, 42, 21));
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
+	++i;
+
+	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->text, " and that's a line break");
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, false);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, " This is some ");
+	BOOST_CHECK_EQUAL (i->line, 1);
+	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 0, 41, 9));
+	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 0, 42, 21));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->text, " This is some ");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
+	BOOST_CHECK_EQUAL (i->bold, false);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	BOOST_CHECK_EQUAL (i->underline, false);
+	BOOST_CHECK_EQUAL (i->line, 0);
 	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
 	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	++i;
+
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->text, "bold");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, true);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, "bold");
+	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->text, " and some ");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
 	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
 	BOOST_CHECK_EQUAL (i->bold, false);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, " and some ");
+	BOOST_CHECK_EQUAL (i->line, 0);
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	BOOST_CHECK_EQUAL (i->text, "bold italic");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, true);
 	BOOST_CHECK_EQUAL (i->italic, true);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, "bold italic");
+	BOOST_CHECK_EQUAL (i->line, 0);
+	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	BOOST_CHECK_EQUAL (i->text, " and some ");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, false);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, " and some ");
+	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	BOOST_CHECK_EQUAL (i->text, "underlined");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, false);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, true);
-	BOOST_CHECK_EQUAL (i->text, "underlined");
-	++i;
-
+	BOOST_CHECK_EQUAL (i->line, 0);
 	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
 	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
+	++i;
+
+	BOOST_CHECK_EQUAL (i->text, ".");
+	BOOST_CHECK_EQUAL (i->font, "Arial");
+	BOOST_CHECK_EQUAL (i->font_size, 42);
 	BOOST_CHECK_EQUAL (i->bold, false);
 	BOOST_CHECK_EQUAL (i->italic, false);
 	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->text, ".");
+	BOOST_CHECK_EQUAL (i->line, 0);
+	BOOST_CHECK_EQUAL (i->from, sub::Time (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to, sub::Time (0, 1, 2, 10));
 	++i;
 	
 	BOOST_CHECK (i == subs.end ());
