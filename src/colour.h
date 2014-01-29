@@ -17,47 +17,36 @@
 
 */
 
-#ifndef LIBSUB_FRAME_TIME_H
-#define LIBSUB_FRAME_TIME_H
-
-#include <iostream>
+#include <string>
 
 namespace sub {
 
-class FrameTime
+class Colour
 {
 public:
-	FrameTime ()
-		: _hours (0)
-		, _minutes (0)
-		, _seconds (0)
-		, _frames (0)
+	Colour ()
+		: r (0)
+		, g (0)
+		, b (0)
 	{}
-			  
-	FrameTime (int h, int m, int s, int f)
-		: _hours (h)
-		, _minutes (m)
-		, _seconds (s)
-		, _frames (f)
-	{}
-
-	std::string timecode () const;
-
-private:
-	friend bool operator== (FrameTime const & a, FrameTime const & b);
-	friend bool operator< (FrameTime const & a, FrameTime const & b);
-	friend std::ostream& operator<< (std::ostream& s, FrameTime const & t);
 	
-	int _hours;
-	int _minutes;
-	int _seconds;
-	int _frames;
+	Colour (float r, float g, float b)
+		: r (r)
+		, g (g)
+		, b (b)
+	{}
+
+	Colour (std::string);
+
+	/** red component (from 0 to 1) */
+	float r;
+	/** green component (from 0 to 1) */
+	float g;
+	/** blue component (from 0 to 1) */
+	float b;
 };
 
-bool operator== (FrameTime const & a, FrameTime const & b);
-bool operator< (FrameTime const & a, FrameTime const & b);
-std::ostream& operator<< (std::ostream&, FrameTime const & t);
+bool
+operator== (Colour const & a, Colour const & b);
 	
 }
-
-#endif

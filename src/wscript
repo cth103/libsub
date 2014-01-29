@@ -8,16 +8,26 @@ def build(bld):
 
     obj.name = 'libsub'
     obj.target = 'sub'
+    obj.uselib = 'CXML'
     obj.export_includes = ['.']
     obj.source = """
+                 colour.cc
+                 dcp_reader.cc
+                 effect.cc
                  frame_time.cc
+                 metric_time.cc
                  reader.cc
                  stl_reader.cc
                  stl_writer.cc
+                 subtitle.cc
+                 vertical_reference.cc
                  """
 
     headers = """
+              colour.h
+              dcp_reader.h
               frame_time.h
+              metric_time.h
               reader.h
               stl_reader.h
               stl_writer.h

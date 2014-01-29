@@ -17,46 +17,36 @@
 
 */
 
-#ifndef LIBSUB_FRAME_TIME_H
-#define LIBSUB_FRAME_TIME_H
+#ifndef LIBSUB_METRIC_TIME_H
+#define LIBSUB_METRIC_TIME_H
 
+#include <stdint.h>
 #include <iostream>
 
 namespace sub {
 
-class FrameTime
+class MetricTime
 {
 public:
-	FrameTime ()
-		: _hours (0)
-		, _minutes (0)
-		, _seconds (0)
-		, _frames (0)
+	MetricTime ()
+		: _milliseconds (0)
 	{}
+
+	MetricTime (int h, int m, int s, int ms);
 			  
-	FrameTime (int h, int m, int s, int f)
-		: _hours (h)
-		, _minutes (m)
-		, _seconds (s)
-		, _frames (f)
-	{}
-
-	std::string timecode () const;
-
 private:
-	friend bool operator== (FrameTime const & a, FrameTime const & b);
-	friend bool operator< (FrameTime const & a, FrameTime const & b);
-	friend std::ostream& operator<< (std::ostream& s, FrameTime const & t);
+	friend bool operator== (MetricTime const & a, MetricTime const & b);
+	friend bool operator> (MetricTime const & a, MetricTime const & b);
+	friend bool operator< (MetricTime const & a, MetricTime const & b);
+	friend std::ostream& operator<< (std::ostream&, MetricTime const & t);
 	
-	int _hours;
-	int _minutes;
-	int _seconds;
-	int _frames;
+	int64_t _milliseconds;
 };
 
-bool operator== (FrameTime const & a, FrameTime const & b);
-bool operator< (FrameTime const & a, FrameTime const & b);
-std::ostream& operator<< (std::ostream&, FrameTime const & t);
+bool operator== (MetricTime const & a, MetricTime const & b);
+bool operator> (MetricTime const & a, MetricTime const & b);	
+bool operator< (MetricTime const & a, MetricTime const & b);	
+std::ostream& operator<< (std::ostream&, MetricTime const & t);
 	
 }
 

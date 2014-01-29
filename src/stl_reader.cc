@@ -91,8 +91,8 @@ STLReader::STLReader (istream& in)
 				continue;
 			}
 
-			_current.frame_from = from.get ();
-			_current.frame_to = to.get ();
+			_current.from.frame = from.get ();
+			_current.to.frame = to.get ();
 
 			/* Parse ^B/^I/^U */
 			string text = line.substr (divider[1] + 1);
@@ -152,7 +152,7 @@ STLReader::set (string name, string value)
 	} else if (name == "$Underlined") {
 		_current.underline = value == "True";
 	} else if (name == "$FontSize") {
-		_current.font_size = lexical_cast<int> (value);
+		_current.font_size.points = lexical_cast<int> (value);
 	}
 }
 

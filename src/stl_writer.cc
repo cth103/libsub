@@ -45,9 +45,9 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 			font = i->font;
 			started_new = true;
 		}
-		if (!font_size || font_size.get() != i->font_size) {
-			out << "\n$FontSize = " << i->font_size;
-			font_size = i->font_size;
+		if (!font_size || font_size.get() != i->font_size.points.get()) {
+			out << "\n$FontSize = " << i->font_size.points.get();
+			font_size = i->font_size.points.get();
 			started_new = true;
 		}
 		string text;
@@ -66,16 +66,16 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 
 		text += i->text;
 
-		if (from && from.get() == i->frame_from && to && to.get() == i->frame_to && !started_new) {
+		if (from && from.get() == i->from.frame.get() && to && to.get() == i->to.frame.get() && !started_new) {
 		        for (int j = line; j < i->line; ++j) {
 				out << "|";
 			}
 			out << text;
 			line = i->line;
 		} else {
-			out << "\n" << i->frame_from.get().timecode() << "," << i->frame_to.get().timecode() << "," << text;
-			from = i->frame_from;
-			to = i->frame_to;
+			out << "\n" << i->from.frame.get().timecode() << "," << i->to.frame.get().timecode() << "," << text;
+			from = i->from.frame.get();
+			to = i->to.frame.get();
 			line = 0;
 		}
 	}

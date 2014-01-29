@@ -17,7 +17,7 @@
 
 */
 
-#include "frame_time.h"
+#include "metric_time.h"
 #include "compose.hpp"
 #include <iostream>
 
@@ -25,39 +25,41 @@ using std::ostream;
 using std::string;
 using namespace sub;
 
-bool
-sub::operator== (FrameTime const & a, FrameTime const & b)
+MetricTime::MetricTime (int h, int m, int s, int ms)
+	: _milliseconds ((h * 3600 + m * 60 + s) * 1000 + ms)
 {
-	return a._hours == b._hours && a._minutes == b._minutes && a._seconds == b._seconds && a._frames == b._frames;
+
 }
 
 bool
-sub::operator< (FrameTime const & a, FrameTime const & b)
+sub::operator== (MetricTime const & a, MetricTime const & b)
 {
-	if (a._hours != b._hours) {
-		return a._hours < b._hours;
-	}
+	return a._milliseconds == b._milliseconds;
+}
 
-	if (a._minutes != b._minutes) {
-		return a._minutes < b._minutes;
-	}
+bool
+sub::operator> (MetricTime const & a, MetricTime const & b)
+{
+	return a._milliseconds > b._milliseconds;
+}
 
-	if (a._seconds != b._seconds) {
-		return a._seconds < b._seconds;
-	}
-
-	return a._frames < b._frames;
+bool
+sub::operator< (MetricTime const & a, MetricTime const & b)
+{
+	return a._milliseconds < b._milliseconds;
 }
 
 ostream&
-sub::operator<< (ostream& s, FrameTime const & t)
+sub::operator<< (ostream& st, MetricTime const & t)
 {
-	s << t._hours << ":" << t._minutes << ":" << t._seconds << ":" << t._frames;
-	return s;
-}
+	int64_t ms = t._milliseconds;
+	int const h = ms / (3600 * 1000);
+	ms -= h * 3600 * 1000;
+	int const m = ms / (60 * 1000);
+	ms -= m * 60 * 1000;
+	int const s = ms / 1000;
+	ms -= s * 1000;
 
-string
-FrameTime::timecode () const
-{
-	return String::compose ("%1:%2:%3:%4", _hours, _minutes, _seconds, _frames);
+	st << h << ":" << m << ":" << s << ":" << ms;
+	return st;
 }

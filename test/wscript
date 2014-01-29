@@ -16,6 +16,7 @@ def build(bld):
     obj.uselib = 'BOOST_TEST'
     obj.use    = 'libsub'
     obj.source = """
+                 dcp_reader_test.cc
                  stl_reader_test.cc
                  stl_writer_test.cc
                  test.cc

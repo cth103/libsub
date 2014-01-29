@@ -7,7 +7,7 @@ VERSION = '0.01.0devel'
 def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--enable-debug', action='store_true', default=False, help='build with debugging information and without optimisation')
-    opt.add_option('--static', action='store_true', default=False, help='build libsub statically')
+    opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to cxml')
 
 def configure(conf):
     conf.load('compiler_cxx')
@@ -21,6 +21,12 @@ def configure(conf):
         conf.env.append_value('CXXFLAGS', '-g')
     else:
         conf.env.append_value('CXXFLAGS', '-O3')
+
+    if conf.options.static:
+        conf.env.HAVE_CXML = 1
+        conf.env.STLIB_CXML = ['cxml']
+    else:
+        conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
 
     conf.check_cxx(fragment="""
                             #include <boost/version.hpp>\n

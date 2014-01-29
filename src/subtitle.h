@@ -21,6 +21,10 @@
 #define LIBSUB_SUBTITLE_H
 
 #include "frame_time.h"
+#include "metric_time.h"
+#include "colour.h"
+#include "vertical_reference.h"
+#include "effect.h"
 #include <boost/optional.hpp>
 #include <string>
 
@@ -30,45 +34,58 @@ class Subtitle
 {
 public:
 	Subtitle ()
-		: font_size (0)
+		: colour (1, 1, 1)
 		, bold (false)
 		, italic (false)
 		, underline (false)
 		, line (0)
 	{}
 
-	Subtitle (
-		std::string text,
-		std::string font,
-		int font_size,
-		bool bold,
-		bool italic,
-		bool underline,
-		int line,
-		FrameTime from,
-		FrameTime to
-		)
-		: text (text)
-		, font (font)
-		, font_size (font_size)
-		, bold (bold)
-		, italic (italic)
-		, underline (underline)
-		, line (line)
-		, frame_from (from)
-		, frame_to (to)
-	{}
-
 	std::string text;
 	std::string font;
-	int font_size;
-	bool bold;
-	bool italic;
-	bool underline;
+
+	/** font size */
+	struct {
+		/** as a proportion of screen height */
+		boost::optional<float> proportional;
+		/** in points */
+		boost::optional<int> points;
+	} font_size;
+
+	/** vertical position of the baseline of the text */
+	struct {
+		/** as a proportion of screen height offset from some reference point */
+		boost::optional<float> proportional;
+		/** reference position for proportional */
+		boost::optional<VerticalReference> reference;
+	} vertical_position;
+
+	boost::optional<Effect> effect;
+	boost::optional<Colour> effect_colour;
+	
+	Colour colour;
+	bool bold;      ///< true to use a bold version of font
+	bool italic;    ///< true to use an italic version of font
+	bool underline; ///< true to underline
 	int line;
-	boost::optional<FrameTime> frame_from;
-	boost::optional<FrameTime> frame_to;
+
+	/** from time */
+	struct {
+		boost::optional<FrameTime> frame;
+		boost::optional<MetricTime> metric;
+	} from;
+
+	/** to time */
+	struct {
+		boost::optional<FrameTime> frame;
+		boost::optional<MetricTime> metric;
+	} to;
+
+	boost::optional<MetricTime> fade_up;
+	boost::optional<MetricTime> fade_down;
 };
+
+bool operator< (Subtitle const & a, Subtitle const & b);	
 
 }
 

@@ -17,47 +17,25 @@
 
 */
 
-#ifndef LIBSUB_FRAME_TIME_H
-#define LIBSUB_FRAME_TIME_H
-
-#include <iostream>
+#include <stdexcept>
+#include <string>
 
 namespace sub {
 
-class FrameTime
+class XMLError : public std::exception
 {
 public:
-	FrameTime ()
-		: _hours (0)
-		, _minutes (0)
-		, _seconds (0)
-		, _frames (0)
-	{}
-			  
-	FrameTime (int h, int m, int s, int f)
-		: _hours (h)
-		, _minutes (m)
-		, _seconds (s)
-		, _frames (f)
-	{}
+	XMLError (std::string const & message) : _message (message) {}
+	~XMLError () throw () {}
 
-	std::string timecode () const;
+	/** @return error message */
+	char const * what () const throw () {
+		return _message.c_str ();
+	}
 
 private:
-	friend bool operator== (FrameTime const & a, FrameTime const & b);
-	friend bool operator< (FrameTime const & a, FrameTime const & b);
-	friend std::ostream& operator<< (std::ostream& s, FrameTime const & t);
-	
-	int _hours;
-	int _minutes;
-	int _seconds;
-	int _frames;
+	/** error message */
+	std::string _message;
 };
-
-bool operator== (FrameTime const & a, FrameTime const & b);
-bool operator< (FrameTime const & a, FrameTime const & b);
-std::ostream& operator<< (std::ostream&, FrameTime const & t);
 	
 }
-
-#endif

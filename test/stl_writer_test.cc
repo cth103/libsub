@@ -24,40 +24,39 @@
 #include "test.h"
 
 using std::list;
+using std::string;
 using std::ifstream;
 using std::ofstream;
+
+static sub::Subtitle
+make (string text, bool bold, bool italic, bool underline, int line, sub::FrameTime from, sub::FrameTime to)
+{
+	sub::Subtitle s;
+	s.text = text;
+	s.font = "Arial";
+	s.font_size.points = 42;
+	s.bold = bold;
+	s.italic = italic;
+	s.underline = underline;
+	s.line = line;
+	s.from.frame = from;
+	s.to.frame = to;
+	return s;
+}
 
 /* Test writing of an STL file */
 BOOST_AUTO_TEST_CASE (stl_writer_test)
 {
 	list<sub::Subtitle> subs;
-	subs.push_back (
-		sub::Subtitle (" This is a subtitle ",     "Arial", 42, false, false, false, 0, sub::FrameTime (0, 0, 41, 9), sub::FrameTime (0, 0, 42, 21))
-		);
-	subs.push_back (
-		sub::Subtitle (" and that's a line break", "Arial", 42, false, false, false, 1, sub::FrameTime (0, 0, 41, 9), sub::FrameTime (0, 0, 42, 21))
-		);
-	subs.push_back (
-		sub::Subtitle (" This is some ",           "Arial", 42, false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle ("bold",                     "Arial", 42, true,  false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle (" and some ",               "Arial", 42, false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle ("bold italic",              "Arial", 42, true,  true,  false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle (" and some ",               "Arial", 42, false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle ("underlined",               "Arial", 42, false, false, true,  0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
-	subs.push_back (
-		sub::Subtitle (".",                        "Arial", 42, false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10))
-		);
+	subs.push_back (make (" This is a subtitle ",     false, false, false, 0, sub::FrameTime (0, 0, 41, 9), sub::FrameTime (0, 0, 42, 21)));
+	subs.push_back (make (" and that's a line break", false, false, false, 1, sub::FrameTime (0, 0, 41, 9), sub::FrameTime (0, 0, 42, 21)));
+	subs.push_back (make (" This is some ",           false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make ("bold",                     true,  false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make (" and some ",               false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make ("bold italic",              true,  true,  false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make (" and some ",               false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make ("underlined",               false, false, true,  0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
+	subs.push_back (make (".",                        false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
 
 	ofstream f ("build/test/test.stl");
 	sub::STLWriter writer (subs, f);
