@@ -20,7 +20,8 @@
 #ifndef LIBSUB_SUBTITLE_H
 #define LIBSUB_SUBTITLE_H
 
-#include "sub_time.h"
+#include "frame_time.h"
+#include <boost/optional.hpp>
 #include <string>
 
 namespace sub {
@@ -44,8 +45,8 @@ public:
 		bool italic,
 		bool underline,
 		int line,
-		Time from,
-		Time to
+		FrameTime from,
+		FrameTime to
 		)
 		: text (text)
 		, font (font)
@@ -54,10 +55,10 @@ public:
 		, italic (italic)
 		, underline (underline)
 		, line (line)
-		, from (from)
-		, to (to)
+		, frame_from (from)
+		, frame_to (to)
 	{}
-	
+
 	std::string text;
 	std::string font;
 	int font_size;
@@ -65,8 +66,8 @@ public:
 	bool italic;
 	bool underline;
 	int line;
-	Time from;
-	Time to;
+	boost::optional<FrameTime> frame_from;
+	boost::optional<FrameTime> frame_to;
 };
 
 }

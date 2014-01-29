@@ -83,16 +83,16 @@ STLReader::STLReader (istream& in)
 			string to_string = line.substr (divider[0] + 1, divider[1] - divider[0] - 1);
 			trim (to_string);
 
-			optional<Time> from = time (from_string);
-			optional<Time> to = time (to_string);
+			optional<FrameTime> from = time (from_string);
+			optional<FrameTime> to = time (to_string);
 
 			if (!from || !to) {
 				warn (String::compose ("Unrecognised line %1", line));
 				continue;
 			}
 
-			_current.from = from.get ();
-			_current.to = to.get ();
+			_current.frame_from = from.get ();
+			_current.frame_to = to.get ();
 
 			/* Parse ^B/^I/^U */
 			string text = line.substr (divider[1] + 1);
@@ -127,17 +127,17 @@ STLReader::STLReader (istream& in)
 	}
 }
 
-optional<Time>
+optional<FrameTime>
 STLReader::time (string t) const
 {
 	vector<string> b;
 	split (b, t, is_any_of (":"));
 	if (b.size() != 4) {
 		warn (String::compose ("Unrecognised time %1", t));
-		return optional<Time> ();
+		return optional<FrameTime> ();
 	}
 
-	return Time (lexical_cast<int> (b[0]), lexical_cast<int> (b[1]), lexical_cast<int> (b[2]), lexical_cast<int> (b[3]));
+	return FrameTime (lexical_cast<int> (b[0]), lexical_cast<int> (b[1]), lexical_cast<int> (b[2]), lexical_cast<int> (b[3]));
 }
 
 void

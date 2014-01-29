@@ -10,17 +10,17 @@ def build(bld):
     obj.target = 'sub'
     obj.export_includes = ['.']
     obj.source = """
+                 frame_time.cc
                  reader.cc
                  stl_reader.cc
                  stl_writer.cc
-                 sub_time.cc
                  """
 
     headers = """
+              frame_time.h
               reader.h
               stl_reader.h
               stl_writer.h
-              sub_time.h
               writer.h
               """
 

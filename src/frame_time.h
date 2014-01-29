@@ -17,29 +17,45 @@
 
 */
 
-#include "sub_time.h"
-#include "compose.hpp"
+#ifndef LIBSUB_FRAME_TIME_H
+#define LIBSUB_FRAME_TIME_H
+
 #include <iostream>
 
-using std::ostream;
-using std::string;
-using namespace sub;
+namespace sub {
 
-bool
-sub::operator== (Time const & a, Time const & b)
+class FrameTime
 {
-	return a._hours == b._hours && a._minutes == b._minutes && a._seconds == b._seconds && a._frames == b._frames;
+public:
+	FrameTime ()
+		: _hours (0)
+		, _minutes (0)
+		, _seconds (0)
+		, _frames (0)
+	{}
+			  
+	FrameTime (int h, int m, int s, int f)
+		: _hours (h)
+		, _minutes (m)
+		, _seconds (s)
+		, _frames (f)
+	{}
+
+	std::string timecode () const;
+
+private:
+	friend bool operator== (FrameTime const & a, FrameTime const & b);
+	friend std::ostream& operator<< (std::ostream& s, FrameTime const & t);
+	
+	int _hours;
+	int _minutes;
+	int _seconds;
+	int _frames;
+};
+
+bool operator== (FrameTime const & a, FrameTime const & b);
+std::ostream& operator<< (std::ostream&, FrameTime const & t);
+	
 }
 
-ostream&
-sub::operator<< (ostream& s, Time const & t)
-{
-	s << t._hours << ":" << t._minutes << ":" << t._seconds << ":" << t._frames;
-	return s;
-}
-
-string
-Time::timecode () const
-{
-	return String::compose ("%1:%2:%3:%4", _hours, _minutes, _seconds, _frames);
-}
+#endif

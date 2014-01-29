@@ -35,8 +35,8 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 	bool italic = false;
 	bool underline = false;
 	int line = 0;
-	optional<Time> from;
-	optional<Time> to;
+	optional<FrameTime> from;
+	optional<FrameTime> to;
 	
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
 		bool started_new = false;
@@ -66,16 +66,16 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 
 		text += i->text;
 
-		if (from && from.get() == i->from && to && to.get() == i->to && !started_new) {
+		if (from && from.get() == i->frame_from && to && to.get() == i->frame_to && !started_new) {
 		        for (int j = line; j < i->line; ++j) {
 				out << "|";
 			}
 			out << text;
 			line = i->line;
 		} else {
-			out << "\n" << i->from.timecode() << "," << i->to.timecode() << "," << text;
-			from = i->from;
-			to = i->to;
+			out << "\n" << i->frame_from.get().timecode() << "," << i->frame_to.get().timecode() << "," << text;
+			from = i->frame_from;
+			to = i->frame_to;
 			line = 0;
 		}
 	}
