@@ -26,11 +26,14 @@ def build(bld):
     headers = """
               colour.h
               dcp_reader.h
+              effect.h
               frame_time.h
               metric_time.h
               reader.h
               stl_reader.h
               stl_writer.h
+              subtitle.h
+              vertical_reference.h
               writer.h
               """
 
