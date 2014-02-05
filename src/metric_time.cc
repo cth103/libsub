@@ -20,6 +20,7 @@
 #include "metric_time.h"
 #include "compose.hpp"
 #include <iostream>
+#include <cmath>
 
 using std::ostream;
 using std::string;
@@ -29,6 +30,30 @@ MetricTime::MetricTime (int h, int m, int s, int ms)
 	: _milliseconds ((h * 3600 + m * 60 + s) * 1000 + ms)
 {
 
+}
+
+int
+MetricTime::hours () const
+{
+	return floor (_milliseconds / (3600 * 1000));
+}
+
+int
+MetricTime::minutes () const
+{
+	return int64_t (floor (_milliseconds / (60 * 1000))) % 60;
+}
+
+int
+MetricTime::seconds () const
+{
+	return int64_t (floor (_milliseconds / (1000))) % 3600;
+}
+
+int
+MetricTime::milliseconds () const
+{
+	return _milliseconds % (3600 * 1000);
 }
 
 bool

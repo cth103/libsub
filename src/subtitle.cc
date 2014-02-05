@@ -18,7 +18,9 @@
 */
 
 #include "subtitle.h"
+#include "convert_time.h"
 
+using std::list;
 using namespace sub;
 
 bool
@@ -33,4 +35,34 @@ sub::operator< (Subtitle const & a, Subtitle const & b)
 	}
 
 	assert (false);
+}
+
+void
+sub::convert_font_sizes (list<Subtitle>& subs, int screen_height_in_points)
+{
+	for (list<Subtitle>::iterator i = subs.begin(); i != subs.end(); ++i) {
+		if (i->font_size.proportional) {
+			i->font_size.points = i->font_size.proportional.get() * screen_height_in_points;
+		} else {
+			i->font_size.proportional = float (i->font_size.points.get()) / screen_height_in_points;
+		}
+	}
+}
+
+void
+sub::convert_times (list<Subtitle>& subs, float frames_per_second)
+{
+	for (list<Subtitle>::iterator i = subs.begin(); i != subs.end(); ++i) {
+		if (i->from.frame) {
+			i->from.metric = frame_to_metric (i->from.frame.get(), frames_per_second);
+		} else {
+			i->from.frame = metric_to_frame (i->from.metric.get(), frames_per_second);
+		}
+
+		if (i->to.frame) {
+			i->to.metric = frame_to_metric (i->to.frame.get(), frames_per_second);
+		} else {
+			i->to.frame = metric_to_frame (i->to.metric.get(), frames_per_second);
+		}
+	}
 }

@@ -12,6 +12,7 @@ def build(bld):
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc
+                 convert_time.cc
                  dcp_reader.cc
                  effect.cc
                  frame_time.cc
@@ -25,6 +26,7 @@ def build(bld):
 
     headers = """
               colour.h
+              convert_time.h
               dcp_reader.h
               effect.h
               frame_time.h

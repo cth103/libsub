@@ -19,6 +19,7 @@ def build(bld):
                  dcp_reader_test.cc
                  stl_reader_test.cc
                  stl_writer_test.cc
+                 time_test.cc
                  test.cc
                  """
     obj.target = 'tests'

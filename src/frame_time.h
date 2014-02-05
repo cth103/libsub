@@ -41,6 +41,22 @@ public:
 		, _frames (f)
 	{}
 
+	int hours () const {
+		return _hours;
+	}
+	
+	int minutes () const {
+		return _minutes;
+	}
+	
+	int seconds () const {
+		return _seconds;
+	}
+	
+	int frames () const {
+		return _frames;
+	}
+
 	std::string timecode () const;
 
 private:

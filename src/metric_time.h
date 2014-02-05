@@ -33,6 +33,11 @@ public:
 	{}
 
 	MetricTime (int h, int m, int s, int ms);
+
+	int hours () const;
+	int minutes () const;
+	int seconds () const;
+	int milliseconds () const;
 			  
 private:
 	friend bool operator== (MetricTime const & a, MetricTime const & b);

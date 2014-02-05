@@ -27,6 +27,7 @@
 #include "effect.h"
 #include <boost/optional.hpp>
 #include <string>
+#include <list>
 
 namespace sub {
 
@@ -50,6 +51,8 @@ public:
 		boost::optional<float> proportional;
 		/** in points */
 		boost::optional<int> points;
+
+		void convert ();
 	} font_size;
 
 	/** vertical position of the baseline of the text */
@@ -87,6 +90,9 @@ public:
 
 bool operator< (Subtitle const & a, Subtitle const & b);	
 
+void convert_font_sizes (std::list<Subtitle> &, int screen_height_in_points);
+void convert_times (std::list<Subtitle> &, float frames_per_second);
+	
 }
 
 #endif
