@@ -21,6 +21,7 @@
 #include "frame_time.h"
 #include "convert_time.h"
 
+using std::cout;
 using namespace sub;
 
 FrameTime

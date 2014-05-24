@@ -25,11 +25,14 @@
 
 namespace sub {
 
+/** @class MetricTime
+ *  @brief A time held in milliseconds.
+ */
 class MetricTime
 {
 public:
 	MetricTime ()
-		: _milliseconds (0)
+		: _ms (0)
 	{}
 
 	MetricTime (int h, int m, int s, int ms);
@@ -40,12 +43,14 @@ public:
 	int milliseconds () const;
 			  
 private:
+	void split (int& h, int& m, int& s, int& ms) const;
+	
 	friend bool operator== (MetricTime const & a, MetricTime const & b);
 	friend bool operator> (MetricTime const & a, MetricTime const & b);
 	friend bool operator< (MetricTime const & a, MetricTime const & b);
 	friend std::ostream& operator<< (std::ostream&, MetricTime const & t);
 	
-	int64_t _milliseconds;
+	int64_t _ms;
 };
 
 bool operator== (MetricTime const & a, MetricTime const & b);

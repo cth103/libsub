@@ -24,67 +24,85 @@
 
 using std::ostream;
 using std::string;
+using std::cout;
 using namespace sub;
 
 MetricTime::MetricTime (int h, int m, int s, int ms)
-	: _milliseconds ((h * 3600 + m * 60 + s) * 1000 + ms)
+        /* cast up to int64_t to force a 64-bit calculation */
+	: _ms ((int64_t (h) * 3600 + m * 60 + s) * 1000 + ms)
 {
 
+}
+
+void
+MetricTime::split (int& h, int &m, int& s, int& ms) const
+{
+	int64_t w = _ms;
+	h = floor (w / (3600 * 1000));
+	/* this multiply could overflow 32 bits so cast to make sure it is done as 64-bit */
+	w -= int64_t (h) * (3600 * 1000);
+	m = floor (w / (60 * 1000));
+	w -= m * (60 * 1000);
+	s = floor (w / 1000);
+	w -= s * 1000;
+	ms = w;
 }
 
 int
 MetricTime::hours () const
 {
-	return floor (_milliseconds / (3600 * 1000));
+	int h, m, s, ms;
+	split (h, m, s, ms);
+	return h;
 }
 
 int
 MetricTime::minutes () const
 {
-	return int64_t (floor (_milliseconds / (60 * 1000))) % 60;
+	int h, m, s, ms;
+	split (h, m, s, ms);
+	return m;
 }
 
 int
 MetricTime::seconds () const
 {
-	return int64_t (floor (_milliseconds / (1000))) % 3600;
+	int h, m, s, ms;
+	split (h, m, s, ms);
+	return s;
 }
 
 int
 MetricTime::milliseconds () const
 {
-	return _milliseconds % (3600 * 1000);
+	int h, m, s, ms;
+	split (h, m, s, ms);
+	return ms;
 }
 
 bool
 sub::operator== (MetricTime const & a, MetricTime const & b)
 {
-	return a._milliseconds == b._milliseconds;
+	return a._ms == b._ms;
 }
 
 bool
 sub::operator> (MetricTime const & a, MetricTime const & b)
 {
-	return a._milliseconds > b._milliseconds;
+	return a._ms > b._ms;
 }
 
 bool
 sub::operator< (MetricTime const & a, MetricTime const & b)
 {
-	return a._milliseconds < b._milliseconds;
+	return a._ms < b._ms;
 }
 
 ostream&
 sub::operator<< (ostream& st, MetricTime const & t)
 {
-	int64_t ms = t._milliseconds;
-	int const h = ms / (3600 * 1000);
-	ms -= h * 3600 * 1000;
-	int const m = ms / (60 * 1000);
-	ms -= m * 60 * 1000;
-	int const s = ms / 1000;
-	ms -= s * 1000;
-
+	int h, m, s, ms;
+	t.split (h, m, s, ms);
 	st << h << ":" << m << ":" << s << ":" << ms;
 	return st;
 }

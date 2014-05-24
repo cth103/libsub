@@ -22,11 +22,34 @@
 #include "frame_time.h"
 #include "convert_time.h"
 
-/* Check time conversions */
-BOOST_AUTO_TEST_CASE (time_test)
+/* Check time construction */
+BOOST_AUTO_TEST_CASE (time_construction_test)
 {
+	{
+		sub::MetricTime t (3, 5, 7, 40);
+		BOOST_CHECK_EQUAL (t.hours(), 3);
+		BOOST_CHECK_EQUAL (t.minutes(), 5);
+		BOOST_CHECK_EQUAL (t.seconds(), 7);
+		BOOST_CHECK_EQUAL (t.milliseconds(), 40);
+	}
+
+	{
+		sub::MetricTime t (591353, 1, 2, 3);
+		BOOST_CHECK_EQUAL (t.hours(), 591353);
+		BOOST_CHECK_EQUAL (t.minutes(), 1);
+		BOOST_CHECK_EQUAL (t.seconds(), 2);
+		BOOST_CHECK_EQUAL (t.milliseconds(), 3);
+	}
+}
+
+/* Check time conversions */
+BOOST_AUTO_TEST_CASE (time_conversion_test)
+{
+	/* 40ms = 1 frame at 25fps */
 	BOOST_CHECK_EQUAL (metric_to_frame (sub::MetricTime (3, 5, 7, 40), 25), sub::FrameTime (3, 5, 7, 1));
 	BOOST_CHECK_EQUAL (frame_to_metric (sub::FrameTime  (3, 5, 7, 1), 25), sub::MetricTime (3, 5, 7, 40));
+
+	/* 120ms = 3 frames at 25fps */
 	BOOST_CHECK_EQUAL (metric_to_frame (sub::MetricTime (3, 5, 7, 120), 25), sub::FrameTime (3, 5, 7, 3));
 	BOOST_CHECK_EQUAL (frame_to_metric (sub::FrameTime  (3, 5, 7, 3), 25), sub::MetricTime (3, 5, 7, 120));
 }
