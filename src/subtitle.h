@@ -51,8 +51,6 @@ public:
 		boost::optional<float> proportional;
 		/** in points */
 		boost::optional<int> points;
-
-		void convert ();
 	} font_size;
 
 	/** vertical position of the baseline of the text */

@@ -49,6 +49,11 @@ sub::convert_font_sizes (list<Subtitle>& subs, int screen_height_in_points)
 	}
 }
 
+/** Take a list of Subtitles and convert their times either from metric to frame, or vice-versa,
+ *  depending on what the Subtitles currently have.
+ *  @param sub Subtitles.
+ *  @param frames_per_second Video frames-per-second value to use in the conversion.
+ */
 void
 sub::convert_times (list<Subtitle>& subs, float frames_per_second)
 {
