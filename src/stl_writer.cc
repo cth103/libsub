@@ -26,8 +26,8 @@ using std::string;
 using boost::optional;
 using namespace sub;
 
-STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
-	: Writer (subtitles)
+STLWriter::STLWriter (list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, ostream& out)
+	: Writer (subtitles, screen_height_in_points, frames_per_second)
 {
 	optional<string> font;
 	optional<int> font_size;
@@ -45,9 +45,9 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 			font = i->font;
 			started_new = true;
 		}
-		if (!font_size || font_size.get() != i->font_size.points.get()) {
-			out << "\n$FontSize = " << i->font_size.points.get();
-			font_size = i->font_size.points.get();
+		if (!font_size || font_size.get() != i->font_size_points (screen_height_in_points)) {
+			out << "\n$FontSize = " << i->font_size_points (screen_height_in_points);
+			font_size = i->font_size_points (screen_height_in_points);
 			started_new = true;
 		}
 		string text;
@@ -66,16 +66,16 @@ STLWriter::STLWriter (list<Subtitle> subtitles, ostream& out)
 
 		text += i->text;
 
-		if (from && from.get() == i->from.frame.get() && to && to.get() == i->to.frame.get() && !started_new) {
+		if (from && from.get() == i->from_frame(frames_per_second) && to && to.get() == i->to_frame(frames_per_second) && !started_new) {
 		        for (int j = line; j < i->line; ++j) {
 				out << "|";
 			}
 			out << text;
 			line = i->line;
 		} else {
-			out << "\n" << i->from.frame.get().timecode() << "," << i->to.frame.get().timecode() << "," << text;
-			from = i->from.frame.get();
-			to = i->to.frame.get();
+			out << "\n" << i->from_frame(frames_per_second).timecode() << "," << i->to_frame(frames_per_second).timecode() << "," << text;
+			from = i->from_frame (frames_per_second);
+			to = i->to_frame (frames_per_second);
 			line = 0;
 		}
 	}

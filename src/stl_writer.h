@@ -25,7 +25,7 @@ namespace sub {
 class STLWriter : public Writer
 {
 public:
-	STLWriter (std::list<Subtitle> subtitles, std::ostream &);
+	STLWriter (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, std::ostream &);
 };
 
 }

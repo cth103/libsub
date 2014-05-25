@@ -53,6 +53,9 @@ public:
 		boost::optional<int> points;
 	} font_size;
 
+	float font_size_proportional (int screen_height_in_points) const;
+	int font_size_points (int screen_height_in_points) const;
+
 	/** vertical position of the baseline of the text */
 	struct {
 		/** as a proportion of screen height offset from some reference point */
@@ -76,21 +79,24 @@ public:
 		boost::optional<MetricTime> metric;
 	} from;
 
+	FrameTime  from_frame  (float frames_per_second) const;
+	MetricTime from_metric (float frames_per_second) const;
+
 	/** to time */
 	struct {
 		boost::optional<FrameTime> frame;
 		boost::optional<MetricTime> metric;
 	} to;
 
+	FrameTime  to_frame  (float frames_per_second) const;
+	MetricTime to_metric (float frames_per_second) const;
+	
 	boost::optional<MetricTime> fade_up;
 	boost::optional<MetricTime> fade_down;
 };
 
 bool operator< (Subtitle const & a, Subtitle const & b);	
 
-void convert_font_sizes (std::list<Subtitle> &, int screen_height_in_points);
-void convert_times (std::list<Subtitle> &, float frames_per_second);
-	
 }
 
 #endif

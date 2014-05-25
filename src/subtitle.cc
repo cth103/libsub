@@ -37,37 +37,62 @@ sub::operator< (Subtitle const & a, Subtitle const & b)
 	assert (false);
 }
 
-void
-sub::convert_font_sizes (list<Subtitle>& subs, int screen_height_in_points)
+FrameTime
+Subtitle::from_frame (float frames_per_second) const
 {
-	for (list<Subtitle>::iterator i = subs.begin(); i != subs.end(); ++i) {
-		if (i->font_size.proportional) {
-			i->font_size.points = i->font_size.proportional.get() * screen_height_in_points;
-		} else {
-			i->font_size.proportional = float (i->font_size.points.get()) / screen_height_in_points;
-		}
+	if (from.frame) {
+		return from.frame.get ();
 	}
+
+	return metric_to_frame (from.metric.get(), frames_per_second);
 }
 
-/** Take a list of Subtitles and convert their times either from metric to frame, or vice-versa,
- *  depending on what the Subtitles currently have.
- *  @param sub Subtitles.
- *  @param frames_per_second Video frames-per-second value to use in the conversion.
- */
-void
-sub::convert_times (list<Subtitle>& subs, float frames_per_second)
+FrameTime
+Subtitle::to_frame (float frames_per_second) const
 {
-	for (list<Subtitle>::iterator i = subs.begin(); i != subs.end(); ++i) {
-		if (i->from.frame) {
-			i->from.metric = frame_to_metric (i->from.frame.get(), frames_per_second);
-		} else {
-			i->from.frame = metric_to_frame (i->from.metric.get(), frames_per_second);
-		}
-
-		if (i->to.frame) {
-			i->to.metric = frame_to_metric (i->to.frame.get(), frames_per_second);
-		} else {
-			i->to.frame = metric_to_frame (i->to.metric.get(), frames_per_second);
-		}
+	if (to.frame) {
+		return to.frame.get ();
 	}
+
+	return metric_to_frame (to.metric.get(), frames_per_second);
+}
+
+MetricTime
+Subtitle::from_metric (float frames_per_second) const
+{
+	if (from.metric) {
+		return from.metric.get ();
+	}
+
+	return frame_to_metric (from.frame.get(), frames_per_second);
+}
+
+MetricTime
+Subtitle::to_metric (float frames_per_second) const
+{
+	if (to.metric) {
+		return to.metric.get ();
+	}
+
+	return frame_to_metric (to.frame.get(), frames_per_second);
+}
+
+float
+Subtitle::font_size_proportional (int screen_height_in_points) const
+{
+	if (font_size.proportional) {
+		return font_size.proportional.get ();
+	}
+
+	return float (font_size.points.get ()) / screen_height_in_points;
+}
+
+int
+Subtitle::font_size_points (int screen_height_in_points) const
+{
+	if (font_size.points) {
+		return font_size.points.get ();
+	}
+
+	return font_size.proportional.get() * screen_height_in_points;
 }

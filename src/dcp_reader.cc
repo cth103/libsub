@@ -236,11 +236,11 @@ DCPReader::font_id_to_name (string id) const
 		return "";
 	}
 
-	if ((*i)->uri == "arial.ttf") {
+	if ((*i)->uri == "arial.ttf" || (*i)->uri == "Arial.ttf") {
 		return "Arial";
 	}
 
-	return "";
+	return (*i)->uri;
 }
 
 DCPReader::DCPReader (istream& in)

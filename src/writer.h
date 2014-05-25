@@ -27,12 +27,16 @@ class Subtitle;
 class Writer
 {
 public:
-	Writer (std::list<Subtitle> subtitles)
+	Writer (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second)
 		: _subs (subtitles)
+		, _screen_height_in_points (screen_height_in_points)
+		, _frames_per_second (frames_per_second)
 	{}
 
 protected:
 	std::list<Subtitle> _subs;
+	int _screen_height_in_points;
+	float _frames_per_second;
 };
 
 }
