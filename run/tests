@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
 export LD_LIBRARY_PATH=build/src
-build/test/tests
+build/test/tests ../libsub-test-private

@@ -17,46 +17,28 @@
 
 */
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE libsub_test
-#include <boost/test/unit_test.hpp>
 #include <fstream>
-#include <string>
+#include <boost/test/unit_test.hpp>
+#include "test.h"
+#include "dcp_reader.h"
+#include "stl_writer.h"
 
 using std::string;
 using std::ifstream;
-using std::getline;
+using std::ofstream;
 
-string private_test;
-
-struct TestConfig
+BOOST_AUTO_TEST_CASE (dcp_to_stl_test)
 {
-	TestConfig()
-	{
-		if (boost::unit_test::framework::master_test_suite().argc >= 2) {
-			private_test = boost::unit_test::framework::master_test_suite().argv[1];
-		} else {
-			BOOST_TEST_MESSAGE ("Private data libsub-test-private not found; some tests will not run");
-		}
-	}
-};
-
-BOOST_GLOBAL_FIXTURE (TestConfig);
-
-void
-check_text (string a, string b)
-{
-	ifstream p (a.c_str ());
-	ifstream q (b.c_str ());
-
-	string x;
-	string y;
-	while (p.good() && q.good()) {
-		getline (p, x);
-		getline (q, y);
-		BOOST_CHECK_EQUAL (x, y);
+	if (private_test.empty ()) {
+		return;
 	}
 
-	BOOST_CHECK (p.good() == false);
-	BOOST_CHECK (q.good() == false);
+	string const p = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
+	ifstream f (p.c_str ());
+	sub::DCPReader r (f);
+	string const q = "build/test/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	ofstream g (q.c_str ());
+	sub::STLWriter w (r.subtitles (), 72 * 11, 24, g);
+	string const c = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	check_text (q, c);
 }

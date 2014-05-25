@@ -19,4 +19,8 @@
 
 #include <string>
 
+using std::string;
+
+extern string private_test;
+
 void check_text (std::string a, std::string b);
