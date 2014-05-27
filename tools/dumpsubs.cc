@@ -18,6 +18,7 @@
 */
 
 #include <map>
+#include <boost/filesystem.hpp>
 #include <getopt.h>
 #include "reader_factory.h"
 #include "reader.h"
@@ -63,7 +64,7 @@ main (int argc, char* argv[])
 		exit (EXIT_FAILURE);
 	}
 
-	if (access (argv[optind], F_OK) == -1) {
+	if (!boost::filesystem::exists (argv[optind])) {
 		cerr << argv[0] << ": file " << argv[optind] << " not found.\n";
 		exit (EXIT_FAILURE);
 	}

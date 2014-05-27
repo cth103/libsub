@@ -18,9 +18,8 @@
 */
 
 #include <string>
+#include <boost/filesystem.hpp>
 
-using std::string;
+extern boost::filesystem::path private_test;
 
-extern string private_test;
-
-void check_text (std::string a, std::string b);
+void check_text (boost::filesystem::path a, boost::filesystem::path b);

@@ -8,7 +8,7 @@ def build(bld):
 
     obj.name = 'libsub'
     obj.target = 'sub'
-    obj.uselib = 'CXML'
+    obj.uselib = 'CXML BOOST_FILESYSTEM'
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc

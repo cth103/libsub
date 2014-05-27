@@ -40,6 +40,15 @@ def configure(conf):
                    okmsg='yes',
                    errmsg='too old\nPlease install boost version 1.45 or higher.')
 
+    conf.check_cxx(fragment = """
+    			      #include <boost/filesystem.hpp>\n
+    			      int main() { boost::filesystem::copy_file ("a", "b"); }\n
+			      """,
+                   msg = 'Checking for boost filesystem library',
+                   libpath = '/usr/local/lib',
+                   lib = ['boost_filesystem', 'boost_system'],
+                   uselib_store = 'BOOST_FILESYSTEM')
+
     conf.recurse('test')
 
 def build(bld):

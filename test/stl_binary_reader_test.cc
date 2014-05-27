@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test)
 		return;
 	}
 
-	string p = private_test + "/Vampire_Academy_24fps_Reel_6_DE_FR.stl";
-	ifstream f (p.c_str ());
+	boost::filesystem::path p = private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.stl";
+	ifstream f (p.string().c_str ());
 	sub::STLBinaryReader r (f);
 }
 

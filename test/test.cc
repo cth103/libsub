@@ -20,6 +20,7 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE libsub_test
 #include <boost/test/unit_test.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
 
@@ -28,7 +29,7 @@ using std::cerr;
 using std::ifstream;
 using std::getline;
 
-string private_test;
+boost::filesystem::path private_test;
 
 struct TestConfig
 {
@@ -45,17 +46,18 @@ struct TestConfig
 BOOST_GLOBAL_FIXTURE (TestConfig);
 
 void
-check_text (string a, string b)
+check_text (boost::filesystem::path a, boost::filesystem::path b)
 {
-	if (access (a.c_str(), F_OK) == -1) {
+	if (!boost::filesystem::exists (a)) {
 		cerr << "File not found: " << a << "\n";
 	}
 
-	if (access (b.c_str(), F_OK) == -1) {
+	if (!boost::filesystem::exists (b)) {
 		cerr << "File not found: " << b << "\n";
 	}
 	
-	BOOST_CHECK_EQUAL (access (a.c_str(), F_OK), 0);
+	BOOST_CHECK (boost::filesystem::exists (a));
+	BOOST_CHECK (boost::filesystem::exists (b));
 	
 	ifstream p (a.c_str ());
 	ifstream q (b.c_str ());

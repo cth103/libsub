@@ -29,17 +29,19 @@ using std::ofstream;
 
 BOOST_AUTO_TEST_CASE (dcp_to_stl_text_test)
 {
+	using boost::filesystem::path;
+	
 	if (private_test.empty ()) {
 		return;
 	}
 
-	string const p = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
+	path p = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
 	ifstream f (p.c_str ());
 	sub::DCPReader r (f);
-	string const q = "build/test/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	path const q = path ("build") / path ("test") / path ("fd586c30-6d38-48f2-8241-27359acf184c_sub.stl");
 	ofstream g (q.c_str ());
 	sub::STLTextWriter w (r.subtitles (), 72 * 11, 24, g);
-	string const c = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	path const c = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
 	g.close ();
 	check_text (q, c);
 }
