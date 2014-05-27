@@ -17,8 +17,13 @@
 
 */
 
+#ifndef LIBSUB_READER_H
+#define LIBSUB_READER_H
+
 #include "subtitle.h"
 #include <list>
+#include <map>
+#include <string>
 
 namespace sub {
 
@@ -29,6 +34,10 @@ public:
 		return _subs;
 	}
 
+	virtual std::map<std::string, std::string> metadata () const {
+		return std::map<std::string, std::string> ();
+	}
+
 protected:
 	void warn (std::string) const;
 
@@ -36,3 +45,5 @@ protected:
 };
 
 }
+
+#endif

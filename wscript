@@ -53,6 +53,7 @@ def build(bld):
 
     bld.recurse('src')
     bld.recurse('test')
+    bld.recurse('tools')
 
     bld.add_post_fun(post)
 

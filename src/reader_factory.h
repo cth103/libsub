@@ -17,41 +17,13 @@
 
 */
 
-#include <stdexcept>
-#include <string>
+#include <boost/shared_ptr.hpp>
 
 namespace sub {
 
-class XMLError : public std::exception
-{
-public:
-	XMLError (std::string const & message) : _message (message) {}
-	~XMLError () throw () {}
+class Reader;
 
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
-	}
-
-private:
-	/** error message */
-	std::string _message;
-};
-	
-class STLError : public std::exception
-{
-public:
-	STLError (std::string const & message) : _message (message) {}
-	~STLError () throw () {}
-
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
-	}
-
-private:
-	/** error message */
-	std::string _message;
-};
+extern boost::shared_ptr<Reader>
+reader_factory (std::string);
 
 }

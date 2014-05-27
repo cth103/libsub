@@ -18,6 +18,8 @@ def build(bld):
                  frame_time.cc
                  metric_time.cc
                  reader.cc
+                 reader_factory.cc
+                 stl_binary_reader.cc
                  stl_text_reader.cc
                  stl_text_writer.cc
                  subtitle.cc

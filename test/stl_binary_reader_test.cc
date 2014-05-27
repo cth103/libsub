@@ -17,41 +17,25 @@
 
 */
 
-#include <stdexcept>
-#include <string>
+#include <boost/test/unit_test.hpp>
+#include <fstream>
+#include "stl_binary_reader.h"
+#include "subtitle.h"
+#include "test.h"
 
-namespace sub {
+using std::list;
+using std::cout;
+using std::ifstream;
 
-class XMLError : public std::exception
+/* Test reading of a binary STL file */
+BOOST_AUTO_TEST_CASE (stl_binary_reader_test)
 {
-public:
-	XMLError (std::string const & message) : _message (message) {}
-	~XMLError () throw () {}
-
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
+	if (private_test.empty ()) {
+		return;
 	}
 
-private:
-	/** error message */
-	std::string _message;
-};
-	
-class STLError : public std::exception
-{
-public:
-	STLError (std::string const & message) : _message (message) {}
-	~STLError () throw () {}
-
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
-	}
-
-private:
-	/** error message */
-	std::string _message;
-};
-
+	string p = private_test + "/Vampire_Academy_24fps_Reel_6_DE_FR.stl";
+	ifstream f (p.c_str ());
+	sub::STLBinaryReader r (f);
 }
+
