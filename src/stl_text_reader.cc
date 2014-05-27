@@ -17,7 +17,7 @@
 
 */
 
-#include "stl_reader.h"
+#include "stl_text_reader.h"
 #include "compose.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -36,7 +36,7 @@ using boost::optional;
 using boost::lexical_cast;
 using namespace sub;
 
-STLReader::STLReader (istream& in)
+STLTextReader::STLTextReader (istream& in)
 {
 	while (in.good ()) {
 		string line;
@@ -128,7 +128,7 @@ STLReader::STLReader (istream& in)
 }
 
 optional<FrameTime>
-STLReader::time (string t) const
+STLTextReader::time (string t) const
 {
 	vector<string> b;
 	split (b, t, is_any_of (":"));
@@ -141,7 +141,7 @@ STLReader::time (string t) const
 }
 
 void
-STLReader::set (string name, string value)
+STLTextReader::set (string name, string value)
 {
 	if (name == "$FontName") {
 		_current.font = value;
@@ -157,7 +157,7 @@ STLReader::set (string name, string value)
 }
 
 void
-STLReader::maybe_push ()
+STLTextReader::maybe_push ()
 {
 	if (!_current.text.empty ()) {
 		_subs.push_back (_current);

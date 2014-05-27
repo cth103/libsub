@@ -24,6 +24,7 @@
 #include <string>
 
 using std::string;
+using std::cerr;
 using std::ifstream;
 using std::getline;
 
@@ -46,6 +47,16 @@ BOOST_GLOBAL_FIXTURE (TestConfig);
 void
 check_text (string a, string b)
 {
+	if (access (a.c_str(), F_OK) == -1) {
+		cerr << "File not found: " << a << "\n";
+	}
+
+	if (access (b.c_str(), F_OK) == -1) {
+		cerr << "File not found: " << b << "\n";
+	}
+	
+	BOOST_CHECK_EQUAL (access (a.c_str(), F_OK), 0);
+	
 	ifstream p (a.c_str ());
 	ifstream q (b.c_str ());
 

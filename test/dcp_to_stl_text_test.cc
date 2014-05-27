@@ -17,22 +17,29 @@
 
 */
 
-#include "reader.h"
-#include <boost/optional.hpp>
+#include <fstream>
+#include <boost/test/unit_test.hpp>
+#include "test.h"
+#include "dcp_reader.h"
+#include "stl_text_writer.h"
 
-namespace sub {
+using std::string;
+using std::ifstream;
+using std::ofstream;
 
-class STLReader : public Reader
+BOOST_AUTO_TEST_CASE (dcp_to_stl_text_test)
 {
-public:
-	STLReader (std::istream &);
+	if (private_test.empty ()) {
+		return;
+	}
 
-private:
-	void set (std::string name, std::string value);
-	void maybe_push ();
-	boost::optional<FrameTime> time (std::string t) const;
-
-	Subtitle _current;
-};
-
+	string const p = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
+	ifstream f (p.c_str ());
+	sub::DCPReader r (f);
+	string const q = "build/test/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	ofstream g (q.c_str ());
+	sub::STLTextWriter w (r.subtitles (), 72 * 11, 24, g);
+	string const c = private_test + "/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
+	g.close ();
+	check_text (q, c);
 }

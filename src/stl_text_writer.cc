@@ -17,7 +17,7 @@
 
 */
 
-#include "stl_writer.h"
+#include "stl_text_writer.h"
 #include <boost/optional.hpp>
 
 using std::list;
@@ -26,7 +26,7 @@ using std::string;
 using boost::optional;
 using namespace sub;
 
-STLWriter::STLWriter (list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, ostream& out)
+STLTextWriter::STLTextWriter (list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, ostream& out)
 	: Writer (subtitles, screen_height_in_points, frames_per_second)
 {
 	optional<string> font;

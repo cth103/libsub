@@ -19,7 +19,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <fstream>
-#include "stl_writer.h"
+#include "stl_text_writer.h"
 #include "subtitle.h"
 #include "test.h"
 
@@ -44,8 +44,8 @@ make (string text, bool bold, bool italic, bool underline, int line, sub::FrameT
 	return s;
 }
 
-/* Test writing of an STL file */
-BOOST_AUTO_TEST_CASE (stl_writer_test)
+/* Test writing of an textual STL file */
+BOOST_AUTO_TEST_CASE (stl_text_writer_test)
 {
 	list<sub::Subtitle> subs;
 	subs.push_back (make (" This is a subtitle ",     false, false, false, 0, sub::FrameTime (0, 0, 41, 9), sub::FrameTime (0, 0, 42, 21)));
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE (stl_writer_test)
 	subs.push_back (make (".",                        false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
 
 	ofstream f ("build/test/test.stl");
-	sub::STLWriter writer (subs, 24, 72 * 11, f);
+	sub::STLTextWriter writer (subs, 24, 72 * 11, f);
 	f.close ();
 
 	check_text ("test/ref/test.stl", "build/test/test.stl");

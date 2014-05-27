@@ -19,17 +19,17 @@
 
 #include <boost/test/unit_test.hpp>
 #include <fstream>
-#include "stl_reader.h"
+#include "stl_text_reader.h"
 #include "subtitle.h"
 
 using std::list;
 using std::ifstream;
 
-/* Test reading of an STL file */
-BOOST_AUTO_TEST_CASE (stl_reader_test)
+/* Test reading of a textual STL file */
+BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 {
-	ifstream file ("test/data/test.stl");
-	sub::STLReader reader (file);
+	ifstream file ("test/data/test_text.stl");
+	sub::STLTextReader reader (file);
 	list<sub::Subtitle> subs = reader.subtitles ();
 
 	list<sub::Subtitle>::iterator i = subs.begin ();

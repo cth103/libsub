@@ -22,10 +22,10 @@
 
 namespace sub {
 
-class STLWriter : public Writer
+class STLTextWriter : public Writer
 {
 public:
-	STLWriter (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, std::ostream &);
+	STLTextWriter (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, std::ostream &);
 };
 
 }
