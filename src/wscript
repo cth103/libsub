@@ -40,7 +40,6 @@ def build(bld):
               stl_text_writer.h
               subtitle.h
               vertical_reference.h
-              writer.h
               """
 
     bld.install_files('${PREFIX}/include/libsub', headers)
