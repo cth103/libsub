@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE (stl_text_writer_test)
 	subs.push_back (make (".",                        false, false, false, 0, sub::FrameTime (0, 1,  1, 1), sub::FrameTime (0, 1,  2, 10)));
 
 	ofstream f ("build/test/test.stl");
-	sub::STLTextWriter writer (subs, 24, 72 * 11, f);
+	write_stl_text (subs, 24, 72 * 11, f);
 	f.close ();
 
 	check_text ("test/ref/test.stl", "build/test/test.stl");

@@ -26,8 +26,8 @@ using std::string;
 using boost::optional;
 using namespace sub;
 
-STLTextWriter::STLTextWriter (list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, ostream& out)
-	: Writer (subtitles, screen_height_in_points, frames_per_second)
+void
+sub::write_stl_text (list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, ostream& out)
 {
 	optional<string> font;
 	optional<int> font_size;

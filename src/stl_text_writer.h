@@ -17,15 +17,10 @@
 
 */
 
-#include "writer.h"
 #include "subtitle.h"
 
 namespace sub {
 
-class STLTextWriter : public Writer
-{
-public:
-	STLTextWriter (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, std::ostream &);
-};
+extern void write_stl_text (std::list<Subtitle> subtitles, int screen_height_in_points, float frames_per_second, std::ostream &);
 
 }
