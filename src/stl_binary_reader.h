@@ -173,6 +173,25 @@ public:
 		TIMECODE_STATUS_INTENDED_FOR_USE
 	};
 
+	enum CumulativeStatus {
+		CUMULATIVE_STATUS_NOT_CUMULATIVE,
+		CUMULATIVE_STATUS_FIRST,
+		CUMULATIVE_STATUS_INTERMEDIATE,
+		CUMULATIVE_STATUS_LAST
+	};
+
+	enum Justification {
+		JUSTIFICATION_NONE,
+		JUSTIFICATION_LEFT,
+		JUSTIFICATION_CENTRE,
+		JUSTIFICATION_RIGHT
+	};
+
+	enum Comment {
+		COMMENT_NO,
+		COMMENT_YES
+	};
+
 	int code_page_number;
 	int frame_rate;
 	DisplayStandard display_standard;
@@ -204,13 +223,19 @@ public:
 	std::string editor_contact_details;
 
 private:
-	std::string fixed_string (int, int) const;
-	void create_maps ();
+	std::string get_string (int, int) const;
+	int get_int (int, int) const;
+	FrameTime get_timecode (int) const;
+	
+	void create_tables ();
 	
 	std::map<std::string, STLCode<DisplayStandard> > _display_standard_map;
 	std::map<std::string, STLCode<LanguageGroup> > _language_group_map;
 	std::map<std::string, STLCode<Language> > _language_map;
 	std::map<std::string, STLCode<TimecodeStatus> > _timecode_status_map;
+	std::map<int, STLCode<CumulativeStatus> > _cumulative_status_map;
+	std::map<int, STLCode<Justification> > _justification_map;
+	std::map<int, STLCode<Comment> > _comment_map;
 
 	unsigned char* _buffer;
 };

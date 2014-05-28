@@ -27,6 +27,7 @@ using std::string;
 using std::cerr;
 using std::cout;
 using std::map;
+using std::list;
 using boost::shared_ptr;
 using namespace sub;
 
@@ -78,6 +79,11 @@ main (int argc, char* argv[])
 	map<string, string> metadata = reader->metadata ();
 	for (map<string, string>::const_iterator i = metadata.begin(); i != metadata.end(); ++i) {
 		cout << i->first << ": " << i->second << "\n";
+	}
+
+	list<sub::Subtitle> subs = reader->subtitles ();
+	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
+		cout << i->text << "\n";
 	}
 
 	return 0;

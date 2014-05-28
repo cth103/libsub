@@ -42,6 +42,7 @@ public:
 		, line (0)
 	{}
 
+	/** Subtitle text in UTF-8 */
 	std::string text;
 	std::string font;
 
@@ -71,7 +72,7 @@ public:
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
 	bool underline; ///< true to underline
-	int line;
+	int line;       ///< line number, starting from 0
 
 	/** from time */
 	struct {

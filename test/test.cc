@@ -23,6 +23,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
+#include "iso6937_tables.h"
 
 using std::string;
 using std::cerr;
@@ -40,6 +41,8 @@ struct TestConfig
 		} else {
 			BOOST_TEST_MESSAGE ("Private data libsub-test-private not found; some tests will not run");
 		}
+
+		sub::make_iso6937_tables ();
 	}
 };
 

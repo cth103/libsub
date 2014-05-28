@@ -18,6 +18,7 @@ def build(bld):
     obj.source = """
                  dcp_reader_test.cc
                  dcp_to_stl_text_test.cc
+                 iso6937_test.cc
                  stl_binary_reader_test.cc
                  stl_text_reader_test.cc
                  stl_text_writer_test.cc

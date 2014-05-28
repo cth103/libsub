@@ -49,6 +49,15 @@ def configure(conf):
                    lib = ['boost_filesystem', 'boost_system'],
                    uselib_store = 'BOOST_FILESYSTEM')
 
+    conf.check_cxx(fragment = """
+    			      #include <boost/locale.hpp>\n
+    			      int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
+			      """,
+                   msg = 'Checking for boost locale library',
+                   libpath = '/usr/local/lib',
+                   lib = ['boost_locale', 'boost_system'],
+                   uselib_store = 'BOOST_LOCALE')
+
     conf.recurse('test')
 
 def build(bld):
