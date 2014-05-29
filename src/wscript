@@ -21,6 +21,8 @@ def build(bld):
                  reader.cc
                  reader_factory.cc
                  stl_binary_reader.cc
+                 stl_binary_tables.cc
+                 stl_binary_writer.cc
                  stl_text_reader.cc
                  time_pair.cc
                  subtitle.cc

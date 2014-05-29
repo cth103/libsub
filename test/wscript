@@ -19,6 +19,7 @@ def build(bld):
                  dcp_reader_test.cc
                  iso6937_test.cc
                  stl_binary_reader_test.cc
+                 stl_binary_writer_test.cc
                  stl_text_reader_test.cc
                  time_test.cc
                  test.cc

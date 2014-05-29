@@ -17,32 +17,36 @@
 
 */
 
-#include "stl_binary_tables.h"
-#include <string>
-#include <boost/filesystem.hpp>
+#include "stl_binary_writer.h"
+#include "subtitle.h"
+#include <boost/test/unit_test.hpp>
 
-namespace sub {
+using std::list;
 
-class Subtitle;
-
-extern void write_stl_binary (
-	std::list<Subtitle> subtitles,
-	float frames_per_second,
-	Language language,
-	std::string original_programme_title,
-	std::string original_episode_title,
-	std::string translated_programme_title,
-	std::string translated_episode_title,
-	std::string translator_name,
-	std::string translator_contact_details,
-	std::string creation_date,
-	std::string revision_date,
-	int revision_number,
-	std::string country_of_origin,
-	std::string publisher,
-	std::string editor_name,
-	std::string editor_contact_details,
-	boost::filesystem::path file_name
-	);
-
+/** Test writing of a binary STL file */
+BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
+{
+	list<sub::Subtitle> subs;
+	
+	sub::write_stl_binary (
+		subs,
+		25,
+		sub::LANGUAGE_GERMAN,
+		"Original programme title",
+		"Original episode title",
+		"TX program title",
+		"TX episode title",
+		"TX name",
+		"TX contact",
+		"140212",
+		"140213",
+		0,
+		"GBR",
+		"Publisher",
+		"Editor name",
+		"Editor contact",
+		"build/test/test.stl"
+		);
+		
 }
+

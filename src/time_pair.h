@@ -17,32 +17,41 @@
 
 */
 
-#include "stl_binary_tables.h"
-#include <string>
-#include <boost/filesystem.hpp>
+#include "frame_time.h"
+#include "metric_time.h"
+#include <boost/optional.hpp>
 
 namespace sub {
 
-class Subtitle;
+class TimePair
+{
+public:
+	void set_frame (FrameTime t) {
+		_frame = t;
+		_metric = boost::optional<MetricTime> ();
+	}
 
-extern void write_stl_binary (
-	std::list<Subtitle> subtitles,
-	float frames_per_second,
-	Language language,
-	std::string original_programme_title,
-	std::string original_episode_title,
-	std::string translated_programme_title,
-	std::string translated_episode_title,
-	std::string translator_name,
-	std::string translator_contact_details,
-	std::string creation_date,
-	std::string revision_date,
-	int revision_number,
-	std::string country_of_origin,
-	std::string publisher,
-	std::string editor_name,
-	std::string editor_contact_details,
-	boost::filesystem::path file_name
-	);
+	void set_metric (MetricTime t) {
+		_metric = t;
+		_frame = boost::optional<FrameTime> ();
+	}
+
+	boost::optional<FrameTime> frame () const {
+		return _frame;
+	}
+	
+	boost::optional<MetricTime> metric () const {
+		return _metric;
+	}
+	
+	FrameTime  frame  (float frames_per_second) const;
+	MetricTime metric (float frames_per_second) const;
+
+	bool operator== (TimePair const & other) const;
+	
+private:
+	boost::optional<FrameTime> _frame;
+	boost::optional<MetricTime> _metric;
+};
 
 }

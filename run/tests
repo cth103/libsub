@@ -1,4 +1,14 @@
 #!/bin/bash -e
 
+private=../libsub-test-private
+
 export LD_LIBRARY_PATH=build/src
-build/test/tests ../libsub-test-private $*
+if [ "$1" == "--debug" ]; then
+    shift
+    gdb --args build/test/tests $private $*
+elif [ "$1" == "--valgrind" ]; then
+    shift
+    valgrind --tool="memcheck" build/test/tests $private $*
+else
+    build/test/tests $private $*
+fi
