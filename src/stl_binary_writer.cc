@@ -18,17 +18,21 @@
 */
 
 #include "stl_binary_writer.h"
+#include "subtitle.h"
 #include "compose.hpp"
 #include <list>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
+#include <set>
 
 using std::list;
+using std::set;
 using std::ofstream;
 using std::string;
 using std::setw;
 using std::setfill;
+using std::max;
 using namespace sub;
 
 static void
@@ -97,6 +101,41 @@ sub::write_stl_binary (
 	char* buffer = new char[1024];
 	ofstream output (file_name.string().c_str ());
 	STLBinaryTables tables;
+
+	/* Find the longest subtitle in characters and the number of rows */
+
+	int longest = 0;
+
+	set<float> check_top;
+	set<float> check_centre;
+	set<float> check_bottom;
+	set<int> check_rows;
+	
+	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+		int t = 0;
+		for (list<Block>::const_iterator j = i->blocks.begin(); j != i->blocks.end(); ++j) {
+			t += j->text.size ();
+		}
+		longest = max (longest, t);
+
+		if (i->vertical_position.proportional) {
+			switch (i->vertical_position.reference.get ()) {
+			case TOP:
+				check_top.insert (i->vertical_position.proportional.get ());
+				break;
+			case CENTRE:
+				check_centre.insert (i->vertical_position.proportional.get ());
+				break;
+			case BOTTOM:
+				check_bottom.insert (i->vertical_position.proportional.get ());
+				break;
+			}
+		} else {
+			check_rows.insert (i->vertical_position.line.get ());
+		}
+	}
+
+	int const rows = check_top.size() + check_centre.size() + check_bottom.size() + check_rows.size();
 	
 	/* Code page: 850 */
 	put_string (buffer + 0, "850");
@@ -125,11 +164,9 @@ sub::write_stl_binary (
 	/* Total number of subtitle groups */
 	put_string (buffer + 248, "000");
 	/* Maximum number of displayable characters in any text row */
-	/* XXX */
-	put_string (buffer + 251, "99");
+	put_int (buffer + 251, 2, longest);
 	/* Maximum number of displayable rows */
-	/* XXX */
-	put_string (buffer + 253, "99");
+	put_int (buffer + 253, 2, rows);
 	/* Time code status */
 	put_string (buffer + 255, "1");
 	/* Start-of-programme time code */
@@ -146,6 +183,10 @@ sub::write_stl_binary (
 	put_string (buffer + 341, 32, editor_contact_details);
 
 	output.write (buffer, 1024);
+
+	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+		
+	}
 
 	delete[] buffer;
 }

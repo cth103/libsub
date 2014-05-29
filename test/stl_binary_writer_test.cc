@@ -27,7 +27,67 @@ using std::list;
 BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 {
 	list<sub::Subtitle> subs;
+
+	{
+		sub::Subtitle s;
+		s.vertical_position.line = 0;
+		s.from.set_frame (sub::FrameTime (0, 0, 41, 9));
+		s.to.set_frame (sub::FrameTime (0, 0, 42, 21));
+
+		sub::Block b;
+		b.text = "This is a subtitle ";
+		b.font = "Arial";
+		b.font_size.set_points (42);
+		s.blocks.push_back (b);
+	}
 	
+	{
+		sub::Subtitle s;
+		s.vertical_position.line = 1;
+		s.from.set_frame (sub::FrameTime (0, 0, 41, 9));
+		s.to.set_frame (sub::FrameTime (0, 0, 42, 21));
+
+		sub::Block b;
+		b.text = " and that's a line break";
+		b.font = "Arial";
+		b.font_size.set_points (42);
+		s.blocks.push_back (b);
+	}
+
+	{
+		sub::Subtitle s;
+		s.vertical_position.line = 0;
+		s.from.set_frame (sub::FrameTime (0, 1, 1, 1));
+		s.to.set_frame (sub::FrameTime (0, 1, 2, 10));
+
+		sub::Block b;
+		b.text = "This is some ";
+		b.font = "Arial";
+		b.font_size.set_points (42);
+		s.blocks.push_back (b);
+
+		b.text = "bold";
+		b.bold = true;
+		s.blocks.push_back (b);
+
+		b.text = " and some ";
+		b.bold = false;
+		s.blocks.push_back (b);
+
+		b.text = "bold italic";
+		b.bold = true;
+		b.italic = true;
+		s.blocks.push_back (b);
+
+		b.text = " and some ";
+		b.bold = false;
+		b.italic = false;
+		b.underline = true;
+		s.blocks.push_back (b);
+
+		subs.push_back (s);
+	}
+
 	sub::write_stl_binary (
 		subs,
 		25,
