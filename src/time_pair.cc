@@ -17,21 +17,40 @@
 
 */
 
-#include "metric_time.h"
-#include "frame_time.h"
-#include "convert_time.h"
+#include "time_pair.h"
 
-using std::cout;
 using namespace sub;
 
 FrameTime
-sub::metric_to_frame (MetricTime t, float frames_per_second)
+TimePair::frame (float frames_per_second) const
 {
-	return FrameTime (t.hours(), t.minutes(), t.seconds(), t.milliseconds() * frames_per_second / 1000);
+	if (_frame) {
+		return _frame.get ();
+	}
+
+	MetricTime const m = _metric.get ();
+	return FrameTime (m.hours(), m.minutes(), m.seconds(), m.milliseconds() * frames_per_second / 1000);
 }
 
 MetricTime
-sub::frame_to_metric (FrameTime t, float frames_per_second)
+TimePair::metric (float frames_per_second) const
 {
-	return MetricTime (t.hours(), t.minutes(), t.seconds(), t.frames() * 1000 / frames_per_second);
+	if (_metric) {
+		return _metric.get ();
+	}
+
+	FrameTime const f = _frame.get ();
+	return MetricTime (f.hours(), f.minutes(), f.seconds(), f.frames() * 1000 / frames_per_second);
+}
+
+bool
+TimePair::operator== (TimePair const & other) const
+{
+	if (_metric && other._metric) {
+		return _metric.get() == other._metric.get();
+	} else if (_frame && other._frame) {
+		return _frame.get() == other._frame.get();
+	}
+
+	return false;
 }

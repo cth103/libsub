@@ -25,45 +25,57 @@
 #include "colour.h"
 #include "vertical_reference.h"
 #include "effect.h"
+#include "time_pair.h"
 #include <boost/optional.hpp>
 #include <string>
 #include <list>
 
 namespace sub {
 
-class Subtitle
+/** A piece of text with a single font, style, size etc. */       
+class Block
 {
 public:
-	Subtitle ()
+	Block ()
 		: colour (1, 1, 1)
 		, bold (false)
 		, italic (false)
 		, underline (false)
-		, line (0)
 	{}
-
+	
 	/** Subtitle text in UTF-8 */
 	std::string text;
 	std::string font;
 
 	/** font size */
-	struct {
+	class FontSize {
+	public:
+		void set_proportional (float p) {
+			_proportional = p;
+		}
+
+		void set_points (int p) {
+			_points = p;
+		}
+
+		boost::optional<float> proportional () const {
+			return _proportional;
+		}
+
+		boost::optional<int> points () const {
+			return _points;
+		}
+		
+		float proportional (int screen_height_in_points) const;
+		int points (int screen_height_in_points) const;
+
+	private:		
 		/** as a proportion of screen height */
-		boost::optional<float> proportional;
+		boost::optional<float> _proportional;
 		/** in points */
-		boost::optional<int> points;
+		boost::optional<int> _points;
+		
 	} font_size;
-
-	float font_size_proportional (int screen_height_in_points) const;
-	int font_size_points (int screen_height_in_points) const;
-
-	/** vertical position of the baseline of the text */
-	struct {
-		/** as a proportion of screen height offset from some reference point */
-		boost::optional<float> proportional;
-		/** reference position for proportional */
-		boost::optional<VerticalReference> reference;
-	} vertical_position;
 
 	boost::optional<Effect> effect;
 	boost::optional<Colour> effect_colour;
@@ -72,28 +84,40 @@ public:
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
 	bool underline; ///< true to underline
-	int line;       ///< line number, starting from 0
+};
+
+/** A line of text which starts and stops at specific times */	
+class Subtitle
+{
+public:
+	Subtitle ()
+	{}
+
+	/** vertical position of the baseline of the text */
+	struct VerticalPosition {
+
+		/** as a proportion of screen height offset from some reference point */
+		boost::optional<float> proportional;
+		/** reference position for proportional */
+		boost::optional<VerticalReference> reference;
+		/** line number from the top of the screen */
+		boost::optional<int> line;
+
+		bool operator== (VerticalPosition const & other) const;
+		
+	} vertical_position;
 
 	/** from time */
-	struct {
-		boost::optional<FrameTime> frame;
-		boost::optional<MetricTime> metric;
-	} from;
-
-	FrameTime  from_frame  (float frames_per_second) const;
-	MetricTime from_metric (float frames_per_second) const;
-
+	TimePair from;
 	/** to time */
-	struct {
-		boost::optional<FrameTime> frame;
-		boost::optional<MetricTime> metric;
-	} to;
-
-	FrameTime  to_frame  (float frames_per_second) const;
-	MetricTime to_metric (float frames_per_second) const;
+	TimePair to;
 	
 	boost::optional<MetricTime> fade_up;
 	boost::optional<MetricTime> fade_down;
+
+	std::list<Block> blocks;
+
+	bool same_metadata (Subtitle const &) const;
 };
 
 bool operator< (Subtitle const & a, Subtitle const & b);	

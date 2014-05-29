@@ -38,6 +38,8 @@ using namespace sub;
 
 STLTextReader::STLTextReader (istream& in)
 {
+	_subtitle.vertical_position.line = 0;
+	
 	while (in.good ()) {
 		string line;
 		getline (in, line);
@@ -91,38 +93,37 @@ STLTextReader::STLTextReader (istream& in)
 				continue;
 			}
 
-			_current.from.frame = from.get ();
-			_current.to.frame = to.get ();
+			_subtitle.from.set_frame (from.get ());
+			_subtitle.to.set_frame (to.get ());
 
 			/* Parse ^B/^I/^U */
 			string text = line.substr (divider[1] + 1);
 			for (size_t i = 0; i < text.length(); ++i) {
 				if (text[i] == '|') {
-					maybe_push ();
-					_current.line++;
+					maybe_push_subtitle ();
+					_subtitle.vertical_position.line = _subtitle.vertical_position.line.get() + 1;
 				} else if (text[i] == '^') {
-					maybe_push ();
+					maybe_push_block ();
 					if ((i + 1) < text.length()) {
 						switch (text[i + 1]) {
 						case 'B':
-							_current.bold = !_current.bold;
+							_block.bold = !_block.bold;
 							break;
 						case 'I':
-							_current.italic = !_current.italic;
+							_block.italic = !_block.italic;
 							break;
 						case 'U':
-							_current.underline = !_current.underline;
+							_block.underline = !_block.underline;
 							break;
 						}
 					}
 					++i;
 				} else {
-					_current.text += text[i];
+					_block.text += text[i];
 				}
 			}
 
-			maybe_push ();
-			_current.line = 0;
+			maybe_push_subtitle ();
 		}
 	}
 }
@@ -144,24 +145,37 @@ void
 STLTextReader::set (string name, string value)
 {
 	if (name == "$FontName") {
-		_current.font = value;
+		_block.font = value;
 	} else if (name == "$Bold") {
-		_current.bold = value == "True";
+		_block.bold = value == "True";
 	} else if (name == "$Italic") {
-		_current.italic = value == "True";
+		_block.italic = value == "True";
 	} else if (name == "$Underlined") {
-		_current.underline = value == "True";
+		_block.underline = value == "True";
 	} else if (name == "$FontSize") {
-		_current.font_size.points = lexical_cast<int> (value);
+		_block.font_size.set_points (lexical_cast<int> (value));
 	}
 }
 
 void
-STLTextReader::maybe_push ()
+STLTextReader::maybe_push_subtitle ()
 {
-	if (!_current.text.empty ()) {
-		_subs.push_back (_current);
-		_current.text.clear ();
+	maybe_push_block ();
+	
+	if (!_subtitle.blocks.empty ()) {
+		_subs.push_back (_subtitle);
+		_subtitle.blocks.clear ();
+		_subtitle.vertical_position.line = 0;
 	}
 }
+
+void
+STLTextReader::maybe_push_block ()
+{
+	if (!_block.text.empty ()) {
+		_subtitle.blocks.push_back (_block);
+		_block.text.clear ();
+	}
+}
+
 	

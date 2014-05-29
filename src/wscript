@@ -12,7 +12,6 @@ def build(bld):
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc
-                 convert_time.cc
                  dcp_reader.cc
                  effect.cc
                  frame_time.cc
@@ -23,22 +22,21 @@ def build(bld):
                  reader_factory.cc
                  stl_binary_reader.cc
                  stl_text_reader.cc
-                 stl_text_writer.cc
+                 time_pair.cc
                  subtitle.cc
                  vertical_reference.cc
                  """
 
     headers = """
               colour.h
-              convert_time.h
               dcp_reader.h
               effect.h
               frame_time.h
               metric_time.h
               reader.h
               stl_text_reader.h
-              stl_text_writer.h
               subtitle.h
+              time_pair.h
               vertical_reference.h
               """
 

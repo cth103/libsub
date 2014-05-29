@@ -207,6 +207,13 @@ public:
 	string uri;
 };
 
+struct DCPReader::ParseState {
+	list<shared_ptr<DCPFont> > font_nodes;
+	list<shared_ptr<DCPText> > text_nodes;
+	list<shared_ptr<DCPSubtitle> > subtitle_nodes;
+	boost::optional<Subtitle> subtitle;
+};
+
 }
 
 /** @param s A string.
@@ -263,6 +270,10 @@ DCPReader::DCPReader (istream& in)
 	ParseState parse_state;
 	examine_font_nodes (xml, font_nodes, parse_state);
 
+	if (parse_state.subtitle && !parse_state.subtitle.get().blocks.empty ()) {
+		_subs.push_back (parse_state.subtitle.get ());
+	}
+
 	_subs.sort ();
 }
 
@@ -308,7 +319,7 @@ DCPReader::examine_text_nodes (
 }
 
 void
-DCPReader::maybe_add_subtitle (string text, ParseState const & parse_state)
+DCPReader::maybe_add_subtitle (string text, ParseState& parse_state)
 {
 	if (empty_or_white_space (text)) {
 		return;
@@ -325,19 +336,31 @@ DCPReader::maybe_add_subtitle (string text, ParseState const & parse_state)
 	DCPText effective_text (*parse_state.text_nodes.back ());
 	DCPSubtitle effective_subtitle (*parse_state.subtitle_nodes.back ());
 
-	Subtitle s;
-	s.text = text;
-	s.font = font_id_to_name (effective_font.id);
-	s.font_size.proportional = float (effective_font.size) / (72 * 11);
-	s.vertical_position.proportional = float (effective_text.v_position) / 100;
-	s.vertical_position.reference = effective_text.v_align;
-	s.effect = effective_font.effect;
-	s.effect_colour = effective_font.effect_colour;
-	s.colour = effective_font.colour.get ();
-	s.italic = effective_font.italic.get ();
-	s.from.metric = effective_subtitle.in;
-	s.to.metric = effective_subtitle.out;
-	s.fade_up = effective_subtitle.fade_up_time;
-	s.fade_down = effective_subtitle.fade_down_time;
-	_subs.push_back (s);
+	Subtitle proposed_subtitle;
+	proposed_subtitle.vertical_position.proportional = float (effective_text.v_position) / 100;
+	proposed_subtitle.vertical_position.reference = effective_text.v_align;
+	proposed_subtitle.from.set_metric (effective_subtitle.in);
+	proposed_subtitle.to.set_metric (effective_subtitle.out);
+	proposed_subtitle.fade_up = effective_subtitle.fade_up_time;
+	proposed_subtitle.fade_down = effective_subtitle.fade_down_time;
+
+	if (!parse_state.subtitle || !parse_state.subtitle.get().same_metadata (proposed_subtitle)) {
+		/* We need a new Subtitle */
+		if (parse_state.subtitle && !parse_state.subtitle.get().blocks.empty ()) {
+			/* Push the old one */
+			_subs.push_back (parse_state.subtitle.get ());
+		}
+		parse_state.subtitle = proposed_subtitle;
+	}
+		
+	Block block;
+	block.text = text;
+	block.font = font_id_to_name (effective_font.id);
+	block.font_size.set_proportional (float (effective_font.size) / (72 * 11));
+	block.effect = effective_font.effect;
+	block.effect_colour = effective_font.effect_colour;
+	block.colour = effective_font.colour.get ();
+	block.italic = effective_font.italic.get ();
+
+	parse_state.subtitle.get().blocks.push_back (block);
 }

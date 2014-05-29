@@ -18,81 +18,65 @@
 */
 
 #include "subtitle.h"
-#include "convert_time.h"
 
-using std::list;
 using namespace sub;
 
 bool
 sub::operator< (Subtitle const & a, Subtitle const & b)
 {
-	if (a.from.frame && b.from.frame) {
-		return a.from.frame.get() < b.from.frame.get();
+	if (a.from.frame() && b.from.frame()) {
+		return a.from.frame().get() < b.from.frame().get();
 	}
 
-	if (a.from.metric && b.from.metric) {
-		return a.from.metric.get() < b.from.metric.get();
+	if (a.from.metric() && b.from.metric()) {
+		return a.from.metric().get() < b.from.metric().get();
 	}
 
 	assert (false);
 }
 
-FrameTime
-Subtitle::from_frame (float frames_per_second) const
-{
-	if (from.frame) {
-		return from.frame.get ();
-	}
-
-	return metric_to_frame (from.metric.get(), frames_per_second);
-}
-
-FrameTime
-Subtitle::to_frame (float frames_per_second) const
-{
-	if (to.frame) {
-		return to.frame.get ();
-	}
-
-	return metric_to_frame (to.metric.get(), frames_per_second);
-}
-
-MetricTime
-Subtitle::from_metric (float frames_per_second) const
-{
-	if (from.metric) {
-		return from.metric.get ();
-	}
-
-	return frame_to_metric (from.frame.get(), frames_per_second);
-}
-
-MetricTime
-Subtitle::to_metric (float frames_per_second) const
-{
-	if (to.metric) {
-		return to.metric.get ();
-	}
-
-	return frame_to_metric (to.frame.get(), frames_per_second);
-}
 
 float
-Subtitle::font_size_proportional (int screen_height_in_points) const
+Block::FontSize::proportional (int screen_height_in_points) const
 {
-	if (font_size.proportional) {
-		return font_size.proportional.get ();
+	if (_proportional) {
+		return _proportional.get ();
 	}
 
-	return float (font_size.points.get ()) / screen_height_in_points;
+	return float (_points.get ()) / screen_height_in_points;
 }
 
 int
-Subtitle::font_size_points (int screen_height_in_points) const
+Block::FontSize::points (int screen_height_in_points) const
 {
-	if (font_size.points) {
-		return font_size.points.get ();
+	if (_points) {
+		return _points.get ();
 	}
 
-	return font_size.proportional.get() * screen_height_in_points;
+	return _proportional.get() * screen_height_in_points;
 }
+
+bool
+Subtitle::same_metadata (Subtitle const & other) const
+{
+	return (
+		vertical_position == other.vertical_position &&
+		from == other.from &&
+		to == other.to &&
+		fade_up == other.fade_up &&
+		fade_down == other.fade_down
+		);
+}
+
+bool
+Subtitle::VerticalPosition::operator== (Subtitle::VerticalPosition const & other) const
+{
+	if (proportional && reference && other.proportional && other.reference) {
+		return proportional.get() == other.proportional.get() && reference.get() == other.reference.get();
+	} else if (line && other.line) {
+		return line.get() == other.line.get();
+	}
+
+	return false;
+}
+

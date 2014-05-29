@@ -20,7 +20,7 @@
 #include <boost/test/unit_test.hpp>
 #include "metric_time.h"
 #include "frame_time.h"
-#include "convert_time.h"
+#include "time_pair.h"
 
 /* Check time construction */
 BOOST_AUTO_TEST_CASE (time_construction_test)
@@ -45,12 +45,17 @@ BOOST_AUTO_TEST_CASE (time_construction_test)
 /* Check time conversions */
 BOOST_AUTO_TEST_CASE (time_conversion_test)
 {
+	sub::TimePair p;
+	
 	/* 40ms = 1 frame at 25fps */
-	BOOST_CHECK_EQUAL (metric_to_frame (sub::MetricTime (3, 5, 7, 40), 25), sub::FrameTime (3, 5, 7, 1));
-	BOOST_CHECK_EQUAL (frame_to_metric (sub::FrameTime  (3, 5, 7, 1), 25), sub::MetricTime (3, 5, 7, 40));
+	p.set_metric (sub::MetricTime (3, 5, 7, 40));
+	BOOST_CHECK_EQUAL (p.frame (25), sub::FrameTime (3, 5, 7, 1));
+	p.set_frame (sub::FrameTime  (3, 5, 7, 1));
+	BOOST_CHECK_EQUAL (p.metric (25), sub::MetricTime (3, 5, 7, 40));
 
 	/* 120ms = 3 frames at 25fps */
-	BOOST_CHECK_EQUAL (metric_to_frame (sub::MetricTime (3, 5, 7, 120), 25), sub::FrameTime (3, 5, 7, 3));
-	BOOST_CHECK_EQUAL (frame_to_metric (sub::FrameTime  (3, 5, 7, 3), 25), sub::MetricTime (3, 5, 7, 120));
+	p.set_metric (sub::MetricTime (3, 5, 7, 120));
+	BOOST_CHECK_EQUAL (p.frame (25), sub::FrameTime (3, 5, 7, 3));
+	p.set_frame (sub::FrameTime (3, 5, 7, 3));
+	BOOST_CHECK_EQUAL (p.metric (25), sub::MetricTime (3, 5, 7, 120));
 }
-

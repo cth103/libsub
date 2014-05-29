@@ -17,31 +17,31 @@
 
 */
 
-#include <fstream>
-#include <boost/test/unit_test.hpp>
-#include "test.h"
-#include "dcp_reader.h"
-#include "stl_text_writer.h"
+#include <string>
+#include <boost/filesystem.hpp>
 
-using std::string;
-using std::ifstream;
-using std::ofstream;
+namespace sub {
 
-BOOST_AUTO_TEST_CASE (dcp_to_stl_text_test)
-{
-	using boost::filesystem::path;
-	
-	if (private_test.empty ()) {
-		return;
-	}
+class Subtitle;
 
-	path p = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
-	ifstream f (p.c_str ());
-	sub::DCPReader r (f);
-	path const q = path ("build") / path ("test") / path ("fd586c30-6d38-48f2-8241-27359acf184c_sub.stl");
-	ofstream g (q.c_str ());
-	sub::write_stl_text (r.subtitles (), 72 * 11, 24, g);
-	path const c = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.stl";
-	g.close ();
-	check_text (q, c);
+extern void write_stl_binary (
+	std::list<Subtitle> subtitles,
+	float frames_per_second,
+	std::string language,
+	std::string original_programme_title,
+	std::string original_episode_title,
+	std::string translated_programme_title,
+	std::string translated_episode_title,
+	std::string translator_name,
+	std::string translator_contact_details,
+	std::string creation_date,
+	std::string revision_date,
+	int revision_number,
+	std::string country_of_origin,
+	std::string publisher,
+	std::string editor_name,
+	std::string editor_contact_details,
+	boost::filesystem::path file_name
+	);
+
 }

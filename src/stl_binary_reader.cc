@@ -26,11 +26,13 @@
 #include "compose.hpp"
 
 using std::map;
+using std::vector;
 using std::cout;
 using std::string;
 using std::istream;
 using boost::lexical_cast;
 using boost::algorithm::replace_all;
+using boost::is_any_of;
 using boost::locale::conv::utf_to_utf;
 using namespace sub;
 
@@ -120,7 +122,6 @@ STLBinaryReader::STLBinaryReader (istream& in)
 	editor_contact_details = get_string (341, 32);
 
 	for (int i = 0; i < tti_blocks; ++i) {
-		Subtitle sub;
 		
 		in.read ((char *) _buffer, 128);
 		if (in.gcount() != 128) {
@@ -131,26 +132,32 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			continue;
 		}
 
-		sub.from.frame = get_timecode (5);
-		sub.to.frame = get_timecode (9);
-		sub.line = get_int (13, 1);
+		string const whole = get_string (16, 112);
 
-		/* XXX: justification, effects */
+		/* Split the text up into lines (8Ah is a new line) */
+		vector<string> lines;
+		split (lines, whole, is_any_of ("\x8a"));
 
-		string s = get_string (16, 112);
-		
-		/* 8Ah is a new line */
-		replace_all (s, "\x8a", "\n");
+		for (size_t i = 0; i < lines.size(); ++i) {
+			Subtitle sub;
+			sub.from.set_frame (get_timecode (5));
+			sub.to.set_frame (get_timecode (9));
+			sub.vertical_position.line = get_int (13, 1) + i;
+			
+			/* XXX: justification, effects */
 
-		/* 8Fh is unused space, so trim the string to the first instance of that */
-		size_t unused = s.find_first_of ('\x8f');
-		if (unused != string::npos) {
-			s = s.substr (0, unused);
+			/* 8Fh is unused space, so trim the string to the first instance of that */
+			size_t unused = lines[i].find_first_of ('\x8f');
+			if (unused != string::npos) {
+				lines[i] = lines[i].substr (0, unused);
+			}
+
+			Block block;
+			block.text = utf_to_utf<char> (iso6937_to_utf16 (lines[i].c_str()));
+			sub.blocks.push_back (block);
+			
+			_subs.push_back (sub);
 		}
-		
-		sub.text = utf_to_utf<char> (iso6937_to_utf16 (s.c_str()));
-
-		_subs.push_back (sub);
 	}
 }
 

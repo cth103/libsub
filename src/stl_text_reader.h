@@ -29,10 +29,12 @@ public:
 
 private:
 	void set (std::string name, std::string value);
-	void maybe_push ();
+	void maybe_push_subtitle ();
+	void maybe_push_block ();
 	boost::optional<FrameTime> time (std::string t) const;
 
-	Subtitle _current;
+	Subtitle _subtitle;
+	Block _block;
 };
 
 }

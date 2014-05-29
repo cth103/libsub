@@ -83,7 +83,9 @@ main (int argc, char* argv[])
 
 	list<sub::Subtitle> subs = reader->subtitles ();
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
-		cout << i->text << "\n";
+		for (list<sub::Block>::const_iterator j = i->blocks.begin(); j != i->blocks.end(); ++j) {
+			cout << j->text << "\n";
+		}
 	}
 
 	return 0;

@@ -37,14 +37,10 @@ public:
 	DCPReader (std::istream &);
 
 private:
-	
-	struct ParseState {
-		std::list<boost::shared_ptr<DCPFont> > font_nodes;
-		std::list<boost::shared_ptr<DCPText> > text_nodes;
-		std::list<boost::shared_ptr<DCPSubtitle> > subtitle_nodes;
-	};
 
-	void maybe_add_subtitle (std::string text, ParseState const & parse_state);
+	struct ParseState;
+	
+	void maybe_add_subtitle (std::string text, ParseState& parse_state);
 	
 	void examine_font_nodes (
 		boost::shared_ptr<const cxml::Node> xml,

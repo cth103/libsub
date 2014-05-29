@@ -24,6 +24,7 @@
 
 using std::list;
 using std::ifstream;
+using std::vector;
 
 /* Test reading of a textual STL file */
 BOOST_AUTO_TEST_CASE (stl_text_reader_test)
@@ -35,111 +36,105 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	list<sub::Subtitle>::iterator i = subs.begin ();
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, " This is a subtitle ");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 0, 41, 9));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 0, 42, 21));
+	BOOST_CHECK_EQUAL (i->blocks.size(), 1);
+	sub::Block b = i->blocks.front ();
+	BOOST_CHECK_EQUAL (b.text, " This is a subtitle ");
+	BOOST_CHECK_EQUAL (b.font, "Arial");
+	BOOST_CHECK_EQUAL (b.font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (b.bold, false);
+	BOOST_CHECK_EQUAL (b.italic, false);
+	BOOST_CHECK_EQUAL (b.underline, false);
+	BOOST_CHECK_EQUAL (i->vertical_position.line.get(), 0);
+	BOOST_CHECK_EQUAL (i->from.frame().get(), sub::FrameTime (0, 0, 41, 9));
+	BOOST_CHECK_EQUAL (i->to.frame().get(), sub::FrameTime (0, 0, 42, 21));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, " and that's a line break");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 1);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 0, 41, 9));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 0, 42, 21));
+	BOOST_CHECK_EQUAL (i->blocks.size(), 1);
+	b = i->blocks.front ();
+	BOOST_CHECK_EQUAL (b.text, " and that's a line break");
+	BOOST_CHECK_EQUAL (b.font, "Arial");
+	BOOST_CHECK_EQUAL (b.font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (b.bold, false);
+	BOOST_CHECK_EQUAL (b.italic, false);
+	BOOST_CHECK_EQUAL (b.underline, false);
+	BOOST_CHECK_EQUAL (i->vertical_position.line.get(), 1);
+	BOOST_CHECK_EQUAL (i->from.frame().get(), sub::FrameTime (0, 0, 41, 9));
+	BOOST_CHECK_EQUAL (i->to.frame().get(), sub::FrameTime (0, 0, 42, 21));
 	++i;
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, " This is some ");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
+	BOOST_CHECK_EQUAL (i->blocks.size(), 7);
+	BOOST_CHECK_EQUAL (i->vertical_position.line.get(), 0);
+	BOOST_CHECK_EQUAL (i->from.frame().get(), sub::FrameTime (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to.frame().get(), sub::FrameTime (0, 1, 2, 10));
 
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, "bold");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, true);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, " and some ");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, "bold italic");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, true);
-	BOOST_CHECK_EQUAL (i->italic, true);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, " and some ");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
-
-	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->text, "underlined");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, true);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
-
-	BOOST_CHECK_EQUAL (i->text, ".");
-	BOOST_CHECK_EQUAL (i->font, "Arial");
-	BOOST_CHECK_EQUAL (i->font_size.points.get(), 42);
-	BOOST_CHECK_EQUAL (i->bold, false);
-	BOOST_CHECK_EQUAL (i->italic, false);
-	BOOST_CHECK_EQUAL (i->underline, false);
-	BOOST_CHECK_EQUAL (i->line, 0);
-	BOOST_CHECK_EQUAL (i->from.frame.get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame.get(), sub::FrameTime (0, 1, 2, 10));
-	++i;
+	list<sub::Block>::iterator j = i->blocks.begin ();
 	
-	BOOST_CHECK (i == subs.end ());
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, " This is some ");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, false);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, "bold");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, true);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, " and some ");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, false);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, "bold italic");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, true);
+	BOOST_CHECK_EQUAL (j->italic, true);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, " and some ");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, false);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, "underlined");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, false);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, true);
+	++j;
+
+	BOOST_CHECK (j != i->blocks.end ());
+	BOOST_CHECK_EQUAL (j->text, ".");
+	BOOST_CHECK_EQUAL (j->font, "Arial");
+	BOOST_CHECK_EQUAL (j->font_size.points().get(), 42);
+	BOOST_CHECK_EQUAL (j->bold, false);
+	BOOST_CHECK_EQUAL (j->italic, false);
+	BOOST_CHECK_EQUAL (j->underline, false);
+	++j;
+	
+	BOOST_CHECK (j == i->blocks.end ());
 }
 
 
