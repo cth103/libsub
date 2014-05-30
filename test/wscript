@@ -17,6 +17,7 @@ def build(bld):
     obj.use    = 'libsub'
     obj.source = """
                  dcp_reader_test.cc
+                 dcp_to_stl_binary_test.cc
                  iso6937_test.cc
                  stl_binary_reader_test.cc
                  stl_binary_writer_test.cc
