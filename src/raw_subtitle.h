@@ -17,8 +17,8 @@
 
 */
 
-#ifndef LIBSUB_SUBTITLE_H
-#define LIBSUB_SUBTITLE_H
+#ifndef LIBSUB_RAW_SUBTITLE_H
+#define LIBSUB_RAW_SUBTITLE_H
 
 #include "frame_time.h"
 #include "metric_time.h"
@@ -28,27 +28,22 @@
 #include "time_pair.h"
 #include "font_size.h"
 #include "vertical_position.h"
-#include "raw_subtitle.h"
 #include <boost/optional.hpp>
 #include <string>
 #include <list>
 
 namespace sub {
 
-/** A piece of text with a single font, style, size etc. */       
-class Block
+class RawSubtitle
 {
 public:
-	Block ()
+	RawSubtitle ()
 		: colour (1, 1, 1)
 		, bold (false)
 		, italic (false)
 		, underline (false)
 	{}
 
-	/** Construct a Block taking any relevant information from a RawSubtitle */
-	Block (RawSubtitle s);
-	
 	/** Subtitle text in UTF-8 */
 	std::string text;
 	std::string font;
@@ -63,34 +58,10 @@ public:
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
 	bool underline; ///< true to underline
-};
-
-/** A line of text */
-class Line
-{
-public:
-	Line () {}
-	
-	/** Construct a Line taking any relevant information from a RawSubtitle */
-	Line (RawSubtitle s);
 
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;
 
-	std::list<Block> blocks;
-
-	bool same_metadata (RawSubtitle) const;
-};
-
-class Subtitle
-{
-public:
-	Subtitle ()
-	{}
-
-	/** Construct a Line taking any relevant information from a RawSubtitle */
-	Subtitle (RawSubtitle s);
-	
 	/** from time */
 	TimePair from;
 	/** to time */
@@ -98,11 +69,9 @@ public:
 	
 	boost::optional<MetricTime> fade_up;
 	boost::optional<MetricTime> fade_down;
-
-	std::list<Line> lines;
-
-	bool same_metadata (RawSubtitle) const;
 };
+
+bool operator< (RawSubtitle const &, RawSubtitle const &);	
 
 }
 

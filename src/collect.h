@@ -17,33 +17,11 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
-
+#include "subtitle.h"
 #include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
 
 namespace sub {
-
-class Reader
-{
-public:
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
-	}
-
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
-	}
-
-protected:
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
-};
+	
+std::list<Subtitle> collect (std::list<RawSubtitle>);
 
 }
-
-#endif

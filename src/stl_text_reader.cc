@@ -100,30 +100,30 @@ STLTextReader::STLTextReader (istream& in)
 			string text = line.substr (divider[1] + 1);
 			for (size_t i = 0; i < text.length(); ++i) {
 				if (text[i] == '|') {
-					maybe_push_subtitle ();
+					maybe_push ();
 					_subtitle.vertical_position.line = _subtitle.vertical_position.line.get() + 1;
 				} else if (text[i] == '^') {
-					maybe_push_block ();
+					maybe_push ();
 					if ((i + 1) < text.length()) {
 						switch (text[i + 1]) {
 						case 'B':
-							_block.bold = !_block.bold;
+							_subtitle.bold = !_subtitle.bold;
 							break;
 						case 'I':
-							_block.italic = !_block.italic;
+							_subtitle.italic = !_subtitle.italic;
 							break;
 						case 'U':
-							_block.underline = !_block.underline;
+							_subtitle.underline = !_subtitle.underline;
 							break;
 						}
 					}
 					++i;
 				} else {
-					_block.text += text[i];
+					_subtitle.text += text[i];
 				}
 			}
 
-			maybe_push_subtitle ();
+			maybe_push ();
 		}
 	}
 }
@@ -145,37 +145,24 @@ void
 STLTextReader::set (string name, string value)
 {
 	if (name == "$FontName") {
-		_block.font = value;
+		_subtitle.font = value;
 	} else if (name == "$Bold") {
-		_block.bold = value == "True";
+		_subtitle.bold = value == "True";
 	} else if (name == "$Italic") {
-		_block.italic = value == "True";
+		_subtitle.italic = value == "True";
 	} else if (name == "$Underlined") {
-		_block.underline = value == "True";
+		_subtitle.underline = value == "True";
 	} else if (name == "$FontSize") {
-		_block.font_size.set_points (lexical_cast<int> (value));
+		_subtitle.font_size.set_points (lexical_cast<int> (value));
 	}
 }
 
 void
-STLTextReader::maybe_push_subtitle ()
+STLTextReader::maybe_push ()
 {
-	maybe_push_block ();
-	
-	if (!_subtitle.blocks.empty ()) {
+	if (!_subtitle.text.empty ()) {
 		_subs.push_back (_subtitle);
-		_subtitle.blocks.clear ();
+		_subtitle.text.clear ();
 		_subtitle.vertical_position.line = 0;
 	}
 }
-
-void
-STLTextReader::maybe_push_block ()
-{
-	if (!_block.text.empty ()) {
-		_subtitle.blocks.push_back (_block);
-		_block.text.clear ();
-	}
-}
-
-	

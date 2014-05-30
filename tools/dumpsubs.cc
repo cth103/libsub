@@ -17,11 +17,12 @@
 
 */
 
-#include <map>
-#include <boost/filesystem.hpp>
-#include <getopt.h>
 #include "reader_factory.h"
 #include "reader.h"
+#include "collect.h"
+#include <getopt.h>
+#include <boost/filesystem.hpp>
+#include <map>
 
 using std::string;
 using std::cerr;
@@ -81,10 +82,12 @@ main (int argc, char* argv[])
 		cout << i->first << ": " << i->second << "\n";
 	}
 
-	list<sub::Subtitle> subs = reader->subtitles ();
+	list<sub::Subtitle> subs = collect (reader->subtitles ());
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
-		for (list<sub::Block>::const_iterator j = i->blocks.begin(); j != i->blocks.end(); ++j) {
-			cout << j->text << "\n";
+		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			for (list<sub::Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
+				cout << k->text << "\n";
+			}
 		}
 	}
 

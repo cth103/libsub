@@ -21,62 +21,43 @@
 
 using namespace sub;
 
-bool
-sub::operator< (Subtitle const & a, Subtitle const & b)
+Subtitle::Subtitle (RawSubtitle s)
+	: from (s.from)
+	, to (s.to)
+	, fade_up (s.fade_up)
+	, fade_down (s.fade_down)
 {
-	if (a.from.frame() && b.from.frame()) {
-		return a.from.frame().get() < b.from.frame().get();
-	}
-
-	if (a.from.metric() && b.from.metric()) {
-		return a.from.metric().get() < b.from.metric().get();
-	}
-
-	assert (false);
-}
-
-
-float
-Block::FontSize::proportional (int screen_height_in_points) const
-{
-	if (_proportional) {
-		return _proportional.get ();
-	}
-
-	return float (_points.get ()) / screen_height_in_points;
-}
-
-int
-Block::FontSize::points (int screen_height_in_points) const
-{
-	if (_points) {
-		return _points.get ();
-	}
-
-	return _proportional.get() * screen_height_in_points;
+	lines.push_back (Line (s));
 }
 
 bool
-Subtitle::same_metadata (Subtitle const & other) const
+Subtitle::same_metadata (RawSubtitle s) const
 {
-	return (
-		vertical_position == other.vertical_position &&
-		from == other.from &&
-		to == other.to &&
-		fade_up == other.fade_up &&
-		fade_down == other.fade_down
-		);
+	return from == s.from && to == s.to && fade_up == s.fade_up && fade_down == s.fade_down;
+}
+
+Line::Line (RawSubtitle s)
+	: vertical_position (s.vertical_position)
+{
+	blocks.push_back (Block (s));
 }
 
 bool
-Subtitle::VerticalPosition::operator== (Subtitle::VerticalPosition const & other) const
+Line::same_metadata (RawSubtitle s) const
 {
-	if (proportional && reference && other.proportional && other.reference) {
-		return proportional.get() == other.proportional.get() && reference.get() == other.reference.get();
-	} else if (line && other.line) {
-		return line.get() == other.line.get();
-	}
-
-	return false;
+	return vertical_position == s.vertical_position;
 }
 
+Block::Block (RawSubtitle s)
+	: text (s.text)
+	, font (s.font)
+	, font_size (s.font_size)
+	, effect (s.effect)
+	, effect_colour (s.effect_colour)
+	, colour (s.colour)
+	, bold (s.bold)
+	, italic (s.italic)
+	, underline (s.underline)
+{
+	
+}

@@ -11,6 +11,7 @@ def build(bld):
     obj.uselib = 'CXML BOOST_FILESYSTEM BOOST_LOCALE'
     obj.export_includes = ['.']
     obj.source = """
+                 collect.cc
                  colour.cc
                  dcp_reader.cc
                  effect.cc
@@ -18,6 +19,7 @@ def build(bld):
                  iso6937.cc
                  iso6937_tables.cc
                  metric_time.cc
+                 raw_subtitle.cc
                  reader.cc
                  reader_factory.cc
                  stl_binary_reader.cc
@@ -27,6 +29,7 @@ def build(bld):
                  time_pair.cc
                  subtitle.cc
                  vertical_reference.cc
+                 vertical_position.cc
                  """
 
     headers = """

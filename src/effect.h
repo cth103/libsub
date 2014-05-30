@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_EFFECT_H
+#define LIBSUB_EFFECT_H
+
 #include <boost/optional.hpp>
 #include <string>
 
@@ -31,3 +34,5 @@ enum Effect
 boost::optional<Effect> string_to_effect (std::string s);
 
 }
+
+#endif

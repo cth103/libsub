@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_TIME_PAIR_H
+#define LIBSUB_TIME_PAIR_H
+
 #include "frame_time.h"
 #include "metric_time.h"
 #include <boost/optional.hpp>
@@ -55,3 +58,5 @@ private:
 };
 
 }
+
+#endif

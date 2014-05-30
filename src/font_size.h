@@ -17,31 +17,39 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
-
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
+#ifndef LIBSUB_FONT_SIZE_H
+#define LIBSUB_FONT_SIZE_H
 
 namespace sub {
-
-class Reader
+	
+class FontSize
 {
 public:
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
+	void set_proportional (float p) {
+		_proportional = p;
+	}
+	
+	void set_points (int p) {
+		_points = p;
 	}
 
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
+	boost::optional<float> proportional () const {
+		return _proportional;
 	}
-
-protected:
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
+	
+	boost::optional<int> points () const {
+		return _points;
+	}
+	
+	float proportional (int screen_height_in_points) const;
+	int points (int screen_height_in_points) const;
+	
+private:		
+	/** as a proportion of screen height */
+	boost::optional<float> _proportional;
+	/** in points */
+	boost::optional<int> _points;
+	
 };
 
 }

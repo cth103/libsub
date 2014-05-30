@@ -104,7 +104,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 		split (lines, whole, is_any_of ("\x8a"));
 
 		for (size_t i = 0; i < lines.size(); ++i) {
-			Subtitle sub;
+			RawSubtitle sub;
 			sub.from.set_frame (get_timecode (5));
 			sub.to.set_frame (get_timecode (9));
 			sub.vertical_position.line = get_int (13, 1) + i;
@@ -117,10 +117,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 				lines[i] = lines[i].substr (0, unused);
 			}
 
-			Block block;
-			block.text = utf_to_utf<char> (iso6937_to_utf16 (lines[i].c_str()));
-			sub.blocks.push_back (block);
-			
+			sub.text = utf_to_utf<char> (iso6937_to_utf16 (lines[i].c_str()));
 			_subs.push_back (sub);
 		}
 	}

@@ -17,33 +17,20 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
-
 #include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
 
-namespace sub {
+using namespace sub;
 
-class Reader
+bool
+sub::operator< (RawSubtitle const & a, RawSubtitle const & b)
 {
-public:
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
+	if (a.from.frame() && b.from.frame()) {
+		return a.from.frame().get() < b.from.frame().get();
 	}
 
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
+	if (a.from.metric() && b.from.metric()) {
+		return a.from.metric().get() < b.from.metric().get();
 	}
 
-protected:
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
-};
-
+	assert (false);
 }
-
-#endif

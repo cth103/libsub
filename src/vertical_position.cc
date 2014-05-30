@@ -17,33 +17,18 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
+#include "vertical_position.h"
 
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
+using namespace sub;
 
-namespace sub {
-
-class Reader
+bool
+VerticalPosition::operator== (VerticalPosition const & other) const
 {
-public:
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
+	if (proportional && reference && other.proportional && other.reference) {
+		return proportional.get() == other.proportional.get() && reference.get() == other.reference.get();
+	} else if (line && other.line) {
+		return line.get() == other.line.get();
 	}
 
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
-	}
-
-protected:
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
-};
-
+	return false;
 }
-
-#endif

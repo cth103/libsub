@@ -113,25 +113,27 @@ sub::write_stl_binary (
 	
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
 		int t = 0;
-		for (list<Block>::const_iterator j = i->blocks.begin(); j != i->blocks.end(); ++j) {
-			t += j->text.size ();
-		}
-		longest = max (longest, t);
-
-		if (i->vertical_position.proportional) {
-			switch (i->vertical_position.reference.get ()) {
-			case TOP:
-				check_top.insert (i->vertical_position.proportional.get ());
-				break;
-			case CENTRE:
-				check_centre.insert (i->vertical_position.proportional.get ());
-				break;
-			case BOTTOM:
-				check_bottom.insert (i->vertical_position.proportional.get ());
-				break;
+		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
+				t += k->text.size ();
 			}
-		} else {
-			check_rows.insert (i->vertical_position.line.get ());
+			longest = max (longest, t);
+			
+			if (j->vertical_position.proportional) {
+				switch (j->vertical_position.reference.get ()) {
+				case TOP:
+					check_top.insert (j->vertical_position.proportional.get ());
+					break;
+				case CENTRE:
+					check_centre.insert (j->vertical_position.proportional.get ());
+					break;
+				case BOTTOM:
+					check_bottom.insert (j->vertical_position.proportional.get ());
+					break;
+				}
+			} else {
+				check_rows.insert (j->vertical_position.line.get ());
+			}
 		}
 	}
 

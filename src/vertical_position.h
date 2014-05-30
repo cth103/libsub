@@ -17,33 +17,29 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
+#ifndef LIBSUB_VERTICAL_POSITION_H
+#define LIBSUB_VERTICAL_POSITION_H
 
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
+#include "vertical_reference.h"
+#include <boost/optional.hpp>
 
 namespace sub {
 
-class Reader
+/** Vertical position of the baseline of some text */
+class VerticalPosition
 {
 public:
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
-	}
-
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
-	}
-
-protected:
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
+	/** as a proportion of screen height offset from some reference point */
+	boost::optional<float> proportional;
+	/** reference position for proportional */
+	boost::optional<VerticalReference> reference;
+	/** line number from the top of the screen */
+	boost::optional<int> line;
+	
+	bool operator== (VerticalPosition const & other) const;
+	
 };
-
+	
 }
 
 #endif

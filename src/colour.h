@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_COLOUR_H
+#define LIBSUB_COLOUR_H
+
 #include <string>
 
 namespace sub {
@@ -50,3 +53,5 @@ bool
 operator== (Colour const & a, Colour const & b);
 	
 }
+
+#endif
