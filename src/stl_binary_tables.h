@@ -198,6 +198,9 @@ public:
 	Comment comment_file_to_enum (int) const;
 
 	std::string language_enum_to_file (Language) const;
+	int cumulative_status_enum_to_file (CumulativeStatus) const;
+	int justification_enum_to_file (Justification) const;
+	int comment_enum_to_file (Comment) const;
 
 	std::string display_standard_enum_to_description (DisplayStandard) const;
 	std::string language_group_enum_to_description (LanguageGroup) const;

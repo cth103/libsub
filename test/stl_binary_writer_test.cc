@@ -33,21 +33,28 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 		s.from.set_frame (sub::FrameTime (0, 0, 41, 9));
 		s.to.set_frame (sub::FrameTime (0, 0, 42, 21));
 
-		sub::Line l;
-		l.vertical_position.line = 0;
-		
-		sub::Block b;
-		b.text = "This is a subtitle ";
-		b.font = "Arial";
-		b.font_size.set_points (42);
-		l.blocks.push_back (b);
+		{
+			sub::Block b;
+			b.text = "This is a subtitle";
+			b.font = "Arial";
+			b.font_size.set_points (42);
+			sub::Line l;
+			l.vertical_position.line = 0;
+			l.blocks.push_back (b);
+			s.lines.push_back (l);
+		}
 
-		b.text = " and that's a line break";
-		b.font = "Arial";
-		b.font_size.set_points (42);
-		l.blocks.push_back (b);
+		{
+			sub::Block b;
+			b.text = "and that's a line break";
+			b.font = "Arial";
+			b.font_size.set_points (42);
+			sub::Line l;
+			l.vertical_position.line = 1;
+			l.blocks.push_back (b);
+			s.lines.push_back (l);
+		}
 
-		s.lines.push_back (l);
 		subs.push_back (s);
 	}
 
@@ -65,23 +72,17 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 		b.font_size.set_points (42);
 		l.blocks.push_back (b);
 
-		b.text = "bold";
-		b.bold = true;
-		l.blocks.push_back (b);
-
-		b.text = " and some ";
-		b.bold = false;
-		l.blocks.push_back (b);
-
-		b.text = "bold italic";
-		b.bold = true;
-		b.italic = true;
-		l.blocks.push_back (b);
-
-		b.text = " and some ";
-		b.bold = false;
-		b.italic = false;
+		b.text = "underline";
 		b.underline = true;
+		l.blocks.push_back (b);
+
+		b.text = " and some ";
+		b.underline = false;
+		l.blocks.push_back (b);
+
+		b.text = "underlined italic";
+		b.underline = true;
+		b.italic = true;
 		l.blocks.push_back (b);
 
 		s.lines.push_back (l);

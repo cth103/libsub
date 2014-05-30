@@ -19,6 +19,7 @@
 
 #include "time_pair.h"
 
+using std::ostream;
 using namespace sub;
 
 FrameTime
@@ -53,4 +54,16 @@ TimePair::operator== (TimePair const & other) const
 	}
 
 	return false;
+}
+
+ostream &
+sub::operator<< (ostream& s, TimePair const & t)
+{
+	if (t.frame ()) {
+		s << "[FRAME] " << t.frame().get();
+	} else {
+		s << "[METRIC]" << t.metric().get();
+	}
+
+	return s;
 }

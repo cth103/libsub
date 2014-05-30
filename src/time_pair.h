@@ -57,6 +57,8 @@ private:
 	boost::optional<MetricTime> _metric;
 };
 
+std::ostream& operator<< (std::ostream & s, TimePair const &);	
+
 }
 
 #endif

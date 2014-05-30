@@ -33,6 +33,7 @@ using std::string;
 using std::setw;
 using std::setfill;
 using std::max;
+using std::cout;
 using namespace sub;
 
 static void
@@ -51,7 +52,7 @@ put_string (char* p, unsigned int n, string s)
 }
 
 static void
-put_int (char* p, int v, unsigned int n)
+put_int_as_string (char* p, int v, unsigned int n)
 {
 	std::stringstream s;
 	/* Be careful to ensure we get no thousands separators */
@@ -60,6 +61,14 @@ put_int (char* p, int v, unsigned int n)
 	s << v;
 	assert (s.str().length() == n);
 	put_string (p, s.str ());
+}
+
+static void
+put_int_as_int (char* p, int v, unsigned int n)
+{
+	for (unsigned int i = 0; i < n; ++i) {
+		*p++ = (v & ((1 << ((i + 1) * 8)) - 1)) >> (i * 8);
+	}
 }
 
 /** @param language ISO 3-character country code for the language of the subtitles */
@@ -158,17 +167,17 @@ sub::write_stl_binary (
 	put_string (buffer + 208, "0000000000000000");
 	put_string (buffer + 224, creation_date);
 	put_string (buffer + 230, revision_date);
-	put_int (buffer + 236, revision_number, 2);
+	put_int_as_string (buffer + 236, revision_number, 2);
 	/* TTI blocks */
-	put_int (buffer + 238, subtitles.size (), 5);
+	put_int_as_string (buffer + 238, subtitles.size (), 5);
 	/* Total number of subtitles */
-	put_int (buffer + 243, subtitles.size (), 5);
+	put_int_as_string (buffer + 243, subtitles.size (), 5);
 	/* Total number of subtitle groups */
 	put_string (buffer + 248, "000");
 	/* Maximum number of displayable characters in any text row */
-	put_int (buffer + 251, 2, longest);
+	put_int_as_string (buffer + 251, 2, longest);
 	/* Maximum number of displayable rows */
-	put_int (buffer + 253, 2, rows);
+	put_int_as_string (buffer + 253, 2, rows);
 	/* Time code status */
 	put_string (buffer + 255, "1");
 	/* Start-of-programme time code */
@@ -186,8 +195,74 @@ sub::write_stl_binary (
 
 	output.write (buffer, 1024);
 
+	int N = 0;
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+
+		/* Subtitle group number */
+		put_int_as_int (buffer + 0, 0, 1);
+		/* Subtitle number */
+		put_int_as_int (buffer + 1, N, 2);
+		/* Extension block number */
+		put_int_as_int (buffer + 3, 0, 1);
+		/* Cumulative status */
+		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
+		/* Time code in */
+		put_int_as_int (buffer + 5, i->from.frame(frames_per_second).hours (), 1);
+		put_int_as_int (buffer + 6, i->from.frame(frames_per_second).minutes (), 1);
+		put_int_as_int (buffer + 7, i->from.frame(frames_per_second).seconds (), 1);
+		put_int_as_int (buffer + 8, i->from.frame(frames_per_second).frames (), 1);
+		/* Time code out */
+		put_int_as_int (buffer + 9, i->to.frame(frames_per_second).hours (), 1);
+		put_int_as_int (buffer + 10, i->to.frame(frames_per_second).minutes (), 1);
+		put_int_as_int (buffer + 11, i->to.frame(frames_per_second).seconds (), 1);
+		put_int_as_int (buffer + 12, i->to.frame(frames_per_second).frames (), 1);
+		/* Vertical position */
+		/* XXX */
+		put_int_as_int (buffer + 13, 0, 1);
+		/* Justification code */
+		/* XXX */
+		put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_NONE), 1);
+		/* Comment flag */
+		put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
+
+		/* Text */
+		string text;
+		bool italic = false;
+		bool underline = false;
 		
+		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
+				if (k->underline && !underline) {
+					text += "\x82";
+					underline = true;
+				} else if (underline && !k->underline) {
+					text += "\x83";
+					underline = false;
+				}
+				if (k->italic && !italic) {
+					text += "\x80";
+					italic = true;
+				} else if (italic && !k->italic) {
+					text += "\x81";
+					italic = false;
+				}
+
+				text += k->text;
+			}
+
+			text += "\x8A";
+		}
+
+		if (text.length() > 111) {
+			text = text.substr (111);
+		}
+
+		while (text.length() < 112) {
+			text += "\x8F";
+		}
+
+		put_string (buffer + 16, text);
+		output.write (buffer, 128);
 	}
 
 	delete[] buffer;

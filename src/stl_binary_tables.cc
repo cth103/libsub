@@ -121,6 +121,24 @@ STLBinaryTables::language_enum_to_file (Language e) const
 	return enum_to_file (e, _language_map);
 }
 
+int
+STLBinaryTables::cumulative_status_enum_to_file (CumulativeStatus v) const
+{
+	return enum_to_file (v, _cumulative_status_map);
+}
+
+int
+STLBinaryTables::justification_enum_to_file (Justification v) const
+{
+	return enum_to_file (v, _justification_map);
+}
+
+int
+STLBinaryTables::comment_enum_to_file (Comment v) const
+{
+	return enum_to_file (v, _comment_map);
+}
+	      
 string
 STLBinaryTables::display_standard_enum_to_description (DisplayStandard v) const
 {
@@ -162,7 +180,7 @@ STLBinaryTables::comment_enum_to_description (Comment v) const
 {
 	return enum_to_description (v, _comment_map);
 }
-	      
+
 STLBinaryTables::STLBinaryTables ()
 {
 	code<DisplayStandard, string> (_display_standard_map, " ", DISPLAY_STANDARD_UNDEFINED, "Undefined");

@@ -84,10 +84,36 @@ main (int argc, char* argv[])
 
 	list<sub::Subtitle> subs = collect (reader->subtitles ());
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
+		cout << "Subtitle at " << i->from << " -> " << i->to << "\n";
 		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			cout << "\t";
+			bool italic = false;
+			bool underline = false;
 			for (list<sub::Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
-				cout << k->text << "\n";
+				if (k->italic && !italic) {
+					cout << "<i>";
+				} else if (italic && !k->italic) {
+					cout << "</i>";
+				}
+				if (k->underline && !underline) {
+					cout << "<u>";
+				} else if (underline && !k->underline) {
+					cout << "</u>";
+				}
+
+				italic = k->italic;
+				underline = k->underline;
+					
+				cout << k->text;
 			}
+
+			if (italic) {
+				cout << "</i>";
+			}
+			if (underline) {
+				cout << "</u>";
+			}
+			cout << "\n";
 		}
 	}
 

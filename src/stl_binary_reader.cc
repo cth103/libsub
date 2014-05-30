@@ -108,17 +108,49 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			sub.from.set_frame (get_timecode (5));
 			sub.to.set_frame (get_timecode (9));
 			sub.vertical_position.line = get_int (13, 1) + i;
-			
-			/* XXX: justification, effects */
 
-			/* 8Fh is unused space, so trim the string to the first instance of that */
-			size_t unused = lines[i].find_first_of ('\x8f');
-			if (unused != string::npos) {
-				lines[i] = lines[i].substr (0, unused);
+			string text;
+			for (size_t j = 0; j < lines[i].size(); ++j) {
+
+				unsigned char const c = static_cast<unsigned char> (lines[i][j]);
+
+				if (c == 0x8f) {
+					/* Unused space i.e. end of line */
+					break;
+				}
+
+				if (c >= 0x80 && c <= 0x83) {
+					/* Italic or underline control code */
+					sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
+					_subs.push_back (sub);
+					text.clear ();
+				}
+
+				switch (c) {
+				case 0x80:
+					sub.italic = true;
+					break;
+				case 0x81:
+					sub.italic = false;
+					break;
+				case 0x82:
+					sub.underline = true;
+					break;
+				case 0x83:
+					sub.underline = false;
+					break;
+				default:
+					text += lines[i][j];
+					break;
+				}
 			}
 
-			sub.text = utf_to_utf<char> (iso6937_to_utf16 (lines[i].c_str()));
-			_subs.push_back (sub);
+			if (!text.empty ()) {
+				sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
+				_subs.push_back (sub);
+			}
+				
+			/* XXX: justification */
 		}
 	}
 }
