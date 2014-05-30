@@ -19,7 +19,9 @@
 
 #include "stl_binary_writer.h"
 #include "subtitle.h"
+#include "iso6937.h"
 #include "compose.hpp"
+#include <boost/locale.hpp>
 #include <list>
 #include <cmath>
 #include <fstream>
@@ -34,6 +36,7 @@ using std::setw;
 using std::setfill;
 using std::max;
 using std::cout;
+using boost::locale::conv::utf_to_utf;
 using namespace sub;
 
 static void
@@ -247,7 +250,7 @@ sub::write_stl_binary (
 					italic = false;
 				}
 
-				text += k->text;
+				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
 			}
 
 			text += "\x8A";

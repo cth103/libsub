@@ -38,6 +38,7 @@ map<char, wchar_t> sub::iso6937::double_acute;
 map<char, wchar_t> sub::iso6937::ogonek;
 map<char, wchar_t> sub::iso6937::caron;
 map<char, wchar_t> sub::iso6937::main;
+map<char, map<char, wchar_t> *> sub::iso6937::diacriticals;
 
 void
 sub::make_iso6937_tables ()
@@ -393,4 +394,18 @@ sub::make_iso6937_tables ()
 	main[253] = 0x0167;
 	main[254] = 0x014B;
 	main[255] = 0x00AD;
+
+	diacriticals[0xc1] = &grave;
+	diacriticals[0xc2] = &acute;
+	diacriticals[0xc3] = &circumflex;
+	diacriticals[0xc4] = &tilde;
+	diacriticals[0xc5] = &macron;
+	diacriticals[0xc6] = &breve;
+	diacriticals[0xc7] = &dot;
+	diacriticals[0xc8] = &diaeresis;
+	diacriticals[0xca] = &ring;
+	diacriticals[0xcb] = &cedilla;
+	diacriticals[0xcd] = &double_acute;
+	diacriticals[0xce] = &ogonek;
+	diacriticals[0xcf] = &caron;
 }

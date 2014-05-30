@@ -28,6 +28,7 @@ extern void make_iso6937_tables ();
 namespace iso6937 {
 
 extern std::map<char, wchar_t> main;
+extern std::map<char, std::map<char, wchar_t> *> diacriticals;
 extern std::map<char, wchar_t> grave;
 extern std::map<char, wchar_t> acute;
 extern std::map<char, wchar_t> circumflex;

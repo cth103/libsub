@@ -19,18 +19,23 @@
 
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/locale.hpp>
 #include "iso6937_tables.h"
 #include "iso6937.h"
 
 using std::string;
 using std::cout;
+using std::wcout;
 using std::wstring;
+using std::map;
+using boost::optional;
+using boost::locale::conv::utf_to_utf;
 using namespace sub;
 
 wstring
 sub::iso6937_to_utf16 (string s)
 {
-	if (iso6937::grave.empty ()) {
+	if (iso6937::diacriticals.empty ()) {
 		make_iso6937_tables ();
 	}
 	
@@ -44,48 +49,7 @@ sub::iso6937_to_utf16 (string s)
 		if (u >= 0xc1 && u <= 0xcf) {
 			diacritical = u;
 		} else if (diacritical) {
-			switch (diacritical.get ()) {
-			case 0xC1:
-				o += iso6937::grave[u];
-				break;
-			case 0xC2:
-				o += iso6937::acute[u];
-				break;
-			case 0xC3:
-				o += iso6937::circumflex[u];
-				break;
-			case 0xC4:
-				o += iso6937::tilde[u];
-				break;
-			case 0xC5:
-				o += iso6937::macron[u];
-				break;
-			case 0xC6:
-				o += iso6937::breve[u];
-				break;
-			case 0xC7:
-				o += iso6937::dot[u];
-				break;
-			case 0xC8:
-				o += iso6937::diaeresis[u];
-				break;
-			case 0xCA:
-				o += iso6937::ring[u];
-				break;
-			case 0xCB:
-				o += iso6937::cedilla[u];
-				break;
-			case 0xCD:
-				o += iso6937::double_acute[u];
-				break;
-			case 0xCE:
-				o += iso6937::ogonek[u];
-				break;
-			case 0xCF:
-				o += iso6937::caron[u];
-				break;
-			}
-
+			o += (*iso6937::diacriticals[diacritical.get()])[u];
 			diacritical.reset ();
 		} else {
 			o += iso6937::main[u];
@@ -96,3 +60,45 @@ sub::iso6937_to_utf16 (string s)
 
 	return o;
 }
+
+static optional<char>
+find (map<char, wchar_t> const & m, wchar_t c)
+{
+	for (map<char, wchar_t>::const_iterator i = m.begin(); i != m.end(); ++i) {
+		if (i->second == c) {
+			return i->first;
+		}
+	}
+
+	return optional<char> ();
+}
+
+string
+sub::utf16_to_iso6937 (wstring s)
+{
+	if (iso6937::diacriticals.empty ()) {
+		make_iso6937_tables ();
+	}
+	
+	/* XXX: slow */
+
+	string o;
+	for (size_t i = 0; i < s.size(); ++i) {
+		optional<char> c = find (iso6937::main, s[i]);
+		if (c) {
+			o += c.get ();
+		} else {
+			for (map<char, map<char, wchar_t> *>::const_iterator j = iso6937::diacriticals.begin(); j != iso6937::diacriticals.end(); ++j) {
+				c = find (*(j->second), s[i]);
+				if (c) {
+					o += j->first;
+					o += c.get ();
+					break;
+				}
+			}
+		}
+	}
+
+	return o;
+}
+

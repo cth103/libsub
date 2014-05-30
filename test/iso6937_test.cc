@@ -24,11 +24,20 @@
 using std::cout;
 using boost::locale::conv::utf_to_utf;
 
-BOOST_AUTO_TEST_CASE (iso6937_test)
+BOOST_AUTO_TEST_CASE (iso6937_to_utf16_test)
 {
 	BOOST_CHECK_EQUAL (utf_to_utf<char> (sub::iso6937_to_utf16 ("Hello world")), "Hello world");
 	BOOST_CHECK_EQUAL (utf_to_utf<char> (sub::iso6937_to_utf16 ("Testing \xA9testing\xB9")), "Testing ‘testing’");
 	BOOST_CHECK_EQUAL (utf_to_utf<char> (sub::iso6937_to_utf16 ("All must have \xCB""cedillas")), "All must have çedillas");
 	BOOST_CHECK_EQUAL (utf_to_utf<char> (sub::iso6937_to_utf16 ("M\xC8otorhead")), "Mötorhead");
 	BOOST_CHECK_EQUAL (utf_to_utf<char> (sub::iso6937_to_utf16 ("Pass\nnewlines\nthrough")), "Pass\nnewlines\nthrough");
+}
+
+BOOST_AUTO_TEST_CASE (utf16_to_iso6937_test)
+{
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Hello world")), "Hello world");
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Testing ‘testing’")), "Testing \xA9testing\xB9");
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("All must have çedillas")), "All must have \xCB""cedillas");
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Mötorhead")), "M\xC8otorhead");
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Pass\nnewlines\nthrough")), "Pass\nnewlines\nthrough");
 }

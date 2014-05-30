@@ -94,26 +94,28 @@ namespace iso6937 {
 """
 
 groups = [
-    ('GRAVE', 'grave', 'AEIOUaeiou'),
-    ('ACUTE', 'acute', 'ACEILNORSUYZacegilnorsuyz'),
-    ('CIRCUMFLEX', 'circumflex', 'ACEGHIJOSUWYaceghijosuwy'),
-    ('TILDE', 'tilde', 'AINOUainou'),
-    ('MACRON', 'macron', 'AEIOUaeiou'),
-    ('BREVE', 'breve', 'AGUagu'),
-    ('DOT ABOVE', 'dot', 'CEGIZcegz'),
-    ('DIAERESIS', 'diaeresis', 'AEIOUYaeiouy'),
-    ('RING ABOVE', 'ring', 'AUau'),
-    ('CEDILLA', 'cedilla', 'CGKLNRSTcklnrst'),
-    ('DOUBLE ACUTE', 'double_acute', 'OUou'),
-    ('OGONEK', 'ogonek', 'AEIUaeui'),
-    ('CARON', 'caron', 'CDELNRSTZcdelnrstz')
+    (0xC1, 'GRAVE', 'grave', 'AEIOUaeiou'),
+    (0xC2, 'ACUTE', 'acute', 'ACEILNORSUYZacegilnorsuyz'),
+    (0xC3, 'CIRCUMFLEX', 'circumflex', 'ACEGHIJOSUWYaceghijosuwy'),
+    (0xC4, 'TILDE', 'tilde', 'AINOUainou'),
+    (0xC5, 'MACRON', 'macron', 'AEIOUaeiou'),
+    (0xC6, 'BREVE', 'breve', 'AGUagu'),
+    (0xC7, 'DOT ABOVE', 'dot', 'CEGIZcegz'),
+    (0xC8, 'DIAERESIS', 'diaeresis', 'AEIOUYaeiouy'),
+    (0xCA, 'RING ABOVE', 'ring', 'AUau'),
+    (0xCB, 'CEDILLA', 'cedilla', 'CGKLNRSTcklnrst'),
+    (0xCD, 'DOUBLE ACUTE', 'double_acute', 'OUou'),
+    (0xCE, 'OGONEK', 'ogonek', 'AEIUaeui'),
+    (0xCF, 'CARON', 'caron', 'CDELNRSTZcdelnrstz')
 ]
 
 for g in groups:
-    setup(g[1])
+    setup(g[2])
 
 print>>output_c,"map<char, wchar_t> sub::iso6937::main;"
+print>>output_c,"map<char, map<char, wchar_t> *> sub::iso6937::diacriticals;"
 print>>output_h,"extern std::map<char, wchar_t> main;"
+print>>output_h,"extern std::map<char, std::map<char, wchar_t> *> diacriticals;"
 
 print>>output_c,"""
 void
@@ -123,7 +125,7 @@ sub::make_iso6937_tables ()
 """
 
 for g in groups:
-    fill(g[0], g[1], g[2])
+    fill(g[1], g[2], g[3])
 
 print>>output_c,"\tmain[10] = 0x000A;"
 
@@ -220,6 +222,10 @@ print>>output_c,"\tmain[252] = 0x00FE;"
 print>>output_c,"\tmain[253] = 0x0167;"
 print>>output_c,"\tmain[254] = 0x014B;"
 print>>output_c,"\tmain[255] = 0x00AD;"
+print>>output_c,""
+
+for g in groups:
+    print>>output_c,"\tdiacriticals[%s] = &%s;" % (hex(g[0]), g[2])
 
 print>>output_c,"}"
 print>>output_h,""
