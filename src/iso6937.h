@@ -19,6 +19,6 @@
 
 namespace sub {
 
-	extern std::wstring iso6937_to_utf16 (char const * s);
+extern std::wstring iso6937_to_utf16 (std::string);
 
 };

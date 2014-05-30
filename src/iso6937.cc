@@ -28,7 +28,7 @@ using std::wstring;
 using namespace sub;
 
 wstring
-sub::iso6937_to_utf16 (char const * s)
+sub::iso6937_to_utf16 (string s)
 {
 	if (iso6937::grave.empty ()) {
 		make_iso6937_tables ();
@@ -38,8 +38,9 @@ sub::iso6937_to_utf16 (char const * s)
 
 	boost::optional<unsigned char> diacritical;
 
-	while (*s != '\0') {
-		unsigned char const u = static_cast<unsigned char> (*s);
+	int i = 0;
+	while (s[i] != '\0') {
+		unsigned char const u = static_cast<unsigned char> (s[i]);
 		if (u >= 0xc1 && u <= 0xcf) {
 			diacritical = u;
 		} else if (diacritical) {
@@ -90,7 +91,7 @@ sub::iso6937_to_utf16 (char const * s)
 			o += iso6937::main[u];
 		}
 
-		++s;
+		++i;
 	}
 
 	return o;
