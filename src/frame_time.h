@@ -25,7 +25,7 @@
 namespace sub {
 
 /** @class FrameTime
- *  @brief A time in hours, minutes, seconds and frames.
+ *  @brief A time stored in hours, minutes, seconds and frames.
  */
 class FrameTime
 {

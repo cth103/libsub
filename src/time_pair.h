@@ -26,6 +26,9 @@
 
 namespace sub {
 
+/** @class TimePair
+ *  @brief A time, expressed either in metric (h:m:s:ms) or frames (h:m:s:f).
+ */
 class TimePair
 {
 public:

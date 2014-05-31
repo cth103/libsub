@@ -167,6 +167,9 @@ enum Comment {
 	COMMENT_YES
 };
 
+/** @class STLBinaryCode
+ *  @brief A value of some STL parameter and a human-readable description of what it means.
+ */
 template<class T>
 class STLBinaryCode
 {
@@ -184,6 +187,9 @@ public:
 	std::string description;
 };
 
+/** @class STLBinaryTables
+ *  @brief A set of conversion tables for STL binary files.
+ */
 class STLBinaryTables
 {
 public:

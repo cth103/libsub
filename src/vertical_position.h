@@ -25,7 +25,9 @@
 
 namespace sub {
 
-/** Vertical position of the baseline of some text */
+/** @class VerticalPosition
+ *  @brief Vertical position of the baseline of some text, expressed in one of a number of ways.
+ */
 class VerticalPosition
 {
 public:

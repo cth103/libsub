@@ -22,6 +22,9 @@
 
 namespace sub {
 
+/** @class XMLError
+ *  @brief An error raised when reading an XML file.
+ */
 class XMLError : public std::exception
 {
 public:
@@ -37,7 +40,10 @@ private:
 	/** error message */
 	std::string _message;
 };
-	
+
+/** @class STLError
+ *  @brief An error raised when reading a binary STL file.
+ */
 class STLError : public std::exception
 {
 public:

@@ -35,7 +35,11 @@
 
 namespace sub {
 
-/** A piece of text with a single font, style, size etc. */       
+/** @class Block
+ *  @brief A block of text within a subtitle's line
+ *
+ *  This represents a block of text which has a particular style (font, size, effect, colour etc.)
+ */
 class Block
 {
 public:
@@ -65,7 +69,11 @@ public:
 	bool underline; ///< true to underline
 };
 
-/** A line of text */
+/** @class Line
+ *  @brief A line of text within a subtitle.
+ *
+ *  This represents a line of text which has a particular vertical position.
+ */
 class Line
 {
 public:
@@ -82,6 +90,12 @@ public:
 	bool same_metadata (RawSubtitle) const;
 };
 
+/** @class Subtitle
+ *  @brief A subtitle which has been collected into lines and blocks.
+ *
+ *  This represents a chunk of text which appears and disappears at some particular
+ *  times.
+ */
 class Subtitle
 {
 public:

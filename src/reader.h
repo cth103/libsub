@@ -27,6 +27,9 @@
 
 namespace sub {
 
+/** @class Reader
+ *  @brief Parent for classes which can read particular subtitle formats.
+ */
 class Reader
 {
 public:

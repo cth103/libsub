@@ -24,6 +24,9 @@
 
 namespace sub {
 
+/** @class Colour
+ *  @brief An RGB colour.
+ */
 class Colour
 {
 public:

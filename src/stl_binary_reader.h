@@ -23,6 +23,9 @@
 
 namespace sub {
 
+/** @class STLBinaryReader
+ *  @brief A class to read binary STL files.
+ */
 class STLBinaryReader : public Reader
 {
 public:

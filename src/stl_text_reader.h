@@ -22,6 +22,9 @@
 
 namespace sub {
 
+/** @class STLTextReader
+ *  @brief A class to read textual STL files
+ */
 class STLTextReader : public Reader
 {
 public:

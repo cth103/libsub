@@ -34,6 +34,9 @@
 
 namespace sub {
 
+/** @class RawSubtitle
+ *  @brief A bit of a subtitle, created with no regard for any nearby bits.
+ */
 class RawSubtitle
 {
 public:

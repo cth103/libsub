@@ -31,6 +31,9 @@ class DCPText;
 class DCPSubtitle;
 class DCPLoadFont;
 
+/** @class DCPReader
+ *  @brief A class which reads DCP subtitles.
+ */
 class DCPReader : public Reader
 {
 public:

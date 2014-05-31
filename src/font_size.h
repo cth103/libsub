@@ -21,7 +21,13 @@
 #define LIBSUB_FONT_SIZE_H
 
 namespace sub {
-	
+
+/** @class FontSize
+ *  @brief A description of a font's size in one of a number of ways.
+ *
+ *  An object of this class holds a font's size in one way, and it can convert
+ *  to another on supply of the required conversion parameters.
+ */
 class FontSize
 {
 public:

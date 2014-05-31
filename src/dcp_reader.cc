@@ -39,6 +39,9 @@ namespace sub {
 
 class DCPFont;
 
+/** @class DCPText
+ *  @brief A DCP subtitle &lt;Text&gt; node.
+ */
 class DCPText
 {
 public:
@@ -67,6 +70,9 @@ public:
 	list<shared_ptr<DCPFont> > font_nodes;
 };
 
+/** @class DCPSubtitle
+ *  @brief A DCP subtitle &lt;Subtitle&gt; node.
+ */
 class DCPSubtitle 
 {
 public:
@@ -121,6 +127,9 @@ private:
 	}
 };
 
+/** @class DCPFont
+ *  @brief A DCP subtitle &lt;Font&gt; node.
+ */
 class DCPFont 
 {
 public:
@@ -193,6 +202,9 @@ public:
 	list<shared_ptr<DCPText> > text_nodes;
 };
 
+/** @class DCPLoadFont
+ *  @brief A DCP subtitle &lt;LoadFont&gt; node.
+ */
 class DCPLoadFont 
 {
 public:
@@ -207,6 +219,9 @@ public:
 	string uri;
 };
 
+/** @class DCPReader::ParseState
+ *  @brief Holder of state for use while reading DCP subtitles.
+ */
 struct DCPReader::ParseState {
 	list<shared_ptr<DCPFont> > font_nodes;
 	list<shared_ptr<DCPText> > text_nodes;
@@ -249,6 +264,9 @@ DCPReader::font_id_to_name (string id) const
 	return (*i)->uri;
 }
 
+/** @class DCPReader
+ *  @brief A class to read DCP subtitles.
+ */
 DCPReader::DCPReader (istream& in)
 {
 	shared_ptr<cxml::Document> xml (new cxml::Document ("DCSubtitle"));

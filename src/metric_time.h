@@ -26,7 +26,7 @@
 namespace sub {
 
 /** @class MetricTime
- *  @brief A time held in milliseconds.
+ *  @brief A time stored in milliseconds.
  */
 class MetricTime
 {
