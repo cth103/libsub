@@ -24,7 +24,7 @@ def configure(conf):
 
     if conf.options.static:
         conf.env.HAVE_CXML = 1
-        conf.env.STLIB_CXML = ['cxml', 'glibmm-2.4', 'glib-2.0', 'pcre']
+        conf.env.STLIB_CXML = ['cxml', 'glibmm-2.4', 'glib-2.0', 'pcre', 'sigc++', 'rt']
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
