@@ -191,7 +191,7 @@ sub::write_stl_binary (
 	put_string (buffer + 272, "1");
 	/* Disk sequence number */
 	put_string (buffer + 273, "1");
-	put_string (buffer + 274, 32, country_of_origin);
+	put_string (buffer + 274, 3, country_of_origin);
 	put_string (buffer + 277, 32, publisher);
 	put_string (buffer + 309, 32, editor_name);
 	put_string (buffer + 341, 32, editor_contact_details);
