@@ -33,7 +33,6 @@ code (map<F, STLBinaryCode<E> >& m, F k, E v, string d)
 	m[k] = STLBinaryCode<E> (v, d);
 }
 
-
 template <class E, class F>
 E
 file_to_enum (F k, map<F, STLBinaryCode<E> > m, string name)
@@ -71,6 +70,19 @@ enum_to_description (E v, map<F, STLBinaryCode<E> > const & m)
 	}
 
 	return "";
+}
+
+template <class E, class F>
+boost::optional<E>
+description_to_enum (string d, map<F, STLBinaryCode<E> > const & m)
+{
+	for (typename map<F, STLBinaryCode<E> >::const_iterator i = m.begin(); i != m.end(); ++i) {
+		if (i->second.description == d) {
+			return i->second.value;
+		}
+	}
+
+	return boost::optional<E> ();
 }
 	      
 DisplayStandard
@@ -179,6 +191,12 @@ string
 STLBinaryTables::comment_enum_to_description (Comment v) const
 {
 	return enum_to_description (v, _comment_map);
+}
+
+boost::optional<Language>
+STLBinaryTables::language_description_to_enum (string d) const
+{
+	return description_to_enum (d, _language_map);
 }
 
 STLBinaryTables::STLBinaryTables ()

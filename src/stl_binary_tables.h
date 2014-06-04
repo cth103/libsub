@@ -19,6 +19,7 @@
 
 #include <string>
 #include <map>
+#include <boost/optional.hpp>
 
 namespace sub {
 
@@ -215,6 +216,8 @@ public:
 	std::string cumulative_status_enum_to_description (CumulativeStatus) const;
 	std::string justification_enum_to_description (Justification) const;
 	std::string comment_enum_to_description (Comment) const;
+
+	boost::optional<Language> language_description_to_enum (std::string) const;
 
 private:	
 	std::map<std::string, STLBinaryCode<DisplayStandard> > _display_standard_map;
