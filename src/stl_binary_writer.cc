@@ -102,8 +102,8 @@ sub::write_stl_binary (
 	assert (translated_episode_title.size() <= 32);
 	assert (translator_name.size() <= 32);
 	assert (translator_contact_details.size() <= 32);
-	assert (creation_date.size() == 6);
-	assert (revision_date.size() == 6);
+	assert (creation_date.size() == 8);
+	assert (revision_date.size() == 8);
 	assert (revision_number <= 99);
 	assert (country_of_origin.size() == 3);
 	assert (publisher.size() <= 32);
@@ -124,8 +124,8 @@ sub::write_stl_binary (
 	set<int> check_rows;
 	
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
-		int t = 0;
 		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			int t = 0;
 			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
 				t += k->text.size ();
 			}
@@ -178,9 +178,9 @@ sub::write_stl_binary (
 	/* Total number of subtitle groups */
 	put_string (buffer + 248, "000");
 	/* Maximum number of displayable characters in any text row */
-	put_int_as_string (buffer + 251, 2, longest);
+	put_int_as_string (buffer + 251, longest, 2);
 	/* Maximum number of displayable rows */
-	put_int_as_string (buffer + 253, 2, rows);
+	put_int_as_string (buffer + 253, rows, 2);
 	/* Time code status */
 	put_string (buffer + 255, "1");
 	/* Start-of-programme time code */

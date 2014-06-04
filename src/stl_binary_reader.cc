@@ -66,7 +66,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 	translated_episode_title = get_string (112, 32);
 	translator_name = get_string (144, 32);
 	translator_contact_details = get_string (176, 32);
-	subtitle_list_reference_code = get_string (208, 32);
+	subtitle_list_reference_code = get_string (208, 16);
 	creation_date = get_string (224, 6);
 	revision_date = get_string (230, 6);
 	revision_number = get_string (236, 2);
