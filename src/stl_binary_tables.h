@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_STL_BINARY_TABLES_H
+#define LIBSUB_STL_BINARY_TABLES_H
+
 #include <string>
 #include <map>
 #include <boost/optional.hpp>
@@ -230,3 +233,5 @@ private:
 };
 
 }
+
+#endif
