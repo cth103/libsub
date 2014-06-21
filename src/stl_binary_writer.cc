@@ -102,8 +102,8 @@ sub::write_stl_binary (
 	assert (translated_episode_title.size() <= 32);
 	assert (translator_name.size() <= 32);
 	assert (translator_contact_details.size() <= 32);
-	assert (creation_date.size() == 8);
-	assert (revision_date.size() == 8);
+	assert (creation_date.size() == 6);
+	assert (revision_date.size() == 6);
 	assert (revision_number <= 99);
 	assert (country_of_origin.size() == 3);
 	assert (publisher.size() <= 32);
