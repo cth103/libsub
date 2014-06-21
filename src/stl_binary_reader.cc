@@ -78,7 +78,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 	maximum_rows = atoi (get_string (253, 2).c_str ());
 	timecode_status = _tables.timecode_status_file_to_enum (get_string (255, 1));
 	start_of_programme = get_string (256, 8);
-	first_in_cue = get_string (256, 8);
+	first_in_cue = get_string (264, 8);
 	disks = atoi (get_string (272, 1).c_str ());
 	disk_sequence_number = atoi (get_string (273, 1).c_str ());
 	country_of_origin = get_string (274, 3);
