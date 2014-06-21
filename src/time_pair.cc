@@ -44,6 +44,16 @@ TimePair::metric (float frames_per_second) const
 	return MetricTime (f.hours(), f.minutes(), f.seconds(), f.frames() * 1000 / frames_per_second);
 }
 
+void
+TimePair::add (FrameTime t, float fps)
+{
+	if (_frame) {
+		_frame.get().add (t, fps);
+	} else {
+		_metric.get().add (MetricTime (t.hours(), t.minutes(), t.seconds(), t.frames() * 1000 / fps));
+	}
+}
+
 bool
 TimePair::operator== (TimePair const & other) const
 {

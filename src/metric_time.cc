@@ -80,6 +80,12 @@ MetricTime::milliseconds () const
 	return ms;
 }
 
+void
+MetricTime::add (MetricTime t)
+{
+	_ms += t._ms;
+}
+
 bool
 sub::operator== (MetricTime const & a, MetricTime const & b)
 {

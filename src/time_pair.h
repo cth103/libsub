@@ -53,6 +53,8 @@ public:
 	FrameTime  frame  (float frames_per_second) const;
 	MetricTime metric (float frames_per_second) const;
 
+	void add (FrameTime t, float frames_per_second);
+
 	bool operator== (TimePair const & other) const;
 	
 private:

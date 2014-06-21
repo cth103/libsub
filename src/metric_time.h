@@ -41,6 +41,8 @@ public:
 	int minutes () const;
 	int seconds () const;
 	int milliseconds () const;
+
+	void add (MetricTime t);
 			  
 private:
 	void split (int& h, int& m, int& s, int& ms) const;

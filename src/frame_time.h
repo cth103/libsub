@@ -41,7 +41,7 @@ public:
 	/** @param f Number of frames.
 	 *  @param fps Frames per second.
 	 */
-	FrameTime (int64_t f, int fps);
+	FrameTime (int64_t f, float fps);
 			  
 	FrameTime (int h, int m, int s, int f)
 		: _hours (h)
@@ -68,11 +68,9 @@ public:
 
 	std::string timecode () const;
 
+	void add (FrameTime t, float fps);
+
 private:
-	friend bool operator== (FrameTime const & a, FrameTime const & b);
-	friend bool operator< (FrameTime const & a, FrameTime const & b);
-	friend std::ostream& operator<< (std::ostream& s, FrameTime const & t);
-	
 	int _hours;
 	int _minutes;
 	int _seconds;

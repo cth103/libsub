@@ -28,31 +28,31 @@ using namespace sub;
 bool
 sub::operator== (FrameTime const & a, FrameTime const & b)
 {
-	return a._hours == b._hours && a._minutes == b._minutes && a._seconds == b._seconds && a._frames == b._frames;
+	return a.hours() == b.hours() && a.minutes() == b.minutes() && a.seconds() == b.seconds() && a.frames() == b.frames();
 }
 
 bool
 sub::operator< (FrameTime const & a, FrameTime const & b)
 {
-	if (a._hours != b._hours) {
-		return a._hours < b._hours;
+	if (a.hours() != b.hours()) {
+		return a.hours() < b.hours();
 	}
 
-	if (a._minutes != b._minutes) {
-		return a._minutes < b._minutes;
+	if (a.minutes() != b.minutes()) {
+		return a.minutes() < b.minutes();
 	}
 
-	if (a._seconds != b._seconds) {
-		return a._seconds < b._seconds;
+	if (a.seconds() != b.seconds()) {
+		return a.seconds() < b.seconds();
 	}
 
-	return a._frames < b._frames;
+	return a.frames() < b.frames();
 }
 
 ostream&
 sub::operator<< (ostream& s, FrameTime const & t)
 {
-	s << t._hours << ":" << t._minutes << ":" << t._seconds << ":" << t._frames;
+	s << t.hours() << ":" << t.minutes() << ":" << t.seconds() << ":" << t.frames();
 	return s;
 }
 
@@ -62,7 +62,7 @@ FrameTime::timecode () const
 	return String::compose ("%1:%2:%3:%4", _hours, _minutes, _seconds, _frames);
 }
 
-FrameTime::FrameTime (int64_t f, int fps)
+FrameTime::FrameTime (int64_t f, float fps)
 {
 	_hours = f / (60 * 60 * fps);
 	f -= _hours * 60 * 60 * fps;
@@ -71,4 +71,28 @@ FrameTime::FrameTime (int64_t f, int fps)
 	_seconds = f / fps;
 	f -= _seconds * fps;
 	_frames = int (f);
+}
+
+void
+FrameTime::add (FrameTime t, float fps)
+{
+	_frames += t.frames ();
+	if (_frames > fps) {
+		_frames -= fps;
+		_seconds++;
+	}
+
+	_seconds += t.seconds ();
+	if (_seconds >= 60) {
+		_seconds -= 60;
+		++_minutes;
+	}
+
+	_minutes += t.minutes ();
+	if (_minutes >= 60) {
+		_minutes -= 60;
+		++_hours;
+	}
+
+	_hours += t.hours ();
 }

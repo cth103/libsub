@@ -67,3 +67,21 @@ BOOST_AUTO_TEST_CASE (time_conversion_test)
 	p.set_frame (sub::FrameTime (3, 5, 7, 3));
 	BOOST_CHECK_EQUAL (p.metric (25), sub::MetricTime (3, 5, 7, 120));
 }
+
+/* Check time maths */
+BOOST_AUTO_TEST_CASE (time_maths_test)
+{
+	{
+		sub::FrameTime a (1, 59, 59, 23);
+		sub::FrameTime b (2, 31, 19, 2);
+		a.add (b, 24);
+		BOOST_CHECK_EQUAL (a, sub::FrameTime (4, 31, 19, 1));
+	}
+
+	{
+		sub::MetricTime a (1, 59, 59, 999);
+		sub::MetricTime b (2, 31, 19, 2);
+		a.add (b);
+		BOOST_CHECK_EQUAL (a, sub::MetricTime (4, 31, 19, 1));
+	}
+}
