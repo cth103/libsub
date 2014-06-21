@@ -176,7 +176,7 @@ sub::write_stl_binary (
 	/* Total number of subtitles */
 	put_int_as_string (buffer + 243, subtitles.size (), 5);
 	/* Total number of subtitle groups */
-	put_string (buffer + 248, "000");
+	put_string (buffer + 248, "001");
 	/* Maximum number of displayable characters in any text row */
 	put_int_as_string (buffer + 251, longest, 2);
 	/* Maximum number of displayable rows */
@@ -202,7 +202,7 @@ sub::write_stl_binary (
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
 
 		/* Subtitle group number */
-		put_int_as_int (buffer + 0, 0, 1);
+		put_int_as_int (buffer + 0, 1, 1);
 		/* Subtitle number */
 		put_int_as_int (buffer + 1, N, 2);
 		/* Extension block number */
