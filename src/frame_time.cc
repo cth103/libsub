@@ -61,3 +61,14 @@ FrameTime::timecode () const
 {
 	return String::compose ("%1:%2:%3:%4", _hours, _minutes, _seconds, _frames);
 }
+
+FrameTime::FrameTime (int64_t f, int fps)
+{
+	_hours = f / (60 * 60 * fps);
+	f -= _hours * 60 * 60 * fps;
+	_minutes = f / (60 * fps);
+	f -= _minutes * 60 * fps;
+	_seconds = f / fps;
+	f -= _seconds * fps;
+	_frames = int (f);
+}

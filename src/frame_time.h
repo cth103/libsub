@@ -21,6 +21,7 @@
 #define LIBSUB_FRAME_TIME_H
 
 #include <iostream>
+#include <stdint.h>
 
 namespace sub {
 
@@ -36,6 +37,11 @@ public:
 		, _seconds (0)
 		, _frames (0)
 	{}
+
+	/** @param f Number of frames.
+	 *  @param fps Frames per second.
+	 */
+	FrameTime (int64_t f, int fps);
 			  
 	FrameTime (int h, int m, int s, int f)
 		: _hours (h)

@@ -40,6 +40,14 @@ BOOST_AUTO_TEST_CASE (time_construction_test)
 		BOOST_CHECK_EQUAL (t.seconds(), 2);
 		BOOST_CHECK_EQUAL (t.milliseconds(), 3);
 	}
+
+	{
+		sub::FrameTime t (3 * 60 * 60 * 24 + 31 * 60 * 24 + 4 * 24 + 11, 24);
+		BOOST_CHECK_EQUAL (t.hours(), 3);
+		BOOST_CHECK_EQUAL (t.minutes(), 31);
+		BOOST_CHECK_EQUAL (t.seconds(), 4);
+		BOOST_CHECK_EQUAL (t.frames(), 11);
+	}
 }
 
 /* Check time conversions */
