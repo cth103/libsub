@@ -111,6 +111,7 @@ sub::write_stl_binary (
 	assert (editor_contact_details.size() <= 32);
 	
 	char* buffer = new char[1024];
+	memset (buffer, 0, 1024);
 	ofstream output (file_name.string().c_str ());
 	STLBinaryTables tables;
 
@@ -200,6 +201,8 @@ sub::write_stl_binary (
 
 	int N = 0;
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+
+		memset (buffer, 0, 1024);
 
 		/* Subtitle group number */
 		put_int_as_int (buffer + 0, 1, 1);

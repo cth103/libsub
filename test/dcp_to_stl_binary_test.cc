@@ -75,4 +75,9 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test2)
 		"", "",
 		"build/test/93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.stl"
 		);
+
+	check_file (
+		private_test / "93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.stl",
+		"build/test/93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.stl"
+		);
 }
