@@ -26,7 +26,7 @@
 
 using std::ifstream;
 
-BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test)
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test1)
 {
 	if (private_test.empty ()) {
 		return;
@@ -46,5 +46,33 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test)
 		"",
 		"", "",
 		"build/test/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl"
+		);
+
+	check_file (
+		private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.stl",
+		"build/test/fd586c30-6d38-48f2-8241-27359acf184c_sub.stl"
+		);
+}
+
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test2)
+{
+	if (private_test.empty ()) {
+		return;
+	}
+
+	boost::filesystem::path p = private_test / "93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.xml";
+	ifstream f (p.string().c_str ());
+	sub::write_stl_binary (
+		sub::collect (sub::DCPReader(f).subtitles ()),
+		25,
+		sub::LANGUAGE_FRENCH,
+		"", "",
+		"", "",
+		"", "",
+		"300514", "300514", 0,
+		"GBR",
+		"",
+		"", "",
+		"build/test/93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.stl"
 		);
 }

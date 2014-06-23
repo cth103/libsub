@@ -27,6 +27,8 @@
 
 using std::string;
 using std::cerr;
+using std::min;
+using std::max;
 using std::ifstream;
 using std::getline;
 
@@ -75,4 +77,36 @@ check_text (boost::filesystem::path a, boost::filesystem::path b)
 
 	BOOST_CHECK (p.good() == false);
 	BOOST_CHECK (q.good() == false);
+}
+
+void
+check_file (boost::filesystem::path ref, boost::filesystem::path check)
+{
+	uintmax_t N = boost::filesystem::file_size (ref);
+	BOOST_CHECK_EQUAL (N, boost::filesystem::file_size (check));
+	FILE* ref_file = fopen (ref.string().c_str(), "rb");
+	BOOST_CHECK (ref_file);
+	FILE* check_file = fopen (check.string().c_str(), "rb");
+	BOOST_CHECK (check_file);
+	
+	int const buffer_size = 65536;
+	uint8_t* ref_buffer = new uint8_t[buffer_size];
+	uint8_t* check_buffer = new uint8_t[buffer_size];
+
+	while (N) {
+		uintmax_t this_time = min (uintmax_t (buffer_size), N);
+		size_t r = fread (ref_buffer, 1, this_time, ref_file);
+		BOOST_CHECK_EQUAL (r, this_time);
+		r = fread (check_buffer, 1, this_time, check_file);
+		BOOST_CHECK_EQUAL (r, this_time);
+
+		BOOST_CHECK_EQUAL (memcmp (ref_buffer, check_buffer, this_time), 0);
+		N -= this_time;
+	}
+
+	delete[] ref_buffer;
+	delete[] check_buffer;
+
+	fclose (ref_file);
+	fclose (check_file);
 }
