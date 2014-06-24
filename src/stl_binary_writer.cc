@@ -208,8 +208,10 @@ sub::write_stl_binary (
 		put_int_as_int (buffer + 0, 1, 1);
 		/* Subtitle number */
 		put_int_as_int (buffer + 1, N, 2);
-		/* Extension block number */
-		put_int_as_int (buffer + 3, 0, 1);
+		/* Extension block number.  Use 0xff here to indicate that it is the last TTI
+		   block in this subtitle "set", as we only ever use one.
+		*/
+		put_int_as_int (buffer + 3, 255, 1);
 		/* Cumulative status */
 		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
 		/* Time code in */
