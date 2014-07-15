@@ -43,6 +43,7 @@ public:
 	int milliseconds () const;
 
 	void add (MetricTime t);
+	void scale (float f);
 			  
 private:
 	void split (int& h, int& m, int& s, int& ms) const;

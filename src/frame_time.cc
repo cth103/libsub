@@ -64,6 +64,12 @@ FrameTime::timecode () const
 
 FrameTime::FrameTime (int64_t f, float fps)
 {
+	set_from_frames (f, fps);
+}
+
+void
+FrameTime::set_from_frames (int64_t f, float fps)
+{
 	_hours = f / (60 * 60 * fps);
 	f -= _hours * 60 * 60 * fps;
 	_minutes = f / (60 * fps);
@@ -95,4 +101,13 @@ FrameTime::add (FrameTime t, float fps)
 	}
 
 	_hours += t.hours ();
+}
+
+void
+FrameTime::scale (float f, float frames_per_second)
+{
+	set_from_frames (
+		(((_hours * 3600 + _minutes * 60 + _seconds) * frames_per_second) + _frames) * f,
+		frames_per_second
+		);
 }

@@ -50,10 +50,11 @@ public:
 		return _metric;
 	}
 	
-	FrameTime  frame  (float frames_per_second) const;
-	MetricTime metric (float frames_per_second) const;
+	FrameTime  frame  (float fps) const;
+	MetricTime metric (float fps) const;
 
-	void add (FrameTime t, float frames_per_second);
+	void add (FrameTime t, float fps);
+	void scale (float f, float fps);
 
 	bool operator== (TimePair const & other) const;
 	

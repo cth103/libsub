@@ -69,8 +69,11 @@ public:
 	std::string timecode () const;
 
 	void add (FrameTime t, float fps);
+	void scale (float f, float fps);
 
 private:
+	void set_from_frames (int64_t f, float fps);
+	
 	int _hours;
 	int _minutes;
 	int _seconds;

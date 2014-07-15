@@ -86,6 +86,12 @@ MetricTime::add (MetricTime t)
 	_ms += t._ms;
 }
 
+void
+MetricTime::scale (float f)
+{
+	_ms *= f;
+}
+
 bool
 sub::operator== (MetricTime const & a, MetricTime const & b)
 {

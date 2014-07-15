@@ -23,25 +23,25 @@ using std::ostream;
 using namespace sub;
 
 FrameTime
-TimePair::frame (float frames_per_second) const
+TimePair::frame (float fps) const
 {
 	if (_frame) {
 		return _frame.get ();
 	}
 
 	MetricTime const m = _metric.get ();
-	return FrameTime (m.hours(), m.minutes(), m.seconds(), m.milliseconds() * frames_per_second / 1000);
+	return FrameTime (m.hours(), m.minutes(), m.seconds(), m.milliseconds() * fps / 1000);
 }
 
 MetricTime
-TimePair::metric (float frames_per_second) const
+TimePair::metric (float fps) const
 {
 	if (_metric) {
 		return _metric.get ();
 	}
 
 	FrameTime const f = _frame.get ();
-	return MetricTime (f.hours(), f.minutes(), f.seconds(), f.frames() * 1000 / frames_per_second);
+	return MetricTime (f.hours(), f.minutes(), f.seconds(), f.frames() * 1000 / fps);
 }
 
 void
@@ -51,6 +51,16 @@ TimePair::add (FrameTime t, float fps)
 		_frame.get().add (t, fps);
 	} else {
 		_metric.get().add (MetricTime (t.hours(), t.minutes(), t.seconds(), t.frames() * 1000 / fps));
+	}
+}
+
+void
+TimePair::scale (float f, float fps)
+{
+	if (_frame) {
+		_frame.get().scale (f, fps);
+	} else {
+		_metric.get().scale (f);
 	}
 }
 
