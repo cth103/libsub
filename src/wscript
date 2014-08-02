@@ -26,6 +26,7 @@ def build(bld):
                  stl_binary_tables.cc
                  stl_binary_writer.cc
                  stl_text_reader.cc
+                 stl_util.cc
                  time_pair.cc
                  subtitle.cc
                  vertical_reference.cc

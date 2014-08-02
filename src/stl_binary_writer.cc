@@ -20,6 +20,7 @@
 #include "stl_binary_writer.h"
 #include "subtitle.h"
 #include "iso6937.h"
+#include "stl_util.h"
 #include "compose.hpp"
 #include <boost/locale.hpp>
 #include <list>
@@ -155,7 +156,7 @@ sub::write_stl_binary (
 	/* Code page: 850 */
 	put_string (buffer + 0, "850");
 	/* Disk format code */
-	put_string (buffer + 3, String::compose ("STL%1.01", rint (frames_per_second)));
+	put_string (buffer + 3, stl_frame_rate_to_dfc (frames_per_second));
 	/* Display standard code: open subtitling */
 	put_string (buffer + 11, "0");
 	/* Character code table: Latin (ISO 6937) */

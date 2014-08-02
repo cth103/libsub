@@ -17,13 +17,14 @@
 
 */
 
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/locale.hpp>
 #include "stl_binary_reader.h"
 #include "exceptions.h"
 #include "iso6937.h"
+#include "stl_util.h"
 #include "compose.hpp"
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/locale.hpp>
 
 using std::map;
 using std::vector;
@@ -45,18 +46,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 	}
 
 	code_page_number = atoi (get_string (0, 3).c_str ());
-	
-	string const dfc = get_string (3, 8);
-	if (dfc == "STL24.01") {
-		frame_rate = 24;
-	} else if (dfc == "STL25.01") {
-		frame_rate = 25;
-	} else if (dfc == "STL30.01") {
-		frame_rate = 30;
-	} else {
-		throw STLError (String::compose ("Unknown disk format code %1 in binary STL file", dfc));
-	}
-
+	frame_rate = stl_dfc_to_frame_rate (get_string (3, 8));
 	display_standard = _tables.display_standard_file_to_enum (get_string (11, 1));
 	language_group = _tables.language_group_file_to_enum (get_string (12, 2));
 	language = _tables.language_file_to_enum (get_string (14, 2));
