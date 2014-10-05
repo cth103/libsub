@@ -28,6 +28,7 @@ def build(bld):
                  stl_text_reader.cc
                  stl_util.cc
                  time_pair.cc
+                 subrip_reader.cc
                  subtitle.cc
                  vertical_reference.cc
                  vertical_position.cc

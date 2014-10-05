@@ -1,0 +1,8 @@
+1
+00:00:41,090 --> 00:00:42,210
+This is a subtitle
+and that's a line break
+
+2
+00:01:01,010 --> 00:01:02,100
+This is some <b>bold</b> and some <b><i>bold italic</b></i> and some <u>underlined</u>.

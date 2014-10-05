@@ -27,6 +27,7 @@
 
 using std::string;
 using std::cerr;
+using std::cout;
 using std::min;
 using std::max;
 using std::ifstream;

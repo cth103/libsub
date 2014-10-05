@@ -22,14 +22,12 @@
 
 namespace sub {
 
-/** @class XMLError
- *  @brief An error raised when reading an XML file.
- */
-class XMLError : public std::exception
+class MessageError : public std::exception
 {
 public:
-	XMLError (std::string const & message) : _message (message) {}
-	~XMLError () throw () {}
+	MessageError (std::string const & message)
+		: _message (message) {}
+	~MessageError () throw () {}
 
 	/** @return error message */
 	char const * what () const throw () {
@@ -41,23 +39,37 @@ private:
 	std::string _message;
 };
 
+/** @class XMLError
+ *  @brief An error raised when reading an XML file.
+ */
+class XMLError : public MessageError
+{
+public:
+	XMLError (std::string const & message)
+		: MessageError (message)
+	{}
+};
+
 /** @class STLError
  *  @brief An error raised when reading a binary STL file.
  */
-class STLError : public std::exception
+class STLError : public MessageError
 {
 public:
-	STLError (std::string const & message) : _message (message) {}
-	~STLError () throw () {}
+	STLError (std::string const & message)
+		: MessageError (message)
+	{}
+};
 
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
-	}
-
-private:
-	/** error message */
-	std::string _message;
+/** @class SubripError
+ *  @brief An error raised when reading a Subrip file.
+ */
+class SubripError : public MessageError
+{
+public:
+	SubripError (std::string saw, std::string expecting)
+		: MessageError ("Error in SubRip file: saw " + saw + " while expecting " + expecting)
+	{}
 };
 
 }

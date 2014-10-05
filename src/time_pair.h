@@ -32,6 +32,16 @@ namespace sub {
 class TimePair
 {
 public:
+	TimePair () {}
+	
+	TimePair (FrameTime t)
+		: _frame (t)
+	{}
+	
+	TimePair (MetricTime t)
+		: _metric (t)
+	{}
+	
 	void set_frame (FrameTime t) {
 		_frame = t;
 		_metric = boost::optional<MetricTime> ();
