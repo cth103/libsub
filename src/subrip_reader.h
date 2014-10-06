@@ -20,6 +20,9 @@
 #include "reader.h"
 #include "time_pair.h"
 
+struct subrip_reader_convert_line_test;
+struct subrip_reader_convert_time_test;
+
 namespace sub {
 
 class SubripReader : public Reader
@@ -30,9 +33,10 @@ public:
 private:
 	/* For tests */
 	friend struct ::subrip_reader_convert_line_test;
+	friend struct ::subrip_reader_convert_time_test;
 	SubripReader () {}
 	
-	TimePair convert_time (std::string t);
+	static TimePair convert_time (std::string t);
 	void convert_line (std::string t, int line_number, TimePair from, TimePair to);
 	void maybe_content (RawSubtitle& p);
 };
