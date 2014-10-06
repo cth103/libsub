@@ -19,8 +19,10 @@
 
 #include "subrip_reader.h"
 #include "subtitle.h"
+#include "test.h"
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 
 using std::list;
@@ -279,4 +281,21 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_time_test)
 {
 	BOOST_CHECK_EQUAL (sub::SubripReader::convert_time ("00:03:10,500"), sub::TimePair (sub::MetricTime (0, 3, 10, 500)));
 	BOOST_CHECK_EQUAL (sub::SubripReader::convert_time ("04:19:51,782"), sub::TimePair (sub::MetricTime (4, 19, 51, 782)));
+}
+
+
+static void
+test (boost::filesystem::path p)
+{
+	p = private_test / p;
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SubripReader r (f);
+	fclose (f);
+}
+
+/** Test of reading some typical .srt files */
+BOOST_AUTO_TEST_CASE (subrip_read_test)
+{
+	test ("sintel_en.srt");
+	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
 }
