@@ -151,4 +151,61 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK (k == l.blocks.end ());
 }
 
+/* Test reading of another Subrip file */
+BOOST_AUTO_TEST_CASE (subrip_reader_test2)
+{
+	FILE* f = fopen ("test/data/test2.srt", "r");
+	sub::SubripReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect (reader.subtitles ());
+
+	list<sub::Subtitle>::const_iterator i = subs.begin();
+
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 1, 49, 200));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 1, 52, 351));
+	BOOST_CHECK_EQUAL (i->lines.size(), 2);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "This is a subtitle, and it goes ");
+	BOOST_CHECK_EQUAL (i->lines.back().blocks.front().text, "over two lines.");
+
+	++i;
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 1, 52, 440));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 1, 54, 351));
+	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "We have emboldened this");
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().bold, true);
+
+	++i;
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 1, 54, 440));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 1, 56, 590));
+	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "And italicised this.");
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().italic, true);
+
+	++i;
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 1, 56, 680));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 1, 58, 955));
+	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Shall I compare thee to a summers' day?");
+
+	++i;
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 2, 0, 840));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 2, 3, 400));
+	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Is this a dagger I see before me?");
+
+	++i;
+	BOOST_CHECK (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from.metric().get(), sub::MetricTime (0, 3, 54, 560));
+	BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 3, 56, 471));
+	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Hello world.");
+
+	++i;
+	BOOST_CHECK (i == subs.end ());
+}
 
