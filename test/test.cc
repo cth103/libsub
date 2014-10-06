@@ -30,8 +30,10 @@ using std::cerr;
 using std::cout;
 using std::min;
 using std::max;
+using std::hex;
 using std::ifstream;
 using std::getline;
+using std::stringstream;
 
 boost::filesystem::path private_test;
 
@@ -94,15 +96,21 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 	uint8_t* ref_buffer = new uint8_t[buffer_size];
 	uint8_t* check_buffer = new uint8_t[buffer_size];
 
-	while (N) {
-		uintmax_t this_time = min (uintmax_t (buffer_size), N);
+	uintmax_t offset = 0;
+	while (offset < N) {
+		uintmax_t this_time = min (uintmax_t (buffer_size), N - offset);
 		size_t r = fread (ref_buffer, 1, this_time, ref_file);
 		BOOST_CHECK_EQUAL (r, this_time);
 		r = fread (check_buffer, 1, this_time, check_file);
 		BOOST_CHECK_EQUAL (r, this_time);
 
-		BOOST_CHECK_EQUAL (memcmp (ref_buffer, check_buffer, this_time), 0);
-		N -= this_time;
+		for (uintmax_t i = 0; i < this_time; ++i) {
+			stringstream s;
+			s << "Files differ at offset " << (offset + i) << "; reference is " << hex << ((int) ref_buffer[i]) << ", check is " << ((int) check_buffer[i]);
+			BOOST_CHECK_MESSAGE (ref_buffer[i] == check_buffer[i], s.str ());
+		}
+
+		offset += this_time;
 	}
 
 	delete[] ref_buffer;
