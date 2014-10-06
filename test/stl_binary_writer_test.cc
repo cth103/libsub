@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 			b.font_size.set_points (42);
 			sub::Line l;
 			l.vertical_position.line = 0;
+			l.vertical_position.reference = sub::TOP_OF_SCREEN;
 			l.blocks.push_back (b);
 			s.lines.push_back (l);
 		}
@@ -51,6 +52,7 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 			b.font_size.set_points (42);
 			sub::Line l;
 			l.vertical_position.line = 1;
+			l.vertical_position.reference = sub::TOP_OF_SCREEN;
 			l.blocks.push_back (b);
 			s.lines.push_back (l);
 		}
@@ -65,6 +67,7 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 
 		sub::Line l;
 		l.vertical_position.line = 0;
+		l.vertical_position.reference = sub::TOP_OF_SCREEN;
 		
 		sub::Block b;
 		b.text = "This is some ";

@@ -82,7 +82,7 @@ main (int argc, char* argv[])
 		cout << i->first << ": " << i->second << "\n";
 	}
 
-	list<sub::Subtitle> subs = collect (reader->subtitles ());
+	list<sub::Subtitle> subs = collect<list<sub::Subtitle> > (reader->subtitles ());
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
 		cout << "Subtitle at " << i->from << " -> " << i->to << "\n";
 		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {

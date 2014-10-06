@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 {
 	ifstream file ("test/data/test_text.stl");
 	sub::STLTextReader reader (file);
-	list<sub::Subtitle> subs = sub::collect (reader.subtitles ());
+	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
 

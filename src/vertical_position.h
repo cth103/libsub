@@ -33,10 +33,10 @@ class VerticalPosition
 public:
 	/** as a proportion of screen height offset from some reference point */
 	boost::optional<float> proportional;
-	/** reference position for proportional */
-	boost::optional<VerticalReference> reference;
-	/** line number from the top of the screen */
+	/** line number offset from some reference point */
 	boost::optional<int> line;
+	/** reference point */
+	boost::optional<VerticalReference> reference;
 	
 	bool operator== (VerticalPosition const & other) const;
 	

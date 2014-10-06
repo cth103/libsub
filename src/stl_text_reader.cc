@@ -39,6 +39,7 @@ using namespace sub;
 STLTextReader::STLTextReader (istream& in)
 {
 	_subtitle.vertical_position.line = 0;
+	_subtitle.vertical_position.reference = TOP_OF_SCREEN;
 	
 	while (in.good ()) {
 		string line;

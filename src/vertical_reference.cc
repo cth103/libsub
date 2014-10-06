@@ -28,11 +28,11 @@ VerticalReference
 sub::string_to_vertical_reference (string s)
 {
 	if (s == "top") {
-		return TOP;
+		return TOP_OF_SCREEN;
 	} else if (s == "center") {
-		return CENTRE;
+		return CENTRE_OF_SCREEN;
 	} else if (s == "bottom") {
-		return BOTTOM;
+		return BOTTOM_OF_SCREEN;
 	}
 	
 	throw XMLError ("unknown subtitle valign type");

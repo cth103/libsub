@@ -22,6 +22,39 @@
 
 namespace sub {
 	
-std::list<Subtitle> collect (std::list<RawSubtitle>);
+template <class T>
+T
+collect (std::list<RawSubtitle> raw)
+{
+	raw.sort ();
+
+	T out;
+
+	boost::optional<Subtitle> current;
+	for (std::list<RawSubtitle>::const_iterator i = raw.begin (); i != raw.end(); ++i) {
+		if (current && current->same_metadata (*i)) {
+			/* This RawSubtitle can be added to current... */
+			if (!current->lines.empty() && current->lines.back().same_metadata (*i)) {
+				/* ... and indeed to its last line */
+				current->lines.back().blocks.push_back (Block (*i));
+			} else {
+				/* ... as a new line */
+				current->lines.push_back (Line (*i));
+			}
+		} else {
+			/* We must start a new Subtitle */
+			if (current) {
+				out.push_back (current.get ());
+			}
+			current = Subtitle (*i);
+		}
+	}
+
+	if (current) {
+		out.push_back (current.get ());
+	}
+
+	return out;
+}
 
 }

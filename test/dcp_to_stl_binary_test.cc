@@ -25,6 +25,7 @@
 #include <fstream>
 
 using std::ifstream;
+using std::list;
 
 BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test1)
 {
@@ -35,7 +36,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test1)
 	boost::filesystem::path p = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
 	ifstream f (p.string().c_str ());
 	sub::write_stl_binary (
-		sub::collect (sub::DCPReader(f).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(f).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -63,7 +64,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test2)
 	boost::filesystem::path p = private_test / "93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.xml";
 	ifstream f (p.string().c_str ());
 	sub::write_stl_binary (
-		sub::collect (sub::DCPReader(f).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(f).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",

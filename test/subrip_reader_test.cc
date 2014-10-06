@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	FILE* f = fopen ("test/data/test.srt", "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect (reader.subtitles ());
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
 
@@ -56,8 +56,8 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
-	BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.7, 1);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP);
+	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), 0);
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 	++j;
 
 	BOOST_CHECK (j != i->lines.end ());
@@ -69,8 +69,8 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
-	BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.8, 1);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP);
+	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), 1);
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 	++i;
 
 	
@@ -83,7 +83,8 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (i->lines.size(), 1);
 	sub::Line l = i->lines.front ();
 	BOOST_CHECK_EQUAL (l.blocks.size(), 7);
-	BOOST_CHECK_CLOSE (l.vertical_position.proportional.get(), 0.7, 1);
+	BOOST_CHECK_EQUAL (l.vertical_position.line.get(), 0);
+	BOOST_CHECK_EQUAL (l.vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 
 	list<sub::Block>::iterator k = l.blocks.begin ();
 	
@@ -159,7 +160,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	FILE* f = fopen ("test/data/test2.srt", "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect (reader.subtitles ());
+	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::const_iterator i = subs.begin();
 

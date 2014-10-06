@@ -26,9 +26,10 @@ namespace sub {
 
 enum VerticalReference
 {
-	TOP,
-	CENTRE,
-	BOTTOM
+	TOP_OF_SCREEN,
+	CENTRE_OF_SCREEN,
+	BOTTOM_OF_SCREEN,
+	TOP_OF_SUBTITLE
 };
 
 VerticalReference string_to_vertical_reference (std::string s);

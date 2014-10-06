@@ -131,8 +131,8 @@ SubripReader::convert_line (string t, int line_number, TimePair from, TimePair t
 	p.font_size.set_points (48);
 	p.from = from;
 	p.to = to;
-	p.vertical_position.proportional = 0.7 + line_number * 0.1;
-	p.vertical_position.reference = TOP;
+	p.vertical_position.line = line_number;
+	p.vertical_position.reference = TOP_OF_SUBTITLE;
 	
 	/* XXX: missing <font> support */
 	/* XXX: nesting of tags e.g. <b>foo<i>bar<b>baz</b>fred</i>jim</b> might

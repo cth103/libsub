@@ -42,6 +42,14 @@ public:
 	int seconds () const;
 	int milliseconds () const;
 
+	double all_as_seconds () const {
+		return all_as_milliseconds() / 1000.0;
+	}
+	
+	int64_t all_as_milliseconds () const {
+		return _ms;
+	}		
+
 	void add (MetricTime t);
 	void scale (float f);
 			  

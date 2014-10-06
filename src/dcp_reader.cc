@@ -47,11 +47,11 @@ class DCPText
 public:
 	DCPText ()
 		: v_position (0)
-		, v_align (TOP)
+		, v_align (TOP_OF_SCREEN)
 	{}
 	
 	DCPText (shared_ptr<const cxml::Node> node)
-		: v_align (CENTRE)
+		: v_align (CENTRE_OF_SCREEN)
 	{
 		text = node->content ();
 		v_position = node->number_attribute<float> ("VPosition");

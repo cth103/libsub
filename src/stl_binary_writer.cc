@@ -135,18 +135,22 @@ sub::write_stl_binary (
 			
 			if (j->vertical_position.proportional) {
 				switch (j->vertical_position.reference.get ()) {
-				case TOP:
+				case TOP_OF_SCREEN:
 					check_top.insert (j->vertical_position.proportional.get ());
 					break;
-				case CENTRE:
+				case CENTRE_OF_SCREEN:
 					check_centre.insert (j->vertical_position.proportional.get ());
 					break;
-				case BOTTOM:
+				case BOTTOM_OF_SCREEN:
 					check_bottom.insert (j->vertical_position.proportional.get ());
+					break;
+				case TOP_OF_SUBTITLE:
+					/* XXX: something needs to be done here */
 					break;
 				}
 			} else {
 				check_rows.insert (j->vertical_position.line.get ());
+				/* XXX: this needs to take vertical_position.reference into account */
 			}
 		}
 	}
