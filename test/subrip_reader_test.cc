@@ -209,3 +209,66 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	BOOST_CHECK (i == subs.end ());
 }
 
+/** Test SubripReader::convert_line */
+BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
+{
+	sub::SubripReader r;
+	
+	r.convert_line ("Hello world", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	r._subs.clear ();
+
+	r.convert_line ("<b>Hello world</b>", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
+	r._subs.clear ();
+
+	r.convert_line ("<i>Hello world</i>", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
+	r._subs.clear ();
+
+	r.convert_line ("<u>Hello world</u>", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
+	r._subs.clear ();
+
+	r.convert_line ("{b}Hello world{/b}", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
+	r._subs.clear ();
+
+	r.convert_line ("{i}Hello world{/i}", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
+	r._subs.clear ();
+
+	r.convert_line ("{u}Hello world{/u}", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
+	r._subs.clear ();
+
+	r.convert_line ("<b>This is <i>nesting</i> of subtitles</b>", 0, sub::TimePair (), sub::TimePair ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 3);
+	list<sub::RawSubtitle>::iterator i = r._subs.begin ();	
+	BOOST_CHECK_EQUAL (i->text, "This is ");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "nesting");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, true);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, " of subtitles");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	r._subs.clear ();
+}

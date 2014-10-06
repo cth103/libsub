@@ -25,6 +25,8 @@
 #include <map>
 #include <string>
 
+struct subrip_reader_convert_line_test;
+
 namespace sub {
 
 /** @class Reader
@@ -42,6 +44,8 @@ public:
 	}
 
 protected:
+	friend struct ::subrip_reader_convert_line_test;
+
 	void warn (std::string) const;
 
 	std::list<RawSubtitle> _subs;
