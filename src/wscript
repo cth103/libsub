@@ -47,6 +47,7 @@ def build(bld):
               stl_binary_tables.h
               stl_binary_writer.h
               stl_text_reader.h
+              subrip_reader.h
               subtitle.h
               time_pair.h
               vertical_position.h
