@@ -46,8 +46,8 @@ SubripReader::SubripReader (FILE* f)
 	int line_number = 0;
 
 	while (!feof (f)) {
-		fgets (buffer, sizeof (buffer), f);
-		if (feof (f)) {
+		char* r = fgets (buffer, sizeof (buffer), f);
+		if (r == 0 || feof (f)) {
 			break;
 		}
 
