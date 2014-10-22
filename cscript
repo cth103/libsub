@@ -6,6 +6,8 @@ def build(target, options):
         cmd += ' --static'
     if target.debug:
         cmd += ' --enable-debug'
+    if target.platform == 'windows':
+        cmd += ' --target-windows'
 
     target.command(cmd)
     target.command('./waf build install')

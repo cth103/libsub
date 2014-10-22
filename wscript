@@ -8,6 +8,7 @@ def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--enable-debug', action='store_true', default=False, help='build with debugging information and without optimisation')
     opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to cxml')
+    opt.add_option('--target-windows', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package')
 
 def configure(conf):
     conf.load('compiler_cxx')
@@ -16,6 +17,7 @@ def configure(conf):
 
     conf.env.ENABLE_DEBUG = conf.options.enable_debug
     conf.env.STATIC = conf.options.static
+    conf.env.TARGET_WINDOWS = conf.options.target_windows
 
     if conf.options.enable_debug:
         conf.env.append_value('CXXFLAGS', '-g')
@@ -30,6 +32,10 @@ def configure(conf):
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
 
+    boost_lib_suffix = ''
+    if conf.env.TARGET_WINDOWS:
+        boost_lib_suffix = '-mt'
+
     conf.check_cxx(fragment="""
                             #include <boost/version.hpp>\n
                             #if BOOST_VERSION < 104500\n
@@ -42,23 +48,23 @@ def configure(conf):
                    okmsg='yes',
                    errmsg='too old\nPlease install boost version 1.45 or higher.')
 
-    conf.check_cxx(fragment = """
-    			      #include <boost/filesystem.hpp>\n
-    			      int main() { boost::filesystem::copy_file ("a", "b"); }\n
-			      """,
-                   msg = 'Checking for boost filesystem library',
-                   libpath = '/usr/local/lib',
-                   lib = ['boost_filesystem', 'boost_system'],
-                   uselib_store = 'BOOST_FILESYSTEM')
+    conf.check_cxx(fragment="""
+    			    #include <boost/filesystem.hpp>\n
+    			    int main() { boost::filesystem::copy_file ("a", "b"); }\n
+			    """,
+                   msg='Checking for boost filesystem library',
+                   libpath='/usr/local/lib',
+                   lib=['boost_filesystem%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
+                   uselib_store='BOOST_FILESYSTEM')
 
-    conf.check_cxx(fragment = """
-    			      #include <boost/locale.hpp>\n
-    			      int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
-			      """,
-                   msg = 'Checking for boost locale library',
-                   libpath = '/usr/local/lib',
-                   lib = ['boost_locale', 'boost_system'],
-                   uselib_store = 'BOOST_LOCALE')
+    conf.check_cxx(fragment="""
+    			    #include <boost/locale.hpp>\n
+    			    int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
+			    """,
+                   msg='Checking for boost locale library',
+                   libpath='/usr/local/lib',
+                   lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
+                   uselib_store='BOOST_LOCALE')
 
     conf.recurse('test')
 
