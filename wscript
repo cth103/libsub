@@ -9,6 +9,7 @@ def options(opt):
     opt.add_option('--enable-debug', action='store_true', default=False, help='build with debugging information and without optimisation')
     opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to cxml')
     opt.add_option('--target-windows', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package')
+    opt.add_option('--disable-tests', action='store_true', default=False, help='disable building of tests')
 
 def configure(conf):
     conf.load('compiler_cxx')
@@ -18,6 +19,7 @@ def configure(conf):
     conf.env.ENABLE_DEBUG = conf.options.enable_debug
     conf.env.STATIC = conf.options.static
     conf.env.TARGET_WINDOWS = conf.options.target_windows
+    conf.env.DISABLE_TESTS = conf.options.disable_tests
 
     if conf.options.enable_debug:
         conf.env.append_value('CXXFLAGS', '-g')
@@ -66,7 +68,8 @@ def configure(conf):
                    lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
                    uselib_store='BOOST_LOCALE')
 
-    conf.recurse('test')
+    if not conf.env.DISABLE_TESTS:
+        conf.recurse('test')
 
 def build(bld):
     create_version_cc(bld, VERSION)
@@ -78,7 +81,8 @@ def build(bld):
         install_path='${LIBDIR}/pkgconfig')
 
     bld.recurse('src')
-    bld.recurse('test')
+    if not bld.env.DISABLE_TESTS:
+        bld.recurse('test')
     bld.recurse('tools')
 
     bld.add_post_fun(post)

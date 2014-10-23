@@ -7,7 +7,7 @@ def build(target, options):
     if target.debug:
         cmd += ' --enable-debug'
     if target.platform == 'windows':
-        cmd += ' --target-windows'
+        cmd += ' --target-windows --disable-tests'
 
     target.command(cmd)
     target.command('./waf build install')

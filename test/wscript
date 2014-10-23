@@ -1,4 +1,5 @@
 def configure(conf):
+    boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:
         boost_lib_suffix = '-mt'
 
