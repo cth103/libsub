@@ -8,6 +8,8 @@ def build(target, options):
         cmd += ' --enable-debug'
     if target.platform == 'windows':
         cmd += ' --target-windows --disable-tests'
+    if target.distro == 'centos':
+        cmd += ' --disable-tests'
 
     target.command(cmd)
     target.command('./waf build install')
