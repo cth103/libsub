@@ -74,10 +74,15 @@ def configure(conf):
 def build(bld):
     create_version_cc(bld, VERSION)
 
+    if bld.env.TARGET_WINDOWS:
+        boost_lib_suffix = '-mt'
+    else:
+        boost_lib_suffix = ''
+
     bld(source='libsub.pc.in',
         version=VERSION,
         includedir='%s/include' % bld.env.PREFIX,
-        libs="-L${libdir} -lsub -lboost_system",
+        libs="-L${libdir} -lsub -lboost_system%s" % boost_lib_suffix,
         install_path='${LIBDIR}/pkgconfig')
 
     bld.recurse('src')
