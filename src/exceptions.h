@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_EXCEPTIONS_H
+#define LIBSUB_EXCEPTIONS_H
+
 #include <stdexcept>
 #include <string>
 
@@ -73,3 +76,5 @@ public:
 };
 
 }
+
+#endif

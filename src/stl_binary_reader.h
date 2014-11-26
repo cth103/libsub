@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_STL_BINARY_READER_H
+#define LIBSUB_STL_BINARY_READER_H
+
 #include "reader.h"
 #include "stl_binary_tables.h"
 #include <map>
@@ -74,3 +77,5 @@ private:
 };
 
 }
+
+#endif

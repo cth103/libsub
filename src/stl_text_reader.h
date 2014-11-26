@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_STL_TEXT_READER_H
+#define LIBSUB_STL_TEXT_READER_H
+
 #include "reader.h"
 #include <boost/optional.hpp>
 
@@ -39,3 +42,5 @@ private:
 };
 
 }
+
+#endif

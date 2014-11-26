@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_STL_BINARY_WRITER_H
+#define LIBSUB_STL_BINARY_WRITER_H
+
 #include "stl_binary_tables.h"
 #include <string>
 #include <boost/filesystem.hpp>
@@ -46,3 +49,5 @@ extern void write_stl_binary (
 	);
 
 }
+
+#endif

@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_SUBRIP_READER_H
+#define LIBSUB_SUBRIP_READER_H
+
 #include "reader.h"
 #include "time_pair.h"
 
@@ -42,3 +45,5 @@ private:
 };
 
 }
+
+#endif

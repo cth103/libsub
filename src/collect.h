@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_COLLECT_H
+#define LIBSUB_COLLECT_H
+
 #include "subtitle.h"
 #include "raw_subtitle.h"
 
@@ -58,3 +61,5 @@ collect (std::list<RawSubtitle> raw)
 }
 
 }
+
+#endif
