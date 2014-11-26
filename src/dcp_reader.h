@@ -17,6 +17,9 @@
 
 */
 
+#ifndef LIBSUB_DCP_READER_H
+#define LIBSUB_DCP_READER_H
+
 #include "reader.h"
 #include <boost/shared_ptr.hpp>
 
@@ -63,3 +66,5 @@ private:
 };
 
 }
+
+#endif
