@@ -83,8 +83,9 @@ main (int argc, char* argv[])
 	}
 
 	list<sub::Subtitle> subs = collect<list<sub::Subtitle> > (reader->subtitles ());
+	int n = 0;
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
-		cout << "Subtitle at " << i->from << " -> " << i->to << "\n";
+		cout << "Subtitle " << n << " at " << i->from << " -> " << i->to << "\n";
 		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
 			cout << "\t";
 			bool italic = false;
@@ -115,6 +116,8 @@ main (int argc, char* argv[])
 			}
 			cout << "\n";
 		}
+
+		++n;
 	}
 
 	return 0;
