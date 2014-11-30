@@ -87,6 +87,32 @@ main (int argc, char* argv[])
 	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
 		cout << "Subtitle " << n << " at " << i->from << " -> " << i->to << "\n";
 		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+
+			cout << "\t";
+			
+			if (j->vertical_position.proportional) {
+				cout << j->vertical_position.proportional.get() << " of screen";
+			} else if (j->vertical_position.line) {
+				cout << j->vertical_position.line.get() << " lines";
+			}
+			if (j->vertical_position.reference) {
+				cout << " from ";
+				switch (j->vertical_position.reference.get()) {
+				case TOP_OF_SCREEN:
+					cout << "top";
+					break;
+				case CENTRE_OF_SCREEN:
+					cout << "centre";
+					break;
+				case BOTTOM_OF_SCREEN:
+					cout << "bottom";
+					break;
+				case TOP_OF_SUBTITLE:
+					cout << "top of subtitle";
+					break;
+				}
+			}
+
 			cout << "\t";
 			bool italic = false;
 			bool underline = false;
