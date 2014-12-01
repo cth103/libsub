@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/stl_binary_writer.h
+ *  @brief Writer for STL binary files.
+ */
+
 #ifndef LIBSUB_STL_BINARY_WRITER_H
 #define LIBSUB_STL_BINARY_WRITER_H
 

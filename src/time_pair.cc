@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/time_pair.cc
+ *  @brief TimePair class.
+ */
+
 #include "time_pair.h"
 
 using std::ostream;

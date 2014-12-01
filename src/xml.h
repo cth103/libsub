@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/xml.h
+ *  @brief Some useful XML helper functions.
+ */
+
 #ifndef LIBSUB_XML_H
 #define LIBSUB_XML_H
 

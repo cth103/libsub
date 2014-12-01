@@ -24,7 +24,10 @@
 #include "raw_subtitle.h"
 
 namespace sub {
-	
+
+/** Collect sub::RawSubtitle objects into sub::Subtitles.
+ *  This method is templated so that any container type can be used for the result.
+ */
 template <class T>
 T
 collect (std::list<RawSubtitle> raw)

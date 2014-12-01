@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/time_pair.h
+ *  @brief TimePair class.
+ */
+
 #ifndef LIBSUB_TIME_PAIR_H
 #define LIBSUB_TIME_PAIR_H
 

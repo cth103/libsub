@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/stl_binary_writer.cc
+ *  @brief Writer for STL binary files.
+ */
+
 #include "stl_binary_writer.h"
 #include "subtitle.h"
 #include "iso6937.h"
