@@ -110,3 +110,22 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test3)
 		"build/test/Paddington_FTR_Subs_DE-FR_24fps_R1.stl"
 		);
 }
+
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test4)
+{
+	ifstream file ("test/data/test1.xml");
+
+	sub::write_stl_binary (
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(file).subtitles ()),
+		25,
+		sub::LANGUAGE_FRENCH,
+		"", "",
+		"", "",
+		"", "",
+		"300514", "300514", 0,
+		"GBR",
+		"",
+		"", "",
+		"build/test/test1.stl"
+		);
+}
