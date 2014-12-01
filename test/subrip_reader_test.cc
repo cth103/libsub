@@ -26,6 +26,7 @@
 #include <fstream>
 
 using std::list;
+using std::cerr;
 using std::ifstream;
 using std::vector;
 
@@ -290,6 +291,11 @@ test (boost::filesystem::path p)
 {
 	p = private_test / p;
 	FILE* f = fopen (p.string().c_str(), "r");
+	BOOST_CHECK (f);
+	if (!f) {
+		cerr << p << " not found.\n";
+		return;
+	}
 	sub::SubripReader r (f);
 	fclose (f);
 }
