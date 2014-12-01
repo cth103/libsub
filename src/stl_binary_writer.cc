@@ -44,7 +44,7 @@ using namespace sub;
  *  64 here would mean that there are 64 addressable vertical positions
  *  on the screen, each 1/64th of the screen height tall.
  *
- *  The arbitrary 23 makes our output agree more closely with
+ *  The magic 23 makes our output agree more closely with
  *  AnnotationEdit, which makes life easier when testing.
  */
 static int const ROWS = 23;
