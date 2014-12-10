@@ -22,6 +22,7 @@
  */
 
 #include "time_pair.h"
+#include <cmath>
 
 using std::ostream;
 using namespace sub;
@@ -34,7 +35,7 @@ TimePair::frame (float fps) const
 	}
 
 	MetricTime const m = _metric.get ();
-	return FrameTime (m.hours(), m.minutes(), m.seconds(), m.milliseconds() * fps / 1000);
+	return FrameTime (m.hours(), m.minutes(), m.seconds(), rint (m.milliseconds() * fps / 1000));
 }
 
 MetricTime
@@ -45,7 +46,7 @@ TimePair::metric (float fps) const
 	}
 
 	FrameTime const f = _frame.get ();
-	return MetricTime (f.hours(), f.minutes(), f.seconds(), f.frames() * 1000 / fps);
+	return MetricTime (f.hours(), f.minutes(), f.seconds(), rint (f.frames() * 1000 / fps));
 }
 
 void
@@ -54,7 +55,7 @@ TimePair::add (FrameTime t, float fps)
 	if (_frame) {
 		_frame.get().add (t, fps);
 	} else {
-		_metric.get().add (MetricTime (t.hours(), t.minutes(), t.seconds(), t.frames() * 1000 / fps));
+		_metric.get().add (MetricTime (t.hours(), t.minutes(), t.seconds(), rint (t.frames() * 1000 / fps)));
 	}
 }
 
