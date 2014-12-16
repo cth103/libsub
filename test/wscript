@@ -17,7 +17,7 @@ def configure(conf):
 def build(bld):
     obj = bld(features='cxx cxxprogram')
     obj.name   = 'tests'
-    obj.uselib = 'BOOST_TEST CXML DCP'
+    obj.uselib = 'BOOST_TEST DCP CXML'
     obj.use    = 'libsub'
     obj.source = """
                  dcp_reader_test.cc
