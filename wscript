@@ -32,7 +32,7 @@ def configure(conf):
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp', 'openjpeg']
-        conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt', 'xmlsec1']
+        conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt', 'xmlsec1', 'xmlsec1-openssl']
         conf.check_cfg(package='libdcp', atleast_version='0.98', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     else:
