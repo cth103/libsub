@@ -31,19 +31,18 @@ using boost::shared_ptr;
 using namespace sub;
 
 shared_ptr<Reader>
-sub::reader_factory (string file_name)
+sub::reader_factory (boost::filesystem::path file_name)
 {
-	ifstream f (file_name.c_str ());
-	if (!f.good ()) {
-		return shared_ptr<Reader> ();
-	}
+	string ext = file_name.extension().string();
+	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 	
-	if (ends_with (file_name, ".xml") || ends_with (file_name, ".XML")) {
-		return shared_ptr<Reader> (new DCPReader (f));
+	if (ext == ".xml" || ext == ".mxf") {
+		return shared_ptr<Reader> (new DCPReader (file_name));
 	}
 
-	if (ends_with (file_name, ".stl") || ends_with (file_name, ".STL")) {
+	if (ext == ".stl") {
 		/* Check the start of the DFC */
+		ifstream f (file_name.string().c_str ());
 		char buffer[11];
 		f.read (buffer, 11);
 		f.seekg (0);

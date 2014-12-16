@@ -21,345 +21,71 @@
 #include "vertical_reference.h"
 #include "xml.h"
 #include <libcxml/cxml.h>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
+#include <libdcp/subtitle_asset.h>
 
-using std::string;
 using std::list;
-using std::vector;
-using std::istream;
 using std::cout;
 using boost::shared_ptr;
-using boost::optional;
-using boost::lexical_cast;
-using boost::is_any_of;
 using namespace sub;
 
-namespace sub {
-
-class DCPFont;
-
-/** @class DCPText
- *  @brief A DCP subtitle &lt;Text&gt; node.
- */
-class DCPText
+static MetricTime
+dcp_to_metric (libdcp::Time t)
 {
-public:
-	DCPText ()
-		: v_position (0)
-		, v_align (TOP_OF_SCREEN)
-	{}
-	
-	DCPText (shared_ptr<const cxml::Node> node)
-		: v_align (CENTRE_OF_SCREEN)
-	{
-		text = node->content ();
-		v_position = node->number_attribute<float> ("VPosition");
-		optional<string> v = node->optional_string_attribute ("VAlign");
-		if (v) {
-			v_align = string_to_vertical_reference (v.get ());
-		}
-		
-		font_nodes = type_children<DCPFont> (node, "Font");
-	}
-
-	float v_position;
-	VerticalReference v_align;
-	string text;
-	shared_ptr<DCPFont> foo;
-	list<shared_ptr<DCPFont> > font_nodes;
-};
-
-/** @class DCPSubtitle
- *  @brief A DCP subtitle &lt;Subtitle&gt; node.
- */
-class DCPSubtitle 
-{
-public:
-	DCPSubtitle () {}
-	DCPSubtitle (shared_ptr<const cxml::Node> node)
-	{
-		in = MetricTime (time (node->string_attribute ("TimeIn")));
-		out = MetricTime (time (node->string_attribute ("TimeOut")));
-		font_nodes = type_children<DCPFont> (node, "Font");
-		text_nodes = type_children<DCPText> (node, "Text");
-		fade_up_time = fade_time (node, "FadeUpTime");
-		fade_down_time = fade_time (node, "FadeDownTime");
-	}
-
-	MetricTime in;
-	MetricTime out;
-	MetricTime fade_up_time;
-	MetricTime fade_down_time;
-	list<shared_ptr<DCPFont> > font_nodes;
-	list<shared_ptr<DCPText> > text_nodes;
-
-private:
-	static MetricTime time (std::string time)
-	{
-		vector<string> b;
-		split (b, time, is_any_of (":"));
-		if (b.size() != 4) {
-			boost::throw_exception (XMLError ("unrecognised time specification"));
-		}
-
-		return MetricTime (lexical_cast<int>(b[0]), lexical_cast<int> (b[1]), lexical_cast<int> (b[2]), lexical_cast<int> (b[3]) * 4);
-	}
-	
-	MetricTime fade_time (shared_ptr<const cxml::Node> node, string name)
-	{
-		string const u = node->optional_string_attribute (name).get_value_or ("");
-		MetricTime t;
-		
-		if (u.empty ()) {
-			t = MetricTime (0, 0, 0, 80);
-		} else if (u.find (":") != string::npos) {
-			t = time (u);
-		} else {
-			t = MetricTime (0, 0, 0, lexical_cast<int>(u) * 4);
-		}
-		
-		if (t > MetricTime (0, 0, 8, 0)) {
-			t = MetricTime (0, 0, 8, 0);
-		}
-		
-		return t;
-	}
-};
-
-/** @class DCPFont
- *  @brief A DCP subtitle &lt;Font&gt; node.
- */
-class DCPFont 
-{
-public:
-	DCPFont ()
-		: size (0)
-	{}
-	
-	DCPFont (shared_ptr<const cxml::Node> node)
-	{
-		text = node->content ();
-		
-		id = node->optional_string_attribute ("Id").get_value_or ("");
-		size = node->optional_number_attribute<int64_t> ("Size").get_value_or (0);
-		italic = node->optional_bool_attribute ("Italic");
-		optional<string> c = node->optional_string_attribute ("Color");
-		if (c) {
-			colour = Colour (c.get ());
-		}
-		optional<string> const e = node->optional_string_attribute ("Effect");
-		if (e) {
-			effect = string_to_effect (e.get ());
-		}
-		c = node->optional_string_attribute ( "EffectColor");
-		if (c) {
-			effect_colour = Colour (c.get ());
-		}
-		subtitle_nodes = type_children<DCPSubtitle> (node, "Subtitle");
-		font_nodes = type_children<DCPFont> (node, "Font");
-		text_nodes = type_children<DCPText> (node, "Text");
-	}
-	
-	DCPFont (list<shared_ptr<DCPFont> > const & font_nodes)
-		: size (0)
-		, italic (false)
-		, colour ("FFFFFFFF")
-		, effect_colour ("FFFFFFFF")
-	{
-		for (list<shared_ptr<DCPFont> >::const_iterator i = font_nodes.begin(); i != font_nodes.end(); ++i) {
-			if (!(*i)->id.empty ()) {
-				id = (*i)->id;
-			}
-			if ((*i)->size != 0) {
-				size = (*i)->size;
-			}
-			if ((*i)->italic) {
-				italic = (*i)->italic.get ();
-			}
-			if ((*i)->colour) {
-				colour = (*i)->colour.get ();
-			}
-			if ((*i)->effect) {
-				effect = (*i)->effect.get ();
-			}
-			if ((*i)->effect_colour) {
-				effect_colour = (*i)->effect_colour.get ();
-			}
-		}
-	}
-
-	string text;
-	string id;
-	int size;
-	optional<bool> italic;
-	optional<Colour> colour;
-	optional<Effect> effect;
-	optional<Colour> effect_colour;
-	
-	list<shared_ptr<DCPSubtitle> > subtitle_nodes;
-	list<shared_ptr<DCPFont> > font_nodes;
-	list<shared_ptr<DCPText> > text_nodes;
-};
-
-/** @class DCPLoadFont
- *  @brief A DCP subtitle &lt;LoadFont&gt; node.
- */
-class DCPLoadFont 
-{
-public:
-	DCPLoadFont () {}
-	DCPLoadFont (shared_ptr<const cxml::Node> node)
-	{
-		id = node->string_attribute ("Id");
-		uri = node->string_attribute ("URI");
-	}
-
-	string id;
-	string uri;
-};
-
-/** @class DCPReader::ParseState
- *  @brief Holder of state for use while reading DCP subtitles.
- */
-struct DCPReader::ParseState {
-	list<shared_ptr<DCPFont> > font_nodes;
-	list<shared_ptr<DCPText> > text_nodes;
-	list<shared_ptr<DCPSubtitle> > subtitle_nodes;
-};
-
+	return MetricTime (t.h, t.m, t.s, t.t * 4);
 }
 
-/** @param s A string.
- *  @return true if the string contains only space, newline or tab characters, or is empty.
- */
-static bool
-empty_or_white_space (string s)
+static Colour
+dcp_to_colour (libdcp::Color c)
 {
-	for (size_t i = 0; i < s.length(); ++i) {
-		if (s[i] != ' ' && s[i] != '\n' && s[i] != '\t') {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-string
-DCPReader::font_id_to_name (string id) const
-{
-	list<shared_ptr<DCPLoadFont> >::const_iterator i = _load_font_nodes.begin();
-	while (i != _load_font_nodes.end() && (*i)->id != id) {
-		++i;
-	}
-
-	if (i == _load_font_nodes.end ()) {
-		return "";
-	}
-
-	if ((*i)->uri == "arial.ttf" || (*i)->uri == "Arial.ttf") {
-		return "Arial";
-	}
-
-	return (*i)->uri;
+	return Colour (float (c.r) / 255, float (c.g) / 255, float (c.b) / 255);
 }
 
 /** @class DCPReader
  *  @brief A class to read DCP subtitles.
  */
-DCPReader::DCPReader (istream& in)
+DCPReader::DCPReader (boost::filesystem::path file)
 {
-	shared_ptr<cxml::Document> xml (new cxml::Document ("DCSubtitle"));
-	xml->read_stream (in);
+	libdcp::SubtitleAsset asset (file.parent_path().string(), file.leaf().string());
+	list<shared_ptr<libdcp::Subtitle> > subs = asset.subtitles ();
+	for (list<shared_ptr<libdcp::Subtitle> >::const_iterator i = subs.begin(); i != subs.end(); ++i) {
+		RawSubtitle sub;
 
-	xml->ignore_child ("SubtitleID");
-	xml->ignore_child ("MovieTitle");
-	xml->ignore_child ("ReelNumber");
-	xml->ignore_child ("Language");
-
-	list<shared_ptr<DCPFont> > font_nodes = type_children<DCPFont> (xml, "Font");
-	_load_font_nodes = type_children<DCPLoadFont> (xml, "LoadFont");
-	
-	/* Now make Subtitle objects to represent the raw XML nodes
-	   in a sane way.
-	*/
-
-	ParseState parse_state;
-	examine_font_nodes (xml, font_nodes, parse_state);
-}
-
-void
-DCPReader::examine_font_nodes (
-	shared_ptr<const cxml::Node> xml,
-	list<shared_ptr<DCPFont> > const & font_nodes,
-	ParseState& parse_state
-	)
-{
-	for (list<shared_ptr<DCPFont> >::const_iterator i = font_nodes.begin(); i != font_nodes.end(); ++i) {
-
-		parse_state.font_nodes.push_back (*i);
-		maybe_add_subtitle ((*i)->text, parse_state);
-
-		for (list<shared_ptr<DCPSubtitle> >::iterator j = (*i)->subtitle_nodes.begin(); j != (*i)->subtitle_nodes.end(); ++j) {
-			parse_state.subtitle_nodes.push_back (*j);
-			examine_text_nodes (xml, (*j)->text_nodes, parse_state);
-			examine_font_nodes (xml, (*j)->font_nodes, parse_state);
-			parse_state.subtitle_nodes.pop_back ();
+		sub.vertical_position.proportional = float ((*i)->v_position ()) / 100;
+		switch ((*i)->v_align ()) {
+		case libdcp::TOP:
+			sub.vertical_position.reference = TOP_OF_SCREEN;
+			break;
+		case libdcp::CENTER:
+			sub.vertical_position.reference = CENTRE_OF_SCREEN;
+			break;
+		case libdcp::BOTTOM:
+			sub.vertical_position.reference = BOTTOM_OF_SCREEN;
+			break;
 		}
-	
-		examine_font_nodes (xml, (*i)->font_nodes, parse_state);
-		examine_text_nodes (xml, (*i)->text_nodes, parse_state);
+			
+		sub.from.set_metric (dcp_to_metric ((*i)->in ()));
+		sub.to.set_metric (dcp_to_metric ((*i)->out ()));
+		sub.fade_up = dcp_to_metric ((*i)->fade_up_time ());
+		sub.fade_down = dcp_to_metric ((*i)->fade_down_time ());
 		
-		parse_state.font_nodes.pop_back ();
-	}
-}
+		sub.text = (*i)->text ();
+		sub.font = (*i)->font ();
+		sub.font_size.set_proportional (float ((*i)->size ()) / (72 * 11));
+		switch ((*i)->effect ()) {
+		case libdcp::NONE:
+			break;
+		case libdcp::BORDER:
+			sub.effect = BORDER;
+			break;
+		case libdcp::SHADOW:
+			sub.effect = SHADOW;
+			break;
+		}
 
-void
-DCPReader::examine_text_nodes (
-	shared_ptr<const cxml::Node> xml,
-	list<shared_ptr<DCPText> > const & text_nodes,
-	ParseState& parse_state
-	)
-{
-	for (list<shared_ptr<DCPText> >::const_iterator i = text_nodes.begin(); i != text_nodes.end(); ++i) {
-		parse_state.text_nodes.push_back (*i);
-		maybe_add_subtitle ((*i)->text, parse_state);
-		examine_font_nodes (xml, (*i)->font_nodes, parse_state);
-		parse_state.text_nodes.pop_back ();
-	}
-}
-
-void
-DCPReader::maybe_add_subtitle (string text, ParseState& parse_state)
-{
-	if (empty_or_white_space (text)) {
-		return;
-	}
-	
-	if (parse_state.text_nodes.empty() || parse_state.subtitle_nodes.empty ()) {
-		return;
-	}
-
-	DCPFont effective_font (parse_state.font_nodes);
-	DCPText effective_text (*parse_state.text_nodes.back ());
-	DCPSubtitle effective_subtitle (*parse_state.subtitle_nodes.back ());
-
-	RawSubtitle sub;
-
-	sub.vertical_position.proportional = float (effective_text.v_position) / 100;
-	sub.vertical_position.reference = effective_text.v_align;
-	sub.from.set_metric (effective_subtitle.in);
-	sub.to.set_metric (effective_subtitle.out);
-	sub.fade_up = effective_subtitle.fade_up_time;
-	sub.fade_down = effective_subtitle.fade_down_time;
+		sub.effect_colour = dcp_to_colour ((*i)->effect_color ());
+		sub.colour = dcp_to_colour ((*i)->color ());
+		sub.italic = (*i)->italic ();
 		
-	sub.text = text;
-	sub.font = font_id_to_name (effective_font.id);
-	sub.font_size.set_proportional (float (effective_font.size) / (72 * 11));
-	sub.effect = effective_font.effect;
-	sub.effect_colour = effective_font.effect_colour;
-	sub.colour = effective_font.colour.get ();
-	sub.italic = effective_font.italic.get ();
-
-	_subs.push_back (sub);
+		_subs.push_back (sub);
+	}
 }
