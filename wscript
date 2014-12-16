@@ -31,10 +31,10 @@ def configure(conf):
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
-        conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
-        conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp']
-        conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt']
+        conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp', 'openjpeg']
+        conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt', 'xmlsec1']
         conf.check_cfg(package='libdcp', atleast_version='0.98', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
         conf.check_cfg(package='libdcp', atleast_version='0.97.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
