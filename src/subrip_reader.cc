@@ -83,6 +83,9 @@ SubripReader::SubripReader (FILE* f)
 		}
 		case CONTENT:
 			if (line.empty ()) {
+				/* XXX: I think this line_number should be set to some sensible value and TOP_OF_SUBTITLE
+				   should not be used.
+				*/
 				state = COUNTER;
 				line_number = 0;
 			} else {
