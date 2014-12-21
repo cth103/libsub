@@ -2,7 +2,7 @@ import subprocess
 import os
 
 APPNAME = 'libsub'
-VERSION = '0.01.0devel'
+VERSION = '1.0.0devel'
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -31,13 +31,13 @@ def configure(conf):
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
-        conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp', 'openjpeg']
+        conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-libdcp-1.0', 'kumu-libdcp-1.0', 'openjpeg']
         conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt', 'xmlsec1', 'xmlsec1-openssl']
-        conf.check_cfg(package='libdcp', atleast_version='0.98', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.0.0', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libdcp', atleast_version='0.97.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.0.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     boost_lib_suffix = ''
@@ -85,7 +85,7 @@ def build(bld):
     else:
         boost_lib_suffix = ''
 
-    bld(source='libsub.pc.in',
+    bld(source='libsub-1.0.pc.in',
         version=VERSION,
         includedir='%s/include' % bld.env.PREFIX,
         libs="-L${libdir} -lsub -lboost_system%s" % boost_lib_suffix,

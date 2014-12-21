@@ -36,8 +36,12 @@ sub::reader_factory (boost::filesystem::path file_name)
 	string ext = file_name.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 	
-	if (ext == ".xml" || ext == ".mxf") {
-		return shared_ptr<Reader> (new DCPReader (file_name));
+	if (ext == ".xml") {
+		return shared_ptr<Reader> (new DCPReader (file_name, true));
+	}
+
+	if (ext == ".mxf") {
+		return shared_ptr<Reader> (new DCPReader (file_name, false));
 	}
 
 	if (ext == ".stl") {

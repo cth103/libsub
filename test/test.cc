@@ -106,7 +106,10 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 
 		for (uintmax_t i = 0; i < this_time; ++i) {
 			stringstream s;
-			s << "Files differ at offset " << (offset + i) << "; reference is " << hex << ((int) ref_buffer[i]) << ", check is " << ((int) check_buffer[i]);
+			s << "Files differ at offset " << (offset + i)
+			  << "; reference is " << hex << ((int) ref_buffer[i])
+			  << ", check is " << hex << ((int) check_buffer[i]);
+			
 			BOOST_CHECK_MESSAGE (ref_buffer[i] == check_buffer[i], s.str ());
 		}
 

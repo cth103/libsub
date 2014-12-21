@@ -30,7 +30,7 @@ using boost::shared_ptr;
 /* Test reading of a DCP XML file */
 BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 {
-	sub::DCPReader reader ("test/data/test1.xml");
+	sub::DCPReader reader ("test/data/test1.xml", true);
 	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 /* And another one */
 BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 {
-	sub::DCPReader reader ("test/data/test2.xml");
+	sub::DCPReader reader ("test/data/test2.xml", true);
 	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
@@ -170,7 +170,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -294,7 +294,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -348,7 +348,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -388,7 +388,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -428,7 +428,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -454,7 +454,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -468,7 +468,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -494,7 +494,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -508,7 +508,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -534,7 +534,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -548,7 +548,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
@@ -588,7 +588,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK (j != i->lines.end ());
 		BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 		b = j->blocks.front ();
-		BOOST_CHECK_EQUAL (b.font, "Arial");
+		BOOST_CHECK_EQUAL (b.font, "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));

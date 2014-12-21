@@ -2,7 +2,7 @@ prefix=@prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: libsub
+Name: libsub-1.0
 Description: Subtitle reading and writing library
 Version: @version@
 Requires: 

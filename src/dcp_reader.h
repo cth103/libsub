@@ -36,7 +36,7 @@ namespace sub {
 class DCPReader : public Reader
 {
 public:
-	DCPReader (boost::filesystem::path file);
+	DCPReader (boost::filesystem::path file, bool interop);
 };
 
 }
