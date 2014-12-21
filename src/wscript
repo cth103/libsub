@@ -14,6 +14,7 @@ def build(bld):
                  colour.cc
                  dcp_reader.cc
                  effect.cc
+                 font_size.cc
                  frame_time.cc
                  iso6937.cc
                  iso6937_tables.cc

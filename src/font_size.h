@@ -20,6 +20,8 @@
 #ifndef LIBSUB_FONT_SIZE_H
 #define LIBSUB_FONT_SIZE_H
 
+#include <boost/optional.hpp>
+
 namespace sub {
 
 /** @class FontSize
