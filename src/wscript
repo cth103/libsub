@@ -6,8 +6,8 @@ def build(bld):
     else:
         obj = bld(features='cxx cxxshlib')
 
-    obj.name = 'libsub-1.0'
-    obj.target = 'sub-1.0'
+    obj.name = 'libsub%s' % bld.env.API_VERSION
+    obj.target = 'sub%s' % bld.env.API_VERSION
     obj.uselib = 'CXML DCP BOOST_FILESYSTEM BOOST_LOCALE'
     obj.export_includes = ['.']
     obj.source = """
@@ -54,6 +54,6 @@ def build(bld):
               vertical_reference.h
               """
 
-    bld.install_files('${PREFIX}/include/libsub-1.0', headers)
+    bld.install_files('${PREFIX}/include/libsub%s/sub' % bld.env.API_VERSION, headers)
     if bld.env.STATIC:
-        bld.install_files('${PREFIX}/lib', 'libsub-1.0.a')
+        bld.install_files('${PREFIX}/lib', 'libsub%s.a' % bld.env.API_VERSION)

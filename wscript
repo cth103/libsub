@@ -3,6 +3,7 @@ import os
 
 APPNAME = 'libsub'
 VERSION = '1.0.0devel'
+API_VERSION = '-1.0'
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -20,6 +21,7 @@ def configure(conf):
     conf.env.STATIC = conf.options.static
     conf.env.TARGET_WINDOWS = conf.options.target_windows
     conf.env.DISABLE_TESTS = conf.options.disable_tests
+    conf.env.API_VERSION = API_VERSION
 
     if conf.options.enable_debug:
         conf.env.append_value('CXXFLAGS', '-g')
@@ -85,9 +87,9 @@ def build(bld):
     else:
         boost_lib_suffix = ''
 
-    bld(source='libsub-1.0.pc.in',
+    bld(source='libsub%s.pc.in' % bld.env.API_VERSION,
         version=VERSION,
-        includedir='%s/include/libsub-1.0' % bld.env.PREFIX,
+        includedir='%s/include/libsub%s' % (bld.env.PREFIX, bld.env.API_VERSION),
         libs="-L${libdir} -lsub -lboost_system%s" % boost_lib_suffix,
         install_path='${LIBDIR}/pkgconfig')
 
