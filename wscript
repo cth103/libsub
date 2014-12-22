@@ -87,7 +87,7 @@ def build(bld):
 
     bld(source='libsub-1.0.pc.in',
         version=VERSION,
-        includedir='%s/include' % bld.env.PREFIX,
+        includedir='%s/include/libsub-1.0' % bld.env.PREFIX,
         libs="-L${libdir} -lsub -lboost_system%s" % boost_lib_suffix,
         install_path='${LIBDIR}/pkgconfig')
 
