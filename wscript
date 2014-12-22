@@ -90,7 +90,7 @@ def build(bld):
     bld(source='libsub%s.pc.in' % bld.env.API_VERSION,
         version=VERSION,
         includedir='%s/include/libsub%s' % (bld.env.PREFIX, bld.env.API_VERSION),
-        libs="-L${libdir} -lsub -lboost_system%s" % boost_lib_suffix,
+        libs="-L${libdir} -lsub%s -lboost_system%s" % (bld.env.API_VERSION, boost_lib_suffix),
         install_path='${LIBDIR}/pkgconfig')
 
     bld.recurse('src')
