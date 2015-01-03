@@ -37,7 +37,7 @@ dcp_to_metric (dcp::Time t)
 }
 
 static Colour
-dcp_to_colour (dcp::Color c)
+dcp_to_colour (dcp::Colour c)
 {
 	return Colour (float (c.r) / 255, float (c.g) / 255, float (c.b) / 255);
 }
@@ -91,8 +91,8 @@ DCPReader::DCPReader (boost::filesystem::path file, bool interop)
 			break;
 		}
 
-		sub.effect_colour = dcp_to_colour (i->effect_color ());
-		sub.colour = dcp_to_colour (i->color ());
+		sub.effect_colour = dcp_to_colour (i->effect_colour ());
+		sub.colour = dcp_to_colour (i->colour ());
 		sub.italic = i->italic ();
 		
 		_subs.push_back (sub);
