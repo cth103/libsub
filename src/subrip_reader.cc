@@ -132,6 +132,8 @@ SubripReader::convert_line (string t, int line_number, TimePair from, TimePair t
 	p.from = from;
 	p.to = to;
 	p.vertical_position.line = line_number;
+	/* XXX: arbitrary */
+	p.vertical_position.lines = 32;
 	p.vertical_position.reference = TOP_OF_SUBTITLE;
 	
 	/* XXX: missing <font> support */
