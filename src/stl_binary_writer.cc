@@ -192,8 +192,8 @@ sub::write_stl_binary (
 
 	output.write (buffer, 1024);
 
-	int N = 0;
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+		int N = 0;
 		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
 
 			memset (buffer, 0, 1024);
@@ -293,6 +293,8 @@ sub::write_stl_binary (
 			
 			put_string (buffer + 16, text);
 			output.write (buffer, 128);
+
+			++N;
 		}
 	}
 
