@@ -29,6 +29,7 @@ def build(bld):
                  subrip_reader_test.cc
                  time_test.cc
                  test.cc
+                 vertical_position_test.cc
                  """
     obj.target = 'tests'
     obj.install_path = ''

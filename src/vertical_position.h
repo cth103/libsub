@@ -41,6 +41,9 @@ public:
 	boost::optional<VerticalReference> reference;
 	
 	bool operator== (VerticalPosition const & other) const;
+	bool operator< (VerticalPosition const & other) const;
+
+	float fraction_from_screen_top () const;
 };
 	
 }
