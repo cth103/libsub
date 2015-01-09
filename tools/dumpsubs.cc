@@ -93,7 +93,7 @@ main (int argc, char* argv[])
 			if (j->vertical_position.proportional) {
 				cout << j->vertical_position.proportional.get() << " of screen";
 			} else if (j->vertical_position.line) {
-				cout << j->vertical_position.line.get() << " lines";
+				cout << j->vertical_position.line.get() << " lines of " << j->vertical_position.lines.get();
 			}
 			if (j->vertical_position.reference) {
 				cout << " from ";

@@ -21,14 +21,45 @@
 
 using namespace sub;
 
+float
+VerticalPosition::fraction_from_screen_top () const
+{
+	if (!reference || (!proportional && !line)) {
+		return 0;
+	}
+
+	float const prop = proportional ? proportional.get() : (float (line.get()) / lines.get ());
+	
+	switch (reference.get ()) {
+	case TOP_OF_SCREEN:
+		return prop;
+	case CENTRE_OF_SCREEN:
+		return prop + 0.5;
+	case BOTTOM_OF_SCREEN:
+		return 1 - prop;
+	case TOP_OF_SUBTITLE:
+		return prop;
+	}
+
+	return 0;
+}
+
 bool
 VerticalPosition::operator== (VerticalPosition const & other) const
 {
 	if (proportional && reference && other.proportional && other.reference) {
 		return proportional.get() == other.proportional.get() && reference.get() == other.reference.get();
-	} else if (reference && line && other.reference && other.line) {
-		return line.get() == other.line.get() && reference.get() == other.reference.get();
+	} else if (reference && line && lines && other.reference && other.line && other.lines) {
+		return line.get() == other.line.get() && lines.get() == other.lines.get() && reference.get() == other.reference.get();
 	}
 
 	return false;
 }
+
+bool
+VerticalPosition::operator< (VerticalPosition const & other) const
+{
+	return fraction_from_screen_top() < other.fraction_from_screen_top();
+}
+
+	

@@ -192,8 +192,8 @@ sub::write_stl_binary (
 
 	output.write (buffer, 1024);
 
-	int N = 0;
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+		int N = 0;
 		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
 
 			memset (buffer, 0, 1024);
@@ -235,18 +235,16 @@ sub::write_stl_binary (
 					break;
 				}
 			} else if (j->vertical_position.line) {
-				/* XXX: how many lines are there...?  We need to correct for any difference
-				   between the number of lines and our ROWS.
-				*/
+				float const prop = float (j->vertical_position.line.get()) / j->vertical_position.lines.get ();
 				switch (j->vertical_position.reference.get_value_or (TOP_OF_SCREEN)) {
 				case TOP_OF_SCREEN:
-					vp = j->vertical_position.line.get();
+					vp = prop * ROWS;
 					break;
 				case CENTRE_OF_SCREEN:
-					vp = j->vertical_position.line.get() + (ROWS / 2);
+					vp = (prop + 0.5) * ROWS;
 					break;
 				case BOTTOM_OF_SCREEN:
-					vp = ROWS - (j->vertical_position.line.get());
+					vp = (1 - prop) * ROWS;
 					break;
 				default:
 					break;
@@ -295,6 +293,8 @@ sub::write_stl_binary (
 			
 			put_string (buffer + 16, text);
 			output.write (buffer, 128);
+
+			++N;
 		}
 	}
 

@@ -98,6 +98,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			sub.from.set_frame (get_timecode (5));
 			sub.to.set_frame (get_timecode (9));
 			sub.vertical_position.line = get_int (13, 1) + i;
+			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 
 			string text;
