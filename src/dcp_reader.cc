@@ -31,7 +31,7 @@ using namespace sub;
 static MetricTime
 dcp_to_metric (libdcp::Time t)
 {
-	return MetricTime (t.h, t.m, t.s, t.t * 4);
+	return MetricTime (t.h, t.m, t.s, t.e * 1000 / t.tcr);
 }
 
 static Colour
