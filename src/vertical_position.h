@@ -35,11 +35,15 @@ public:
 	boost::optional<float> proportional;
 	/** line number offset from some reference point */
 	boost::optional<int> line;
+	/** number of lines on the whole screen (i.e. height of the screen in lines) */
+	boost::optional<int> lines;
 	/** reference point */
 	boost::optional<VerticalReference> reference;
 	
 	bool operator== (VerticalPosition const & other) const;
-	
+	bool operator< (VerticalPosition const & other) const;
+
+	float fraction_from_screen_top () const;
 };
 	
 }
