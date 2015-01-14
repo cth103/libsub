@@ -36,7 +36,7 @@ public:
 private:
 	void set (std::string name, std::string value);
 	void maybe_push ();
-	boost::optional<FrameTime> time (std::string t) const;
+	boost::optional<Time> time (std::string t) const;
 
 	RawSubtitle _subtitle;
 };

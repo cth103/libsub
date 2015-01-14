@@ -209,15 +209,15 @@ sub::write_stl_binary (
 			/* Cumulative status */
 			put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
 			/* Time code in */
-			put_int_as_int (buffer + 5, i->from.frame(frames_per_second).hours (), 1);
-			put_int_as_int (buffer + 6, i->from.frame(frames_per_second).minutes (), 1);
-			put_int_as_int (buffer + 7, i->from.frame(frames_per_second).seconds (), 1);
-			put_int_as_int (buffer + 8, i->from.frame(frames_per_second).frames (), 1);
+			put_int_as_int (buffer + 5, i->from.hours (), 1);
+			put_int_as_int (buffer + 6, i->from.minutes (), 1);
+			put_int_as_int (buffer + 7, i->from.seconds (), 1);
+			put_int_as_int (buffer + 8, i->from.frames_at (sub::Rational (frames_per_second * 1000, 1000)), 1);
 			/* Time code out */
-			put_int_as_int (buffer + 9, i->to.frame(frames_per_second).hours (), 1);
-			put_int_as_int (buffer + 10, i->to.frame(frames_per_second).minutes (), 1);
-			put_int_as_int (buffer + 11, i->to.frame(frames_per_second).seconds (), 1);
-			put_int_as_int (buffer + 12, i->to.frame(frames_per_second).frames (), 1);
+			put_int_as_int (buffer + 9, i->to.hours (), 1);
+			put_int_as_int (buffer + 10, i->to.minutes (), 1);
+			put_int_as_int (buffer + 11, i->to.seconds (), 1);
+			put_int_as_int (buffer + 12, i->to.frames_at (sub::Rational (frames_per_second * 1000, 1000)), 1);
 			/* Vertical position */
 			int vp = 0;
 			if (j->vertical_position.proportional) {

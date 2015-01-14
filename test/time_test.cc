@@ -17,16 +17,14 @@
 
 */
 
+#include "sub_time.h"
 #include <boost/test/unit_test.hpp>
-#include "metric_time.h"
-#include "frame_time.h"
-#include "time_pair.h"
 
 /* Check time construction */
 BOOST_AUTO_TEST_CASE (time_construction_test)
 {
 	{
-		sub::MetricTime t (3, 5, 7, 40);
+		sub::Time t = sub::Time::from_hms (3, 5, 7, 40);
 		BOOST_CHECK_EQUAL (t.hours(), 3);
 		BOOST_CHECK_EQUAL (t.minutes(), 5);
 		BOOST_CHECK_EQUAL (t.seconds(), 7);
@@ -34,54 +32,35 @@ BOOST_AUTO_TEST_CASE (time_construction_test)
 	}
 
 	{
-		sub::MetricTime t (591353, 1, 2, 3);
+		sub::Time t = sub::Time::from_hms (591353, 1, 2, 3);
 		BOOST_CHECK_EQUAL (t.hours(), 591353);
 		BOOST_CHECK_EQUAL (t.minutes(), 1);
 		BOOST_CHECK_EQUAL (t.seconds(), 2);
 		BOOST_CHECK_EQUAL (t.milliseconds(), 3);
-	}
-
-	{
-		sub::FrameTime t (3 * 60 * 60 * 24 + 31 * 60 * 24 + 4 * 24 + 11, 24);
-		BOOST_CHECK_EQUAL (t.hours(), 3);
-		BOOST_CHECK_EQUAL (t.minutes(), 31);
-		BOOST_CHECK_EQUAL (t.seconds(), 4);
-		BOOST_CHECK_EQUAL (t.frames(), 11);
 	}
 }
 
 /* Check time conversions */
 BOOST_AUTO_TEST_CASE (time_conversion_test)
 {
-	sub::TimePair p;
+	sub::Time p;
 	
 	/* 40ms = 1 frame at 25fps */
-	p.set_metric (sub::MetricTime (3, 5, 7, 40));
-	BOOST_CHECK_EQUAL (p.frame (25), sub::FrameTime (3, 5, 7, 1));
-	p.set_frame (sub::FrameTime  (3, 5, 7, 1));
-	BOOST_CHECK_EQUAL (p.metric (25), sub::MetricTime (3, 5, 7, 40));
+	p = sub::Time::from_hms (3, 5, 7, 40);
+	BOOST_CHECK_EQUAL (p.frames_at (sub::Rational (25, 1)), 1);
+	p = sub::Time::from_hmsf (3, 5, 7, 1, sub::Rational (25, 1));
+	BOOST_CHECK_EQUAL (p.milliseconds (), 40);
 
 	/* 120ms = 3 frames at 25fps */
-	p.set_metric (sub::MetricTime (3, 5, 7, 120));
-	BOOST_CHECK_EQUAL (p.frame (25), sub::FrameTime (3, 5, 7, 3));
-	p.set_frame (sub::FrameTime (3, 5, 7, 3));
-	BOOST_CHECK_EQUAL (p.metric (25), sub::MetricTime (3, 5, 7, 120));
+	p = sub::Time::from_hms (3, 5, 7, 120);
+	BOOST_CHECK_EQUAL (p.frames_at (sub::Rational (25, 1)), 3);
+	p = sub::Time::from_hmsf (3, 5, 7, 3, sub::Rational (25, 1));
+	BOOST_CHECK_EQUAL (p.milliseconds (), 120);
 }
 
-/* Check time maths */
-BOOST_AUTO_TEST_CASE (time_maths_test)
+/* Check some operators */
+BOOST_AUTO_TEST_CASE (time_operator_test)
 {
-	{
-		sub::FrameTime a (1, 59, 59, 23);
-		sub::FrameTime b (2, 31, 19, 2);
-		a.add (b, 24);
-		BOOST_CHECK_EQUAL (a, sub::FrameTime (4, 31, 19, 1));
-	}
-
-	{
-		sub::MetricTime a (1, 59, 59, 999);
-		sub::MetricTime b (2, 31, 19, 2);
-		a.add (b);
-		BOOST_CHECK_EQUAL (a, sub::MetricTime (4, 31, 19, 1));
-	}
+	BOOST_CHECK_EQUAL (sub::Time::from_hms (0, 0, 5, 198 * 4), sub::Time::from_hms (0, 0, 5, 198 * 4));
+	BOOST_CHECK (sub::Time::from_hms (0, 0, 55, 332) != sub::Time::from_hms (0, 0, 58, 332));
 }

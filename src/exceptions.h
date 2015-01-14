@@ -75,6 +75,30 @@ public:
 	{}
 };
 
+class MXFError : public MessageError
+{
+public:
+	MXFError (std::string const & message)
+		: MessageError (message)
+	{}
+};
+
+class UnknownFrameRateError : public MessageError
+{
+public:
+	UnknownFrameRateError ()
+		: MessageError ("unknown frame rate")
+	{}
+};
+
+class DCPError : public MessageError
+{
+public:
+	DCPError (std::string const & message)
+		: MessageError (message)
+	{}
+};
+
 }
 
 #endif

@@ -2,7 +2,7 @@
 
 private=../libsub-test-private
 
-export LD_LIBRARY_PATH=build/src:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=build/src:build/asdcplib/src:$LD_LIBRARY_PATH
 if [ "$1" == "--debug" ]; then
     shift
     gdb --args build/test/tests $private $*

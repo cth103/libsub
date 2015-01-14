@@ -39,8 +39,8 @@ SubripReader::SubripReader (FILE* f)
 
 	char buffer[256];
 
-	TimePair from;
-	TimePair to;
+	Time from;
+	Time to;
 
 	string line;
 	int line_number = 0;
@@ -94,7 +94,7 @@ SubripReader::SubripReader (FILE* f)
 	}
 }
 
-TimePair
+Time
 SubripReader::convert_time (string t)
 {
 	vector<string> a;
@@ -106,18 +106,16 @@ SubripReader::convert_time (string t)
 	vector<string> b;
 	boost::algorithm::split (b, a[2], boost::is_any_of (","));
 
-	return TimePair (
-		MetricTime (
-			lexical_cast<int> (a[0]),
-			lexical_cast<int> (a[1]),
-			lexical_cast<int> (b[0]),
-			lexical_cast<int> (b[1])
-			)
+	return Time::from_hms (
+		lexical_cast<int> (a[0]),
+		lexical_cast<int> (a[1]),
+		lexical_cast<int> (b[0]),
+		lexical_cast<int> (b[1])
 		);
 }
 
 void
-SubripReader::convert_line (string t, int line_number, TimePair from, TimePair to)
+SubripReader::convert_line (string t, int line_number, Time from, Time to)
 {
 	enum {
 		TEXT,

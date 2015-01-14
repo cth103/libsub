@@ -40,15 +40,15 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	/* First subtitle */
 
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from.frame().get(), sub::FrameTime (0, 0, 41, 9));
-	BOOST_CHECK_EQUAL (i->to.frame().get(), sub::FrameTime (0, 0, 42, 21));
+	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hmsf (0, 0, 41, 9));
+	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hmsf (0, 0, 42, 21));
 	
 	list<sub::Line>::iterator j = i->lines.begin ();
 	BOOST_CHECK (j != i->lines.end ());
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 	sub::Block b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, " This is a subtitle ");
-	BOOST_CHECK_EQUAL (b.font, "Arial");
+	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
 	BOOST_CHECK_EQUAL (b.font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 	b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, " and that's a line break");
-	BOOST_CHECK_EQUAL (b.font, "Arial");
+	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
 	BOOST_CHECK_EQUAL (b.font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	/* Second subtitle */
 	
 	BOOST_CHECK (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from.frame().get(), sub::FrameTime (0, 1, 1, 1));
-	BOOST_CHECK_EQUAL (i->to.frame().get(), sub::FrameTime (0, 1, 2, 10));
+	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hmsf (0, 1, 1, 1));
+	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hmsf (0, 1, 2, 10));
 	
 	BOOST_CHECK_EQUAL (i->lines.size(), 1);
 	sub::Line l = i->lines.front ();
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " This is some ");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "bold");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, true);
 	BOOST_CHECK_EQUAL (k->italic, false);
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " and some ");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "bold italic");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, true);
 	BOOST_CHECK_EQUAL (k->italic, true);
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " and some ");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "underlined");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, ".");
-	BOOST_CHECK_EQUAL (k->font, "Arial");
+	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
 	BOOST_CHECK_EQUAL (k->font_size.points().get(), 42);
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);

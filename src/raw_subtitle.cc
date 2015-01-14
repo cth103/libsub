@@ -24,13 +24,5 @@ using namespace sub;
 bool
 sub::operator< (RawSubtitle const & a, RawSubtitle const & b)
 {
-	if (a.from.frame() && b.from.frame()) {
-		return a.from.frame().get() < b.from.frame().get();
-	}
-
-	if (a.from.metric() && b.from.metric()) {
-		return a.from.metric().get() < b.from.metric().get();
-	}
-
-	assert (false);
+	return a.from < b.from;
 }

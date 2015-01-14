@@ -9,29 +9,36 @@ def build(bld):
     obj.name = 'libsub%s' % bld.env.API_VERSION
     obj.target = 'sub%s' % bld.env.API_VERSION
     obj.uselib = 'CXML DCP BOOST_FILESYSTEM BOOST_LOCALE'
+    obj.use = 'libkumu-libsub libasdcp-libsub'
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc
                  dcp_reader.cc
                  effect.cc
                  font_size.cc
-                 frame_time.cc
+                 interop_dcp_reader.cc
                  iso6937.cc
                  iso6937_tables.cc
-                 metric_time.cc
                  raw_subtitle.cc
                  reader.cc
                  reader_factory.cc
+                 smpte_dcp_reader.cc
                  stl_binary_reader.cc
                  stl_binary_tables.cc
                  stl_binary_writer.cc
                  stl_text_reader.cc
                  stl_util.cc
-                 time_pair.cc
+                 sub_time.cc
                  subrip_reader.cc
                  subtitle.cc
+                 util.cc
                  vertical_reference.cc
                  vertical_position.cc
+                 dcp/font.cc
+                 dcp/interop_load_font.cc
+                 dcp/smpte_load_font.cc
+                 dcp/subtitle.cc
+                 dcp/text.cc
                  """
 
     headers = """
@@ -40,8 +47,6 @@ def build(bld):
               dcp_reader.h
               effect.h
               font_size.h
-              frame_time.h
-              metric_time.h
               raw_subtitle.h
               reader.h
               stl_binary_tables.h
@@ -49,7 +54,6 @@ def build(bld):
               stl_text_reader.h
               subrip_reader.h
               subtitle.h
-              time_pair.h
               vertical_position.h
               vertical_reference.h
               """

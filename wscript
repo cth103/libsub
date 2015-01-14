@@ -28,19 +28,15 @@ def configure(conf):
     else:
         conf.env.append_value('CXXFLAGS', '-O3')
 
+    conf.check_cfg(package='openssl', args='--cflags --libs', uselib_store='OPENSSL', mandatory=True)
+
     if conf.options.static:
         conf.env.HAVE_CXML = 1
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
-        conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-libdcp-1.0', 'kumu-libdcp-1.0', 'openjpeg']
-        conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt', 'xmlsec1', 'xmlsec1-openssl']
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.0.0', args='--cflags', uselib_store='DCP', mandatory=True)
-        conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.0.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
-        conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:
@@ -78,6 +74,7 @@ def configure(conf):
 
     if not conf.env.DISABLE_TESTS:
         conf.recurse('test')
+    conf.recurse('asdcplib')
 
 def build(bld):
     create_version_cc(bld, VERSION)
@@ -90,13 +87,14 @@ def build(bld):
     bld(source='libsub%s.pc.in' % bld.env.API_VERSION,
         version=VERSION,
         includedir='%s/include/libsub%s' % (bld.env.PREFIX, bld.env.API_VERSION),
-        libs="-L${libdir} -lsub%s -lboost_system%s" % (bld.env.API_VERSION, boost_lib_suffix),
+        libs="-L${libdir} -lsub%s -lasdcp-libsub -lkumu-libsub -lboost_system%s" % (bld.env.API_VERSION, boost_lib_suffix),
         install_path='${LIBDIR}/pkgconfig')
 
     bld.recurse('src')
     if not bld.env.DISABLE_TESTS:
         bld.recurse('test')
     bld.recurse('tools')
+    bld.recurse('asdcplib')
 
     bld.add_post_fun(post)
 

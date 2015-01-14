@@ -70,7 +70,7 @@ public:
 private:
 	std::string get_string (int, int) const;
 	int get_int (int, int) const;
-	FrameTime get_timecode (int) const;
+	Time get_timecode (int) const;
 
 	STLBinaryTables _tables;
 	unsigned char* _buffer;

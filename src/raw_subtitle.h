@@ -20,12 +20,10 @@
 #ifndef LIBSUB_RAW_SUBTITLE_H
 #define LIBSUB_RAW_SUBTITLE_H
 
-#include "frame_time.h"
-#include "metric_time.h"
+#include "sub_time.h"
 #include "colour.h"
 #include "vertical_reference.h"
 #include "effect.h"
-#include "time_pair.h"
 #include "font_size.h"
 #include "vertical_position.h"
 #include <boost/optional.hpp>
@@ -49,7 +47,7 @@ public:
 
 	/** Subtitle text in UTF-8 */
 	std::string text;
-	std::string font;
+	boost::optional<std::string> font;
 
 	/** font size */
 	FontSize font_size;
@@ -66,12 +64,12 @@ public:
 	VerticalPosition vertical_position;
 
 	/** from time */
-	TimePair from;
+	Time from;
 	/** to time */
-	TimePair to;
+	Time to;
 	
-	boost::optional<MetricTime> fade_up;
-	boost::optional<MetricTime> fade_down;
+	boost::optional<Time> fade_up;
+	boost::optional<Time> fade_down;
 };
 
 bool operator< (RawSubtitle const &, RawSubtitle const &);	

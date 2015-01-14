@@ -95,8 +95,8 @@ STLBinaryReader::STLBinaryReader (istream& in)
 
 		for (size_t i = 0; i < lines.size(); ++i) {
 			RawSubtitle sub;
-			sub.from.set_frame (get_timecode (5));
-			sub.to.set_frame (get_timecode (9));
+			sub.from = get_timecode (5);
+			sub.to = get_timecode (9);
 			sub.vertical_position.line = get_int (13, 1) + i;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
@@ -174,10 +174,10 @@ STLBinaryReader::get_int (int offset, int length) const
 	return v;
 }
 
-FrameTime
+Time
 STLBinaryReader::get_timecode (int offset) const
 {
-	return FrameTime (_buffer[offset], _buffer[offset + 1], _buffer[offset + 2], _buffer[offset + 3]);
+	return Time::from_hmsf (_buffer[offset], _buffer[offset + 1], _buffer[offset + 2], _buffer[offset + 3], Rational (frame_rate, 1));
 }
 
 map<string, string>

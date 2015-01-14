@@ -30,8 +30,8 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 
 	{
 		sub::Subtitle s;
-		s.from.set_frame (sub::FrameTime (0, 0, 41, 9));
-		s.to.set_frame (sub::FrameTime (0, 0, 42, 21));
+		s.from = sub::Time::from_hmsf (0, 0, 41, 9, sub::Rational (25, 1));
+		s.to = sub::Time::from_hmsf (0, 0, 42, 21, sub::Rational (25, 1));
 
 		{
 			sub::Block b;
@@ -64,8 +64,8 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 
 	{
 		sub::Subtitle s;
-		s.from.set_frame (sub::FrameTime (0, 1, 1, 1));
-		s.to.set_frame (sub::FrameTime (0, 1, 2, 10));
+		s.from = sub::Time::from_hmsf (0, 1, 1, 1, sub::Rational (25, 1));
+		s.to = sub::Time::from_hmsf (0, 1, 2, 10, sub::Rational (25, 1));
 
 		sub::Line l;
 		l.vertical_position.line = 0;
