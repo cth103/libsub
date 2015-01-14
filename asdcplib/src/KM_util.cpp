@@ -40,8 +40,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <string>
 
-bool Kumu::libdcp_test = false;
-
 const char*
 Kumu::Version()
 {
@@ -534,15 +532,6 @@ Kumu::GenRandomValue(UUID& ID)
   ID.Set(tmp_buf);
 }
 
-#ifdef LIBDCP_POSIX
-void
-Kumu::ResetTestRNG()
-{
-  FortunaRNG RNG;
-  RNG.Reset();
-}
-#endif
-
 //
 void
 Kumu::GenRandomUUID(byte_t* buf)
@@ -699,14 +688,7 @@ Kumu::write_BER(byte_t* buf, ui64_t val, ui32_t ber_len)
 
 //
 Kumu::Timestamp::Timestamp() : m_TZOffsetMinutes(0) {
-  if (libdcp_test)
-    {
-      m_Timestamp.x = 42;
-    }
-  else
-    {
-      m_Timestamp.now();
-    }
+  m_Timestamp.now();
 }
 
 Kumu::Timestamp::Timestamp(const Timestamp& rhs) {

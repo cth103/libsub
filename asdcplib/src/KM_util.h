@@ -41,8 +41,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Kumu
 {
-  extern bool libdcp_test;
-	
   // The version number declaration and explanation are in ../configure.ac
   const char* Version();
 
@@ -381,9 +379,6 @@ namespace Kumu
   
   void GenRandomUUID(byte_t* buf); // buf must be UUID_Length or longer
   void GenRandomValue(UUID&);
-#ifdef LIBDCP_POSIX	
-  void ResetTestRNG();
-#endif	
   
   typedef ArchivableList<UUID> UUIDList;
 
