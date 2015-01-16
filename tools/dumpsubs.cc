@@ -113,6 +113,18 @@ main (int argc, char* argv[])
 				}
 			}
 
+			switch (j->horizontal_position) {
+			case LEFT:
+				cout << "; left aligned";
+				break;
+			case CENTRE:
+				cout << "; horizontally centered";
+				break;
+			case RIGHT:
+				cout << "; right-aligned";
+				break;
+			}
+
 			cout << "\t";
 			bool italic = false;
 			bool underline = false;

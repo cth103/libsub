@@ -24,6 +24,7 @@
 #include "metric_time.h"
 #include "colour.h"
 #include "vertical_reference.h"
+#include "horizontal_position.h"
 #include "effect.h"
 #include "time_pair.h"
 #include "font_size.h"
@@ -45,6 +46,7 @@ public:
 		, bold (false)
 		, italic (false)
 		, underline (false)
+		, horizontal_position (CENTRE)
 	{}
 
 	/** Subtitle text in UTF-8 */
@@ -61,6 +63,8 @@ public:
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
 	bool underline; ///< true to underline
+
+	HorizontalPosition horizontal_position;
 
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;

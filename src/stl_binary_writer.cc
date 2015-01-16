@@ -251,9 +251,20 @@ sub::write_stl_binary (
 				}
 			}
 			put_int_as_int (buffer + 13, vp, 1);
+
 			/* Justification code */
-			/* XXX */
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_NONE), 1);
+			switch (j->horizontal_position) {
+			case LEFT:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
+				break;
+			case CENTRE:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
+				break;
+			case RIGHT:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
+				break;
+			}
+				
 			/* Comment flag */
 			put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
 			

@@ -40,6 +40,7 @@ def build(bld):
               effect.h
               font_size.h
               frame_time.h
+              horizontal_position.h
               metric_time.h
               raw_subtitle.h
               reader.h

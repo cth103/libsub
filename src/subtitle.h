@@ -77,10 +77,14 @@ public:
 class Line
 {
 public:
-	Line () {}
+	Line ()
+		: horizontal_position (CENTRE)
+	{}
 	
 	/** Construct a Line taking any relevant information from a RawSubtitle */
 	Line (RawSubtitle s);
+
+	HorizontalPosition horizontal_position;
 
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;

@@ -53,14 +53,26 @@ DCPReader::DCPReader (boost::filesystem::path file)
 
 		sub.vertical_position.proportional = float ((*i)->v_position ()) / 100;
 		switch ((*i)->v_align ()) {
-		case libdcp::TOP:
+		case libdcp::VERTICAL_TOP:
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 			break;
-		case libdcp::CENTER:
+		case libdcp::VERTICAL_CENTER:
 			sub.vertical_position.reference = CENTRE_OF_SCREEN;
 			break;
-		case libdcp::BOTTOM:
+		case libdcp::VERTICAL_BOTTOM:
 			sub.vertical_position.reference = BOTTOM_OF_SCREEN;
+			break;
+		}
+
+		switch ((*i)->h_align ()) {
+		case libdcp::HORIZONTAL_LEFT:
+			sub.horizontal_position = LEFT;
+			break;
+		case libdcp::HORIZONTAL_CENTER:
+			sub.horizontal_position = CENTRE;
+			break;
+		case libdcp::HORIZONTAL_RIGHT:
+			sub.horizontal_position = RIGHT;
 			break;
 		}
 			
