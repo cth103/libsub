@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (39) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.21, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "My corset was H.M. The Queen's");
+		BOOST_CHECK_EQUAL (b.text, "<i>My corset was H.M. The Queen's</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "At afternoon tea with John Peel");
+		BOOST_CHECK_EQUAL (b.text, "<i>At afternoon tea with John Peel</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "I enquired if his accent was real");
+		BOOST_CHECK_EQUAL (b.text, "<i>I enquired if his accent was real</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "He said \"out of the house");
+		BOOST_CHECK_EQUAL (b.text, "<i>He said \"out of the house</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "I'm incredibly scouse");
+		BOOST_CHECK_EQUAL (b.text, "<i>I'm incredibly scouse</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "At home it depends how I feel.\"");
+		BOOST_CHECK_EQUAL (b.text, "<i>At home it depends how I feel.\"</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (i->to.metric().get(), sub::MetricTime (0, 1, 4, 10 * 4));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "I spent a long weekend in Brighton");
+		BOOST_CHECK_EQUAL (b.text, "<i>I spent a long weekend in Brighton</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		BOOST_CHECK_EQUAL (i->fade_up.get(), sub::MetricTime (0, 0, 0, 0));
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "With the legendary Miss Enid Blyton");
+		BOOST_CHECK_EQUAL (b.text, "<i>With the legendary Miss Enid Blyton</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -314,7 +314,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "She said \"you be Noddy");
+		BOOST_CHECK_EQUAL (b.text, "<i>She said \"you be Noddy</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "and I'll show you my body\"");
+		BOOST_CHECK_EQUAL (b.text, "<i>and I'll show you my body\"</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -354,7 +354,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "But Big Ears kept turning the light on.");
+		BOOST_CHECK_EQUAL (b.text, "<i>But Big Ears kept turning the light on.</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "That curious creature the Sphinx");
+		BOOST_CHECK_EQUAL (b.text, "<i>That curious creature the Sphinx</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -394,7 +394,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "Is smarter than anyone thinks");
+		BOOST_CHECK_EQUAL (b.text, "<i>Is smarter than anyone thinks</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
@@ -580,7 +580,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.89, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "HELLO");
+		BOOST_CHECK_EQUAL (b.text, "<i>HELLO</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 		
@@ -594,7 +594,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.font_size.proportional().get(), float (42) / (72 * 11));
 		BOOST_CHECK_CLOSE (j->vertical_position.proportional.get(), 0.95, 1);
 		BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SCREEN);
-		BOOST_CHECK_EQUAL (b.text, "WORLD");
+		BOOST_CHECK_EQUAL (b.text, "<i>WORLD</i>");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
 
