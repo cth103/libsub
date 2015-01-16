@@ -42,6 +42,7 @@ using std::setfill;
 using std::max;
 using std::cout;
 using boost::locale::conv::utf_to_utf;
+using boost::optional;
 using namespace sub;
 
 /** Arbitrary number which to divide the screen into rows; e.g.
@@ -88,6 +89,44 @@ put_int_as_int (char* p, int v, unsigned int n)
 	}
 }
 
+static int
+vertical_position (sub::Line const & line)
+{
+	int vp = 0;
+	if (line.vertical_position.proportional) {
+		switch (line.vertical_position.reference.get_value_or (TOP_OF_SCREEN)) {
+		case TOP_OF_SCREEN:
+			vp = rint (line.vertical_position.proportional.get() * ROWS);
+			break;
+		case CENTRE_OF_SCREEN:
+			vp = rint (line.vertical_position.proportional.get() * ROWS + (ROWS / 2.0));
+			break;
+		case BOTTOM_OF_SCREEN:
+			vp = rint (ROWS - (line.vertical_position.proportional.get() * ROWS));
+			break;
+		default:
+			break;
+		}
+	} else if (line.vertical_position.line) {
+		float const prop = float (line.vertical_position.line.get()) / line.vertical_position.lines.get ();
+		switch (line.vertical_position.reference.get_value_or (TOP_OF_SCREEN)) {
+		case TOP_OF_SCREEN:
+			vp = prop * ROWS;
+			break;
+		case CENTRE_OF_SCREEN:
+			vp = (prop + 0.5) * ROWS;
+			break;
+		case BOTTOM_OF_SCREEN:
+			vp = (1 - prop) * ROWS;
+			break;
+		default:
+			break;
+		}
+	}
+
+	return vp;
+}
+
 /** @param language ISO 3-character country code for the language of the subtitles */
 void
 sub::write_stl_binary (
@@ -129,10 +168,9 @@ sub::write_stl_binary (
 	ofstream output (file_name.string().c_str ());
 	STLBinaryTables tables;
 
-	/* Find the longest subtitle in characters and the number of lines */
+	/* Find the longest subtitle in characters */
 
 	int longest = 0;
-	int lines = 0;
 
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
 		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
@@ -141,7 +179,6 @@ sub::write_stl_binary (
 				t += k->text.size ();
 			}
 			longest = max (longest, t);
-			++lines;
 		}
 	}
 	
@@ -166,9 +203,9 @@ sub::write_stl_binary (
 	put_string (buffer + 230, revision_date);
 	put_int_as_string (buffer + 236, revision_number, 2);
 	/* TTI blocks */
-	put_int_as_string (buffer + 238, lines, 5);
+	put_int_as_string (buffer + 238, subtitles.size(), 5);
 	/* Total number of subtitles */
-	put_int_as_string (buffer + 243, lines, 5);
+	put_int_as_string (buffer + 243, subtitles.size(), 5);
 	/* Total number of subtitle groups */
 	put_string (buffer + 248, "001");
 	/* Maximum number of displayable characters in any text row */
@@ -193,85 +230,76 @@ sub::write_stl_binary (
 	output.write (buffer, 1024);
 
 	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
-		int N = 0;
+
+		/* Find the top vertical position of this subtitle */
+		optional<int> top;
+		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+			int const vp = vertical_position (*j);
+			if (!top || vp < top.get ()) {
+				top = vp;
+			}
+		}
+		
+		memset (buffer, 0, 1024);
+		
+		/* Subtitle group number */
+		put_int_as_int (buffer + 0, 1, 1);
+		/* Subtitle number */
+		put_int_as_int (buffer + 1, 0, 2);
+		/* Extension block number.  Use 0xff here to indicate that it is the last TTI
+		   block in this subtitle "set", as we only ever use one.
+		*/
+		put_int_as_int (buffer + 3, 255, 1);
+		/* Cumulative status */
+		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
+		/* Time code in */
+		put_int_as_int (buffer + 5, i->from.frame(frames_per_second).hours (), 1);
+		put_int_as_int (buffer + 6, i->from.frame(frames_per_second).minutes (), 1);
+		put_int_as_int (buffer + 7, i->from.frame(frames_per_second).seconds (), 1);
+		put_int_as_int (buffer + 8, i->from.frame(frames_per_second).frames (), 1);
+		/* Time code out */
+		put_int_as_int (buffer + 9, i->to.frame(frames_per_second).hours (), 1);
+		put_int_as_int (buffer + 10, i->to.frame(frames_per_second).minutes (), 1);
+		put_int_as_int (buffer + 11, i->to.frame(frames_per_second).seconds (), 1);
+		put_int_as_int (buffer + 12, i->to.frame(frames_per_second).frames (), 1);
+		/* Vertical position */
+		put_int_as_int (buffer + 13, top.get(), 1);
+		
+		/* Justification code */
+		/* XXX: this assumes the first line has the right value */
+		switch (i->lines.front().horizontal_position) {
+		case LEFT:
+			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
+			break;
+		case CENTRE:
+			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
+			break;
+		case RIGHT:
+			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
+			break;
+		}
+				
+		/* Comment flag */
+		put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
+			
+		/* Text */
+		string text;
+		bool italic = false;
+		bool underline = false;
+		optional<int> last_vp;
+
 		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
 
-			memset (buffer, 0, 1024);
+			/* CR/LF down to this line */
+			int const vp = vertical_position (*j);
 
-			/* Subtitle group number */
-			put_int_as_int (buffer + 0, 1, 1);
-			/* Subtitle number */
-			put_int_as_int (buffer + 1, N, 2);
-			/* Extension block number.  Use 0xff here to indicate that it is the last TTI
-			   block in this subtitle "set", as we only ever use one.
-			*/
-			put_int_as_int (buffer + 3, 255, 1);
-			/* Cumulative status */
-			put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
-			/* Time code in */
-			put_int_as_int (buffer + 5, i->from.frame(frames_per_second).hours (), 1);
-			put_int_as_int (buffer + 6, i->from.frame(frames_per_second).minutes (), 1);
-			put_int_as_int (buffer + 7, i->from.frame(frames_per_second).seconds (), 1);
-			put_int_as_int (buffer + 8, i->from.frame(frames_per_second).frames (), 1);
-			/* Time code out */
-			put_int_as_int (buffer + 9, i->to.frame(frames_per_second).hours (), 1);
-			put_int_as_int (buffer + 10, i->to.frame(frames_per_second).minutes (), 1);
-			put_int_as_int (buffer + 11, i->to.frame(frames_per_second).seconds (), 1);
-			put_int_as_int (buffer + 12, i->to.frame(frames_per_second).frames (), 1);
-			/* Vertical position */
-			int vp = 0;
-			if (j->vertical_position.proportional) {
-				switch (j->vertical_position.reference.get_value_or (TOP_OF_SCREEN)) {
-				case TOP_OF_SCREEN:
-					vp = rint (j->vertical_position.proportional.get() * ROWS);
-					break;
-				case CENTRE_OF_SCREEN:
-					vp = rint (j->vertical_position.proportional.get() * ROWS + (ROWS / 2.0));
-					break;
-				case BOTTOM_OF_SCREEN:
-					vp = rint (ROWS - (j->vertical_position.proportional.get() * ROWS));
-					break;
-				default:
-					break;
-				}
-			} else if (j->vertical_position.line) {
-				float const prop = float (j->vertical_position.line.get()) / j->vertical_position.lines.get ();
-				switch (j->vertical_position.reference.get_value_or (TOP_OF_SCREEN)) {
-				case TOP_OF_SCREEN:
-					vp = prop * ROWS;
-					break;
-				case CENTRE_OF_SCREEN:
-					vp = (prop + 0.5) * ROWS;
-					break;
-				case BOTTOM_OF_SCREEN:
-					vp = (1 - prop) * ROWS;
-					break;
-				default:
-					break;
+			if (last_vp) {
+				for (int i = last_vp.get(); i < vp; ++i) {
+					text += "\x8A";
 				}
 			}
-			put_int_as_int (buffer + 13, vp, 1);
 
-			/* Justification code */
-			switch (j->horizontal_position) {
-			case LEFT:
-				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
-				break;
-			case CENTRE:
-				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
-				break;
-			case RIGHT:
-				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
-				break;
-			}
-				
-			/* Comment flag */
-			put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
-			
-			/* Text */
-			string text;
-			bool italic = false;
-			bool underline = false;
+			last_vp = vp;
 			
 			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
 				if (k->underline && !underline) {
@@ -288,25 +316,21 @@ sub::write_stl_binary (
 					text += "\x81";
 					italic = false;
 				}
-				
+
 				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
 			}
-			
-			text += "\x8A";
-		
-			if (text.length() > 111) {
-				text = text.substr (111);
-			}
-			
-			while (text.length() < 112) {
-				text += "\x8F";
-			}
-			
-			put_string (buffer + 16, text);
-			output.write (buffer, 128);
-
-			++N;
 		}
+		
+		if (text.length() > 111) {
+			text = text.substr (111);
+		}
+		
+		while (text.length() < 112) {
+			text += "\x8F";
+		}
+		
+		put_string (buffer + 16, text);
+		output.write (buffer, 128);
 	}
 
 	delete[] buffer;
