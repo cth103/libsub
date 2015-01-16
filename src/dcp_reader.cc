@@ -25,6 +25,7 @@
 
 using std::list;
 using std::cout;
+using std::string;
 using boost::shared_ptr;
 using namespace sub;
 
@@ -84,8 +85,36 @@ DCPReader::DCPReader (boost::filesystem::path file)
 
 		sub.effect_colour = dcp_to_colour ((*i)->effect_color ());
 		sub.colour = dcp_to_colour ((*i)->color ());
-		sub.italic = (*i)->italic ();
-		
-		_subs.push_back (sub);
+
+		/* Hack upon hack upon hack: detokenise <i> ... </i> */
+
+		string original = sub.text;
+		sub.text.clear ();
+		size_t i = 0;
+		while (i < original.length()) {
+			size_t const left = original.length() - i;
+			if (left >= 3 && original.substr(i, 3) == "<i>") {
+				if (!sub.text.empty ()) {
+					_subs.push_back (sub);
+					sub.text.clear ();
+				}
+				sub.italic = true;
+				i += 3;
+			} else if (left >= 4 && original.substr(i, 4) == "</i>") {
+				if (!sub.text.empty ()) {
+					_subs.push_back (sub);
+					sub.text.clear ();
+				}
+				sub.italic = false;
+				i += 4;
+			} else {
+				sub.text += original[i];
+				++i;
+			}
+		}
+
+		if (!sub.text.empty ()) {
+			_subs.push_back (sub);
+		}
 	}
 }
