@@ -55,6 +55,8 @@ public:
 	int frames_at (Rational rate) const;
 	int milliseconds () const;
 
+	double all_as_seconds () const;
+
 	static Time from_hmsf (int h, int m, int s, int f, boost::optional<Rational> rate = boost::optional<Rational> ());
 	static Time from_hms (int h, int m, int s, int ms);
 	

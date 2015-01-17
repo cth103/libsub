@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 */
 
 #include "sub_time.h"
+#include "exceptions.h"
 #include <boost/test/unit_test.hpp>
 
 /* Check time construction */
@@ -63,4 +64,11 @@ BOOST_AUTO_TEST_CASE (time_operator_test)
 {
 	BOOST_CHECK_EQUAL (sub::Time::from_hms (0, 0, 5, 198 * 4), sub::Time::from_hms (0, 0, 5, 198 * 4));
 	BOOST_CHECK (sub::Time::from_hms (0, 0, 55, 332) != sub::Time::from_hms (0, 0, 58, 332));
+}
+
+/* Check some other bits of Time */
+BOOST_AUTO_TEST_CASE (time_other_test)
+{
+	BOOST_CHECK_THROW (sub::Time::from_hmsf (2, 1, 58, 4).all_as_seconds(), sub::UnknownFrameRateError);
+	BOOST_CHECK_CLOSE (sub::Time::from_hmsf (2, 1, 58, 4, sub::Rational (24, 1)).all_as_seconds(), 7318.1667, 0.001);
 }

@@ -152,3 +152,13 @@ Time::from_hms (int h, int m, int s, int ms)
 {
 	return Time (h * 3600 + m * 60 + s, ms, Rational (1000, 1));
 }
+
+double
+Time::all_as_seconds () const
+{
+	if (!_rate) {
+		throw UnknownFrameRateError ();
+	}
+	
+	return _seconds + double (_frames) / _rate.get().fraction ();
+}
