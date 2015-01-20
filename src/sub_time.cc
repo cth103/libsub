@@ -156,9 +156,5 @@ Time::from_hms (int h, int m, int s, int ms)
 double
 Time::all_as_seconds () const
 {
-	if (!_rate) {
-		throw UnknownFrameRateError ();
-	}
-	
-	return _seconds + double (_frames) / _rate.get().fraction ();
+	return seconds() + double(milliseconds ()) / 1000;
 }
