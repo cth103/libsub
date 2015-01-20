@@ -156,5 +156,5 @@ Time::from_hms (int h, int m, int s, int ms)
 double
 Time::all_as_seconds () const
 {
-	return seconds() + double(milliseconds ()) / 1000;
+	return _seconds + double(milliseconds ()) / 1000;
 }
