@@ -67,5 +67,5 @@ def build(bld):
                  """
 
     if bld.env.STATIC:
-        bld.install_files('${PREFIX}/lib', 'libkumu-libsub.a')
-        bld.install_files('${PREFIX}/lib', 'libasdcp-libsub.a')
+        bld.install_files('${PREFIX}/lib', 'libkumu-libsub%s.a' % bld.env.API_VERSION)
+        bld.install_files('${PREFIX}/lib', 'libasdcp-libsub%s.a' % bld.env.API_VERSION)
