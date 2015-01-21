@@ -13,8 +13,8 @@ def build(bld):
     else:
         obj = bld(features = 'cxx cxxshlib')
 
-    obj.name = 'libkumu-libsub'
-    obj.target = 'kumu-libsub'
+    obj.name = 'libkumu-libsub%s' % bld.env.API_VERSION
+    obj.target = 'kumu-libsub%s' % bld.env.API_VERSION
     obj.uselib = 'OPENSSL BOOST_FILESYSTEM'
     obj.includes = ['.']
     obj.export_includes = ['.']
@@ -32,10 +32,10 @@ def build(bld):
     else:
         obj = bld(features = 'cxx cxxshlib')
 
-    obj.name = 'libasdcp-libsub'
-    obj.target = 'asdcp-libsub'
+    obj.name = 'libasdcp-libsub%s' % bld.env.API_VERSION
+    obj.target = 'asdcp-libsub%s' % bld.env.API_VERSION
     obj.uselib = 'OPENSSL'
-    obj.use = 'libkumu-libsub'
+    obj.use = 'libkumu-libsub%s' % bld.env.API_VERSION
     obj.includes = ['.']
     obj.export_includes = ['.']
     obj.source = """

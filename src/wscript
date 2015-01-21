@@ -9,7 +9,7 @@ def build(bld):
     obj.name = 'libsub%s' % bld.env.API_VERSION
     obj.target = 'sub%s' % bld.env.API_VERSION
     obj.uselib = 'CXML DCP BOOST_FILESYSTEM BOOST_LOCALE'
-    obj.use = 'libkumu-libsub libasdcp-libsub'
+    obj.use = 'libkumu-libsub%s libasdcp-libsub%s' % (bld.env.API_VERSION, bld.env.API_VERSION)
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc
