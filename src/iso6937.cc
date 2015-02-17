@@ -97,6 +97,13 @@ sub::utf16_to_iso6937 (wstring s)
 				}
 			}
 		}
+
+		if (s[i] == 0x201e) {
+			/* ISO6397 does not support German (lower) quotation mark (UTF 0x201e) so use
+			   a normal opening one (0x201c, which is 170 in ISO6937).
+			*/
+			o += (char) 170;
+		}
 	}
 
 	return o;
