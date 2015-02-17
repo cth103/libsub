@@ -151,3 +151,31 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test5)
 		"build/test/065d39ff-6723-4dbf-a94f-849cde82f5e1_sub.stl"
 		);
 }
+
+
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
+{
+	if (private_test.empty ()) {
+		return;
+	}
+
+	boost::filesystem::path p = private_test / "Paddington_FTR_FullSubs_DE_24fps.xml";
+	sub::write_stl_binary (
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
+		24,
+		sub::LANGUAGE_GERMAN,
+		"", "",
+		"", "",
+		"", "",
+		"300514", "300514", 0,
+		"GBR",
+		"",
+		"", "",
+		"build/test/Paddington_FTR_FullSubs_DE_24fps.stl"
+		);
+
+	check_file (
+		private_test / "Paddington_FTR_FullSubs_DE_24fps.stl",
+		"build/test/Paddington_FTR_FullSubs_DE_24fps.stl"
+		);
+}
