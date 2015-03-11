@@ -327,7 +327,7 @@ STLBinaryTables::STLBinaryTables ()
 	code<Justification, int> (_justification_map, 0, JUSTIFICATION_NONE, "No justification");
 	code<Justification, int> (_justification_map, 1, JUSTIFICATION_LEFT, "Left justification");
 	code<Justification, int> (_justification_map, 2, JUSTIFICATION_CENTRE, "Centre justification");
-	code<Justification, int> (_justification_map, 3, JUSTIFICATION_CENTRE, "Right justification");
+	code<Justification, int> (_justification_map, 3, JUSTIFICATION_RIGHT, "Right justification");
 
 	code<Comment, int> (_comment_map, 0, COMMENT_NO, "Not a comment");
 	code<Comment, int> (_comment_map, 1, COMMENT_YES, "Is a comment");
