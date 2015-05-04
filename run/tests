@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-private=../libsub-test-private
+private=../libsub1-test-private
 
 export LD_LIBRARY_PATH=build/src:build/asdcplib/src:$LD_LIBRARY_PATH
 if [ "$1" == "--debug" ]; then
