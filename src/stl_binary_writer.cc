@@ -320,6 +320,16 @@ sub::write_stl_binary (
 				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
 			}
 		}
+
+		/* Turn italic/underline off before the end of this subtitle */
+
+		if (underline) {
+			text += "\x83";
+		}
+
+		if (italic) {
+			text += "\x81";
+		}
 		
 		if (text.length() > 111) {
 			text = text.substr (111);
