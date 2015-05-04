@@ -1,0 +1,4 @@
+Fix SMPTE subtitle using editable units not ticks.
+dumpsubs.cc has some extra bits.
+94d2127b2f9227b31e5947318a4d8f974a43cb57
+1d5f1487bdb81308e41c36443964e3cdcab58857
