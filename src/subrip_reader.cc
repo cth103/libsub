@@ -54,6 +54,17 @@ SubripReader::SubripReader (FILE* f)
 		line = string (buffer);
 		trim_right_if (line, boost::is_any_of ("\n\r"));
 
+		if (
+			line.length() >= 3 &&
+			static_cast<unsigned char> (line[0]) == 0xef &&
+			static_cast<unsigned char> (line[1]) == 0xbb &&
+			static_cast<unsigned char> (line[2]) == 0xbf
+			) {
+			
+			/* Skip Unicode byte order mark */
+			line = line.substr (3);
+		}
+
 		switch (state) {
 		case COUNTER:
 		{

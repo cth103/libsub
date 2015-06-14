@@ -303,5 +303,6 @@ test (boost::filesystem::path p)
 BOOST_AUTO_TEST_CASE (subrip_read_test)
 {
 	test ("sintel_en.srt");
+	test ("sintel_fr.srt");
 	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
 }
