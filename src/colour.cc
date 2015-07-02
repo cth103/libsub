@@ -25,16 +25,26 @@
 using std::string;
 using namespace sub;
 
-Colour::Colour (string argb_hex)
+Colour
+Colour::from_argb_hex (string argb_hex)
 {
 	int alpha, ir, ig, ib;
 	if (sscanf (argb_hex.c_str(), "%2x%2x%2x%2x", &alpha, &ir, &ig, &ib) < 4) {
 		throw XMLError ("could not parse colour string");
 	}
 
-	r = float (ir) / 255;
-	g = float (ig) / 255;
-	b = float (ib) / 255;
+	return Colour (float (ir) / 255, float (ig) / 255, float (ib) / 255);
+}
+
+Colour
+Colour::from_rgb_hex (string rgb_hex)
+{
+	int ir, ig, ib;
+	if (sscanf (rgb_hex.c_str(), "%2x%2x%2x", &ir, &ig, &ib) < 3) {
+		throw XMLError ("could not parse colour string");
+	}
+
+	return Colour (float (ir) / 255, float (ig) / 255, float (ib) / 255);
 }
 
 bool

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <cmath>
 
 using std::list;
 using std::cerr;
 using std::ifstream;
 using std::vector;
+using std::fabs;
 
 /* Test reading of a Subrip file */
 BOOST_AUTO_TEST_CASE (subrip_reader_test)
@@ -40,13 +42,13 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
 
-	
+
 	/* First subtitle */
 
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 41, 90));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 42, 210));
-	
+
 	list<sub::Line>::iterator j = i->lines.begin ();
 	BOOST_CHECK (j != i->lines.end ());
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
@@ -74,13 +76,13 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 	++i;
 
-	
+
 	/* Second subtitle */
-	
+
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 1, 10));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 2, 100));
-	
+
 	BOOST_CHECK_EQUAL (i->lines.size(), 1);
 	sub::Line l = i->lines.front ();
 	BOOST_CHECK_EQUAL (l.blocks.size(), 7);
@@ -88,7 +90,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (l.vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 
 	list<sub::Block>::iterator k = l.blocks.begin ();
-	
+
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "This is some ");
 	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
@@ -151,7 +153,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
 	++k;
-	
+
 	BOOST_CHECK (k == l.blocks.end ());
 }
 
@@ -217,7 +219,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 {
 	sub::SubripReader r;
-	
+
 	r.convert_line ("Hello world", 0, sub::Time (), sub::Time ());
 	BOOST_CHECK_EQUAL (r._subs.size(), 1);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
@@ -261,7 +263,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	r.convert_line ("<b>This is <i>nesting</i> of subtitles</b>", 0, sub::Time (), sub::Time ());
 	BOOST_CHECK_EQUAL (r._subs.size(), 3);
-	list<sub::RawSubtitle>::iterator i = r._subs.begin ();	
+	list<sub::RawSubtitle>::iterator i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
 	BOOST_CHECK_EQUAL (i->bold, true);
 	BOOST_CHECK_EQUAL (i->italic, false);
@@ -275,8 +277,39 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	BOOST_CHECK_EQUAL (i->italic, false);
 	++i;
 	r._subs.clear ();
-}
 
+	r.convert_line ("<font color=\"#ff0000\">some red text <b>in bold</b></font>", 0, sub::Time (), sub::Time ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	i = r._subs.begin ();
+	BOOST_CHECK_EQUAL (i->text, "some red text ");
+	BOOST_CHECK_EQUAL (i->bold, false);
+	BOOST_CHECK_CLOSE (i->colour.r, 1, 0.1);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK (fabs (i->colour.b) < 0.01);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "in bold");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_CLOSE (i->colour.r, 1, 0.1);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK (fabs (i->colour.b) < 0.01);
+	r._subs.clear ();
+
+	r.convert_line ("<font color=\"#0000ff\">some blue text <b>in bold</b></font>", 0, sub::Time (), sub::Time ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	i = r._subs.begin ();
+	BOOST_CHECK_EQUAL (i->text, "some blue text ");
+	BOOST_CHECK_EQUAL (i->bold, false);
+	BOOST_CHECK (fabs (i->colour.r) < 0.01);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK_CLOSE (i->colour.b, 1, 0.1);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "in bold");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK (fabs (i->colour.r) < 0.01);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK_CLOSE (i->colour.b, 1, 0.1);
+	r._subs.clear ();
+}
 
 /** Test SubripReader::convert_time */
 BOOST_AUTO_TEST_CASE (subrip_reader_convert_time_test)

@@ -35,14 +35,15 @@ public:
 		, g (0)
 		, b (0)
 	{}
-	
+
 	Colour (float r, float g, float b)
 		: r (r)
 		, g (g)
 		, b (b)
 	{}
 
-	Colour (std::string);
+	static Colour from_argb_hex (std::string);
+	static Colour from_rgb_hex (std::string);
 
 	/** red component (from 0 to 1) */
 	float r;
@@ -54,7 +55,7 @@ public:
 
 bool
 operator== (Colour const & a, Colour const & b);
-	
+
 }
 
 #endif

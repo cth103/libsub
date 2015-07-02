@@ -21,12 +21,17 @@
 #include "exceptions.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 #include <cstdio>
 #include <vector>
 
 using std::string;
 using std::vector;
+using std::list;
+using std::cout;
+using std::hex;
 using boost::lexical_cast;
+using boost::to_upper;
 using namespace sub;
 
 SubripReader::SubripReader (FILE* f)
@@ -60,7 +65,7 @@ SubripReader::SubripReader (FILE* f)
 			static_cast<unsigned char> (line[1]) == 0xbb &&
 			static_cast<unsigned char> (line[2]) == 0xbf
 			) {
-			
+
 			/* Skip Unicode byte order mark */
 			line = line.substr (3);
 		}
@@ -88,7 +93,7 @@ SubripReader::SubripReader (FILE* f)
 			to = convert_time (p[2]);
 
 			/* XXX: should not ignore coordinate specifications */
-			
+
 			state = CONTENT;
 			break;
 		}
@@ -132,7 +137,7 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 		TEXT,
 		TAG
 	} state = TEXT;
-	
+
 	string tag;
 
 	RawSubtitle p;
@@ -144,7 +149,10 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 	/* XXX: arbitrary */
 	p.vertical_position.lines = 32;
 	p.vertical_position.reference = TOP_OF_SUBTITLE;
-	
+
+	list<Colour> colours;
+	colours.push_back (Colour (1, 1, 1));
+
 	/* XXX: missing <font> support */
 	/* XXX: nesting of tags e.g. <b>foo<i>bar<b>baz</b>fred</i>jim</b> might
 	   not work, I think.
@@ -179,6 +187,17 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 				} else if (tag == "/u") {
 					maybe_content (p);
 					p.underline = false;
+				} else if (boost::starts_with (tag, "font")) {
+					maybe_content (p);
+					boost::regex re (".*color=\"#([0123456789abcdef]+)\"");
+					boost::smatch match;
+					if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
+						p.colour = Colour::from_rgb_hex (match[1]);
+						colours.push_back (p.colour);
+					}
+				} else if (tag == "/font") {
+					colours.pop_back ();
+					p.colour = colours.back ();
 				}
 				tag.clear ();
 				state = TEXT;

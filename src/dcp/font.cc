@@ -35,7 +35,7 @@ dcp::Font::Font (cxml::ConstNodePtr node)
 	italic = node->optional_bool_attribute ("Italic");
 	optional<string> c = node->optional_string_attribute ("Color");
 	if (c) {
-		colour = Colour (c.get ());
+		colour = Colour::from_argb_hex (c.get ());
 	}
 	optional<string> const e = node->optional_string_attribute ("Effect");
 	if (e) {
@@ -43,15 +43,15 @@ dcp::Font::Font (cxml::ConstNodePtr node)
 	}
 	c = node->optional_string_attribute ("EffectColor");
 	if (c) {
-		effect_colour = Colour (c.get ());
+		effect_colour = Colour::from_argb_hex (c.get ());
 	}
 }
 
 dcp::Font::Font (std::list<boost::shared_ptr<Font> > const & font_nodes)
 	: size (0)
 	, italic (false)
-	, colour ("FFFFFFFF")
-	, effect_colour ("FFFFFFFF")
+	, colour (Colour::from_argb_hex ("FFFFFFFF"))
+	, effect_colour (Colour::from_argb_hex ("FFFFFFFF"))
 {
 	for (list<shared_ptr<Font> >::const_iterator i = font_nodes.begin(); i != font_nodes.end(); ++i) {
 		if ((*i)->id) {
