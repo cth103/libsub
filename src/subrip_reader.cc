@@ -196,6 +196,7 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 						colours.push_back (p.colour);
 					}
 				} else if (tag == "/font") {
+					maybe_content (p);
 					colours.pop_back ();
 					p.colour = colours.back ();
 				}

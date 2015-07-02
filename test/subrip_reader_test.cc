@@ -278,6 +278,15 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	++i;
 	r._subs.clear ();
 
+	r.convert_line ("<font color=\"#ff00ff\">simple color</font>", 0, sub::Time (), sub::Time ());
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color");
+	BOOST_CHECK_EQUAL (r._subs.front().bold, false);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1, 0.1);
+	BOOST_CHECK (fabs (r._subs.front().colour.g) < 0.01);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 1, 0.1);
+	r._subs.clear ();
+
 	r.convert_line ("<font color=\"#ff0000\">some red text <b>in bold</b></font>", 0, sub::Time (), sub::Time ());
 	BOOST_CHECK_EQUAL (r._subs.size(), 2);
 	i = r._subs.begin ();
