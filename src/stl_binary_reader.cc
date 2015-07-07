@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/locale.hpp>
+#include <iostream>
 
 using std::map;
 using std::vector;
@@ -77,7 +78,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 	editor_contact_details = get_string (341, 32);
 
 	for (int i = 0; i < tti_blocks; ++i) {
-		
+
 		in.read ((char *) _buffer, 128);
 		if (in.gcount() != 128) {
 			throw STLError ("Could not read TTI block from binary STL file");
@@ -141,7 +142,7 @@ STLBinaryReader::STLBinaryReader (istream& in)
 				sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
 				_subs.push_back (sub);
 			}
-				
+
 			/* XXX: justification */
 		}
 	}

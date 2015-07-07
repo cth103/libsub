@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,11 +17,12 @@
 
 */
 
-#include <string>
-#include <boost/optional.hpp>
-#include <boost/locale.hpp>
 #include "iso6937_tables.h"
 #include "iso6937.h"
+#include <boost/optional.hpp>
+#include <boost/locale.hpp>
+#include <string>
+#include <iostream>
 
 using std::string;
 using std::cout;
@@ -38,7 +39,7 @@ sub::iso6937_to_utf16 (string s)
 	if (iso6937::diacriticals.empty ()) {
 		make_iso6937_tables ();
 	}
-	
+
 	wstring o;
 
 	boost::optional<unsigned char> diacritical;
@@ -79,7 +80,7 @@ sub::utf16_to_iso6937 (wstring s)
 	if (iso6937::diacriticals.empty ()) {
 		make_iso6937_tables ();
 	}
-	
+
 	/* XXX: slow */
 
 	string o;
@@ -101,4 +102,3 @@ sub::utf16_to_iso6937 (wstring s)
 
 	return o;
 }
-

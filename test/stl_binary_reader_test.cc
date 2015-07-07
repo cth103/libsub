@@ -18,10 +18,11 @@
 */
 
 #include <boost/test/unit_test.hpp>
-#include <fstream>
 #include "stl_binary_reader.h"
 #include "subtitle.h"
 #include "test.h"
+#include <fstream>
+#include <iostream>
 
 using std::list;
 using std::cout;
@@ -38,4 +39,3 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test)
 	ifstream f (p.string().c_str ());
 	sub::STLBinaryReader r (f);
 }
-

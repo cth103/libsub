@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <vector>
+#include <iostream>
 
 using std::list;
 using std::ostream;
@@ -42,7 +43,7 @@ STLTextReader::STLTextReader (istream& in)
 	/* XXX: no idea what this should be */
 	_subtitle.vertical_position.lines = 32;
 	_subtitle.vertical_position.reference = TOP_OF_SCREEN;
-	
+
 	while (in.good ()) {
 		string line;
 		getline (in, line);
@@ -77,7 +78,7 @@ STLTextReader::STLTextReader (istream& in)
 			if (divider[0] != string::npos) {
 				divider[1] = line.find_first_of (",", divider[0] + 1);
 			}
-			
+
 			if (divider[0] == string::npos || divider[1] == string::npos || divider[0] <= 1 || divider[1] >= line.length() - 1) {
 				warn (String::compose ("Unrecognised line %1", line));
 				continue;

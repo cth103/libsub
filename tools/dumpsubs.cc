@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <getopt.h>
 #include <boost/filesystem.hpp>
 #include <map>
+#include <iostream>
 
 using std::string;
 using std::cerr;
@@ -89,7 +90,7 @@ main (int argc, char* argv[])
 		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
 
 			cout << "\t";
-			
+
 			if (j->vertical_position.proportional) {
 				cout << j->vertical_position.proportional.get() << " of screen";
 			} else if (j->vertical_position.line) {
@@ -130,7 +131,7 @@ main (int argc, char* argv[])
 
 				italic = k->italic;
 				underline = k->underline;
-					
+
 				cout << k->text;
 			}
 

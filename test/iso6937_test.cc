@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 */
 
 #include <boost/test/unit_test.hpp>
-#include <boost/locale.hpp>
 #include "iso6937.h"
+#include <boost/locale.hpp>
+#include <iostream>
 
 using std::cout;
 using boost::locale::conv::utf_to_utf;
