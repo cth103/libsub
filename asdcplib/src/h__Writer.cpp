@@ -31,6 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "AS_DCP_internal.h"
 #include "KLV.h"
+#include <iostream>
 
 using std::cout;
 using namespace ASDCP;
@@ -104,7 +105,7 @@ AddDMScrypt(Partition& HeaderPart, SourcePackage& Package,
   HeaderPart.AddChildObject(Segment);
   Seq->StructuralComponents.push_back(Segment->InstanceUID);
   Segment->EventComment = "AS-DCP KLV Encryption";
-  
+
   CryptographicFramework* CFW = new CryptographicFramework(Dict);
   HeaderPart.AddChildObject(CFW);
   Segment->DMFramework = CFW->InstanceUID;
@@ -272,7 +273,7 @@ ASDCP::h__Writer::AddSourceClip(const MXF::Rational& EditRate, ui32_t TCFrameRat
   MPTrack.Clip->SourceTrackID = 2;
   m_DurationUpdateList.push_back(&(MPTrack.Clip->Duration));
 
-  
+
   //
   // File (Source) Package
   //
@@ -363,7 +364,7 @@ ASDCP::h__Writer::AddDMSegment(const MXF::Rational& EditRate, ui32_t TCFrameRate
   //  MPTrack.Clip->SourceTrackID = 2;
   m_DurationUpdateList.push_back(&(MPTrack.Clip->Duration));
 
-  
+
   //
   // File (Source) Package
   //
@@ -454,7 +455,7 @@ ASDCP::h__Writer::CreateBodyPart(const MXF::Rational& EditRate, ui32_t BytesPerE
       UL OPAtomUL(m_Dict->ul(MDD_OPAtom));
       m_BodyPart.OperationalPattern = OPAtomUL;
       m_HeaderPart.m_RIP.PairArray.push_back(RIP::Pair(1, m_BodyPart.ThisPartition)); // Second RIP Entry
-      
+
       UL BodyUL(m_Dict->ul(MDD_ClosedCompleteBodyPartition));
       result = m_BodyPart.WriteToFile(m_File, BodyUL);
     }
@@ -627,7 +628,7 @@ ASDCP::h__Writer::WriteEKLVPacket(const ASDCP::FrameBuffer& FrameBuf, const byte
 
       if ( ASDCP_SUCCESS(result) )
 	result = m_File.Writev(Overhead.Data(), Overhead.Length());
- 
+
       if ( ASDCP_SUCCESS(result) )
 	result = m_File.Writev((byte_t*)FrameBuf.RoData(), FrameBuf.Size());
 
@@ -664,8 +665,8 @@ ASDCP::h__Writer::WriteMXFFooter()
 {
   // Set top-level file package correctly for OP-Atom
 
-  //  m_MPTCSequence->Duration = m_MPTimecode->Duration = m_MPClSequence->Duration = m_MPClip->Duration = 
-  //    m_FPTCSequence->Duration = m_FPTimecode->Duration = m_FPClSequence->Duration = m_FPClip->Duration = 
+  //  m_MPTCSequence->Duration = m_MPTimecode->Duration = m_MPClSequence->Duration = m_MPClip->Duration =
+  //    m_FPTCSequence->Duration = m_FPTimecode->Duration = m_FPClSequence->Duration = m_FPClip->Duration =
 
   DurationElementList_t::iterator dli = m_DurationUpdateList.begin();
 

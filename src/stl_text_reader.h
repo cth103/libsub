@@ -22,6 +22,7 @@
 
 #include "reader.h"
 #include <boost/optional.hpp>
+#include <iostream>
 
 namespace sub {
 

@@ -20,6 +20,7 @@
 #include "interop_dcp_reader.h"
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
+#include <boost/optional/optional_io.hpp>
 #include <fstream>
 
 using std::list;
@@ -179,7 +180,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "At afternoon tea with John Peel");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -197,7 +198,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		++j;
 		BOOST_CHECK (j == i->lines.end ());
 	}
-		
+
 	++i;
 	BOOST_REQUIRE (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 50, 42 * 4));
@@ -259,7 +260,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "At home it depends how I feel.\"");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -288,7 +289,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 16, 42 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -303,7 +304,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "With the legendary Miss Enid Blyton");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -327,8 +328,8 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 20, 219 * 4));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 22, 73 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
-	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));	
-	
+	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -343,7 +344,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "and I'll show you my body\"");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -368,7 +369,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 28, 208 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -383,7 +384,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "That curious creature the Sphinx");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -423,7 +424,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "It sits there and smirks");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -448,7 +449,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 47, 94 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -463,7 +464,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "Then when you're not looking, it winks.");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -488,7 +489,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 48, 167 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -503,7 +504,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "Out mooning, at night, on the ledge");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -521,14 +522,14 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		++j;
 		BOOST_CHECK (j == i->lines.end ());
 	}
-		
+
 	++i;
 	BOOST_REQUIRE (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 53, 21 * 4));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 56, 10 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -543,7 +544,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "Is the maestro, James Brown");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
@@ -561,14 +562,14 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		++j;
 		BOOST_CHECK (j == i->lines.end ());
 	}
-	
+
 	++i;
 	BOOST_REQUIRE (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 2, 5, 208 * 4));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 2, 7, 31 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 0));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
-	
+
 	{
 		list<sub::Line>::iterator j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
@@ -583,7 +584,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 		BOOST_CHECK_EQUAL (b.text, "HELLO");
 		BOOST_CHECK_EQUAL (b.effect, sub::BORDER);
 		BOOST_CHECK (b.effect_colour.get() == sub::Colour (0, 0, 0));
-		
+
 		++j;
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
