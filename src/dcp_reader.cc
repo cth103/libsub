@@ -26,6 +26,7 @@
 #include "dcp/subtitle.h"
 #include <libcxml/cxml.h>
 #include <libxml++/libxml++.h>
+#include <iostream>
 
 using std::list;
 using std::cout;
@@ -75,14 +76,14 @@ DCPReader::parse_node (xmlpp::Node const * node, ParseState& parse_state, option
 		}
 	}
 }
-	
+
 void
 DCPReader::maybe_add_subtitle (string text, ParseState const & parse_state)
 {
 	if (empty_or_white_space (text)) {
 		return;
 	}
-	
+
 	if (parse_state.text_nodes.empty() || parse_state.subtitle_nodes.empty ()) {
 		return;
 	}
@@ -92,7 +93,7 @@ DCPReader::maybe_add_subtitle (string text, ParseState const & parse_state)
 	dcp::Subtitle effective_subtitle (*parse_state.subtitle_nodes.back ());
 
 	RawSubtitle rs;
-	
+
 	rs.text = text;
 	rs.font = effective_font.id;
 	rs.font_size.set_proportional (float (effective_font.size) / (72 * 11));
