@@ -21,6 +21,7 @@
 #include "exceptions.h"
 #include <cmath>
 #include <iomanip>
+#include <iostream>
 
 using std::ostream;
 using std::cout;
@@ -44,7 +45,7 @@ sub::operator< (sub::Time const & a, sub::Time const & b)
 	if ((a._rate && !b._rate) || (!a._rate && b._rate)) {
 		throw UnknownFrameRateError ();
 	}
-	
+
 	return (a._frames * a._rate.get().numerator * b._rate.get().denominator) < (b._frames * b._rate.get().numerator * a._rate.get().denominator);
 }
 
@@ -63,7 +64,7 @@ sub::operator> (sub::Time const & a, sub::Time const & b)
 	if ((a._rate && !b._rate) || (!a._rate && b._rate)) {
 		throw UnknownFrameRateError ();
 	}
-	
+
 	return (a._frames * a._rate.get().numerator * b._rate.get().denominator) > (b._frames * b._rate.get().numerator * a._rate.get().denominator);
 }
 
@@ -131,7 +132,7 @@ Time::frames_at (Rational rate) const
 	if (!_rate) {
 		throw UnknownFrameRateError ();
 	}
-	
+
 	return rint (double (_frames) * _rate.get().denominator * rate.numerator / (_rate.get().numerator * rate.denominator));
 }
 
