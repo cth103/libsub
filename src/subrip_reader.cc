@@ -22,6 +22,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
+#include <boost/bind.hpp>
 #include <cstdio>
 #include <vector>
 #include <iostream>
@@ -31,11 +32,52 @@ using std::vector;
 using std::list;
 using std::cout;
 using std::hex;
+using std::stringstream;
 using boost::lexical_cast;
 using boost::to_upper;
+using boost::optional;
+using boost::function;
 using namespace sub;
 
+/** @param s Subtitle string encoded in UTF-8 */
+SubripReader::SubripReader (string const & s)
+{
+	stringstream str (s);
+	this->read (boost::bind (&SubripReader::get_line_stringstream, this, &str));
+}
+
+/** @param f Subtitle file encoded in UTF-8 */
 SubripReader::SubripReader (FILE* f)
+{
+	this->read (boost::bind (&SubripReader::get_line_file, this, f));
+}
+
+optional<string>
+SubripReader::get_line_stringstream (stringstream* str) const
+{
+	string s;
+	getline (*str, s);
+	if (!str->good ()) {
+		return optional<string> ();
+	}
+
+	return s;
+}
+
+optional<string>
+SubripReader::get_line_file (FILE* f) const
+{
+	char buffer[256];
+	char* r = fgets (buffer, sizeof (buffer), f);
+	if (r == 0 || feof (f)) {
+		return optional<string> ();
+	}
+
+	return string (buffer);
+}
+
+void
+SubripReader::read (function<optional<string> ()> get_line)
 {
 	enum {
 		COUNTER,
@@ -43,38 +85,35 @@ SubripReader::SubripReader (FILE* f)
 		CONTENT
 	} state = COUNTER;
 
-	char buffer[256];
-
 	Time from;
 	Time to;
 
 	string line;
 	int line_number = 0;
 
-	while (!feof (f)) {
-		char* r = fgets (buffer, sizeof (buffer), f);
-		if (r == 0 || feof (f)) {
+	while (true) {
+		optional<string> line = get_line ();
+		if (!line) {
 			break;
 		}
 
-		line = string (buffer);
-		trim_right_if (line, boost::is_any_of ("\n\r"));
+		trim_right_if (*line, boost::is_any_of ("\n\r"));
 
 		if (
-			line.length() >= 3 &&
-			static_cast<unsigned char> (line[0]) == 0xef &&
-			static_cast<unsigned char> (line[1]) == 0xbb &&
-			static_cast<unsigned char> (line[2]) == 0xbf
+			line->length() >= 3 &&
+			static_cast<unsigned char> (line.get()[0]) == 0xef &&
+			static_cast<unsigned char> (line.get()[1]) == 0xbb &&
+			static_cast<unsigned char> (line.get()[2]) == 0xbf
 			) {
 
 			/* Skip Unicode byte order mark */
-			line = line.substr (3);
+			line = line->substr (3);
 		}
 
 		switch (state) {
 		case COUNTER:
 		{
-			if (line.empty ()) {
+			if (line->empty ()) {
 				/* a blank line at the start is ok */
 				break;
 			}
@@ -85,9 +124,9 @@ SubripReader::SubripReader (FILE* f)
 		case METADATA:
 		{
 			vector<string> p;
-			boost::algorithm::split (p, line, boost::algorithm::is_any_of (" "));
+			boost::algorithm::split (p, *line, boost::algorithm::is_any_of (" "));
 			if (p.size() != 3 && p.size() != 7) {
-				throw SubripError (line, "a time/position line");
+				throw SubripError (*line, "a time/position line");
 			}
 
 			from = convert_time (p[0]);
@@ -99,11 +138,11 @@ SubripReader::SubripReader (FILE* f)
 			break;
 		}
 		case CONTENT:
-			if (line.empty ()) {
+			if (line->empty ()) {
 				state = COUNTER;
 				line_number = 0;
 			} else {
-				convert_line (line, line_number, from, to);
+				convert_line (*line, line_number, from, to);
 				line_number++;
 			}
 			break;

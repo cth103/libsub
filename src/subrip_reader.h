@@ -21,6 +21,7 @@
 #define LIBSUB_SUBRIP_READER_H
 
 #include "reader.h"
+#include <boost/function.hpp>
 
 struct subrip_reader_convert_line_test;
 struct subrip_reader_convert_time_test;
@@ -31,16 +32,20 @@ class SubripReader : public Reader
 {
 public:
 	SubripReader (FILE* f);
+	SubripReader (std::string const & subs);
 
 private:
 	/* For tests */
 	friend struct ::subrip_reader_convert_line_test;
 	friend struct ::subrip_reader_convert_time_test;
 	SubripReader () {}
-	
+
 	static Time convert_time (std::string t);
 	void convert_line (std::string t, int line_number, Time from, Time to);
 	void maybe_content (RawSubtitle& p);
+	boost::optional<std::string> get_line_stringstream (std::stringstream* str) const;
+	boost::optional<std::string> get_line_file (FILE* file) const;
+	void read (boost::function<boost::optional<std::string> ()> get_line);
 };
 
 }
