@@ -34,9 +34,9 @@ def configure(conf):
         conf.env.HAVE_CXML = 1
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
-        conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
+        conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags', uselib_store='CXML', mandatory=True)
     else:
-        conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
+        conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags --libs', uselib_store='CXML', mandatory=True)
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:
