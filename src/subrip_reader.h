@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/subrip_reader.h
+ *  @brief SubripReader class.
+ */
+
 #ifndef LIBSUB_SUBRIP_READER_H
 #define LIBSUB_SUBRIP_READER_H
 
