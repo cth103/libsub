@@ -2,7 +2,7 @@ import subprocess
 import os
 
 APPNAME = 'libsub'
-VERSION = '1.1.9'
+VERSION = '1.1.9devel'
 API_VERSION = '-1.0'
 
 def options(opt):
