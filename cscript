@@ -1,7 +1,7 @@
 import os
 
 def dependencies(target):
-    return (('libdcp', '3afe04f'),)
+    return (('libdcp', 'b9e6635'),)
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
