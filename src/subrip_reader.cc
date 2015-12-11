@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/subrip_reader.cc
+ *  @brief SubripReader class.
+ */
+
 #include "subrip_reader.h"
 #include "exceptions.h"
 #include <boost/algorithm/string.hpp>
