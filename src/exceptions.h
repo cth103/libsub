@@ -99,6 +99,12 @@ public:
 	{}
 };
 
+class ProgrammingError : public MessageError
+{
+public:
+	ProgrammingError (std::string file, int line);
+};
+
 }
 
 #endif

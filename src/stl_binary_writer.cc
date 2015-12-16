@@ -26,6 +26,7 @@
 #include "iso6937.h"
 #include "stl_util.h"
 #include "compose.hpp"
+#include "sub_assert.h"
 #include <boost/locale.hpp>
 #include <list>
 #include <cmath>
@@ -62,7 +63,7 @@ put_string (char* p, string s)
 static void
 put_string (char* p, unsigned int n, string s)
 {
-	assert (s.length() <= n);
+	SUB_ASSERT (s.length() <= n);
 
 	memcpy (p, s.c_str (), s.length ());
 	memset (p + s.length(), ' ', n - s.length ());
@@ -76,7 +77,7 @@ put_int_as_string (char* p, int v, unsigned int n)
 	s.imbue (std::locale::classic ());
 	s << setw (n) << setfill ('0');
 	s << v;
-	assert (s.str().length() == n);
+	SUB_ASSERT (s.str().length() == n);
 	put_string (p, s.str ());
 }
 
@@ -110,19 +111,19 @@ sub::write_stl_binary (
 	boost::filesystem::path file_name
 	)
 {
-	assert (original_programme_title.size() <= 32);
-	assert (original_episode_title.size() <= 32);
-	assert (translated_programme_title.size() <= 32);
-	assert (translated_episode_title.size() <= 32);
-	assert (translator_name.size() <= 32);
-	assert (translator_contact_details.size() <= 32);
-	assert (creation_date.size() == 6);
-	assert (revision_date.size() == 6);
-	assert (revision_number <= 99);
-	assert (country_of_origin.size() == 3);
-	assert (publisher.size() <= 32);
-	assert (editor_name.size() <= 32);
-	assert (editor_contact_details.size() <= 32);
+	SUB_ASSERT (original_programme_title.size() <= 32);
+	SUB_ASSERT (original_episode_title.size() <= 32);
+	SUB_ASSERT (translated_programme_title.size() <= 32);
+	SUB_ASSERT (translated_episode_title.size() <= 32);
+	SUB_ASSERT (translator_name.size() <= 32);
+	SUB_ASSERT (translator_contact_details.size() <= 32);
+	SUB_ASSERT (creation_date.size() == 6);
+	SUB_ASSERT (revision_date.size() == 6);
+	SUB_ASSERT (revision_number <= 99);
+	SUB_ASSERT (country_of_origin.size() == 3);
+	SUB_ASSERT (publisher.size() <= 32);
+	SUB_ASSERT (editor_name.size() <= 32);
+	SUB_ASSERT (editor_contact_details.size() <= 32);
 
 	char* buffer = new char[1024];
 	memset (buffer, 0, 1024);

@@ -19,8 +19,8 @@
 
 #include "stl_binary_tables.h"
 #include "exceptions.h"
+#include "sub_assert.h"
 #include "compose.hpp"
-#include <cassert>
 
 using std::map;
 using std::string;
@@ -55,7 +55,7 @@ enum_to_file (E k, map<F, STLBinaryCode<E> > m)
 		}
 	}
 
-	assert (false);
+	SUB_ASSERT (false);
 	return F ();
 }
 

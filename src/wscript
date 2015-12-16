@@ -15,6 +15,7 @@ def build(bld):
                  colour.cc
                  dcp_reader.cc
                  effect.cc
+                 exceptions.cc
                  font_size.cc
                  interop_dcp_reader.cc
                  iso6937.cc
