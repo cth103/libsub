@@ -30,7 +30,7 @@ VerticalPosition::fraction_from_screen_top () const
 	}
 
 	float const prop = proportional ? proportional.get() : (float (line.get()) / lines.get ());
-	
+
 	switch (reference.get ()) {
 	case TOP_OF_SCREEN:
 		return prop;

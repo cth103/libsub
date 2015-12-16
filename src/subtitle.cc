@@ -59,5 +59,5 @@ Block::Block (RawSubtitle s)
 	, italic (s.italic)
 	, underline (s.underline)
 {
-	
+
 }

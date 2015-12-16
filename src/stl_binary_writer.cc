@@ -63,7 +63,7 @@ static void
 put_string (char* p, unsigned int n, string s)
 {
 	assert (s.length() <= n);
-	
+
 	memcpy (p, s.c_str (), s.length ());
 	memset (p + s.length(), ' ', n - s.length ());
 }
@@ -123,7 +123,7 @@ sub::write_stl_binary (
 	assert (publisher.size() <= 32);
 	assert (editor_name.size() <= 32);
 	assert (editor_contact_details.size() <= 32);
-	
+
 	char* buffer = new char[1024];
 	memset (buffer, 0, 1024);
 	ofstream output (file_name.string().c_str ());
@@ -144,7 +144,7 @@ sub::write_stl_binary (
 			++lines;
 		}
 	}
-	
+
 	/* Code page: 850 */
 	put_string (buffer + 0, "850");
 	/* Disk format code */
@@ -256,12 +256,12 @@ sub::write_stl_binary (
 			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_NONE), 1);
 			/* Comment flag */
 			put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
-			
+
 			/* Text */
 			string text;
 			bool italic = false;
 			bool underline = false;
-			
+
 			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
 				if (k->underline && !underline) {
 					text += "\x82";
@@ -277,20 +277,20 @@ sub::write_stl_binary (
 					text += "\x81";
 					italic = false;
 				}
-				
+
 				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
 			}
-			
+
 			text += "\x8A";
-		
+
 			if (text.length() > 111) {
 				text = text.substr (111);
 			}
-			
+
 			while (text.length() < 112) {
 				text += "\x8F";
 			}
-			
+
 			put_string (buffer + 16, text);
 			output.write (buffer, 128);
 

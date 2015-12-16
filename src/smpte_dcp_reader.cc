@@ -36,14 +36,14 @@ using namespace sub;
 SMPTEDCPReader::SMPTEDCPReader (boost::filesystem::path file, bool mxf)
 {
 	shared_ptr<cxml::Document> xml (new cxml::Document ("SubtitleReel"));
-	
+
 	if (mxf) {
 		ASDCP::TimedText::MXFReader reader;
 		Kumu::Result_t r = reader.OpenRead (file.string().c_str ());
 		if (ASDCP_FAILURE (r)) {
 			boost::throw_exception (MXFError ("could not open MXF file for reading"));
 		}
-	
+
 		string s;
 		reader.ReadTimedTextResource (s, 0, 0);
 		stringstream t;
@@ -52,7 +52,7 @@ SMPTEDCPReader::SMPTEDCPReader (boost::filesystem::path file, bool mxf)
 
 		ASDCP::WriterInfo info;
 		reader.FillWriterInfo (info);
-		
+
 		char buffer[64];
 		Kumu::bin2UUIDhex (info.AssetUUID, ASDCP::UUIDlen, buffer, sizeof (buffer));
 		_id = buffer;
@@ -60,7 +60,7 @@ SMPTEDCPReader::SMPTEDCPReader (boost::filesystem::path file, bool mxf)
 		xml->read_file (file);
 		_id = xml->string_child("Id").substr (9);
 	}
-	
+
 	_load_font_nodes = type_children<dcp::SMPTELoadFont> (xml, "LoadFont");
 
 	parse_common (xml, xml->number_child<int> ("TimeCodeRate"));

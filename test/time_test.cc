@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE (time_construction_test)
 BOOST_AUTO_TEST_CASE (time_conversion_test)
 {
 	sub::Time p;
-	
+
 	/* 40ms = 1 frame at 25fps */
 	p = sub::Time::from_hms (3, 5, 7, 40);
 	BOOST_CHECK_EQUAL (p.frames_at (sub::Rational (25, 1)), 1);

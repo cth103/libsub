@@ -36,7 +36,7 @@ public:
 	void set_proportional (float p) {
 		_proportional = p;
 	}
-	
+
 	void set_points (int p) {
 		_points = p;
 	}
@@ -44,20 +44,20 @@ public:
 	boost::optional<float> proportional () const {
 		return _proportional;
 	}
-	
+
 	boost::optional<int> points () const {
 		return _points;
 	}
-	
+
 	float proportional (int screen_height_in_points) const;
 	int points (int screen_height_in_points) const;
-	
-private:		
+
+private:
 	/** as a proportion of screen height */
 	boost::optional<float> _proportional;
 	/** in points */
 	boost::optional<int> _points;
-	
+
 };
 
 }

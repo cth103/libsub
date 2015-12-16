@@ -32,7 +32,7 @@ enum DisplayStandard {
 	DISPLAY_STANDARD_LEVEL_1_TELETEXT,
 	DISPLAY_STANDARD_LEVEL_2_TELETEXT
 };
-	
+
 enum LanguageGroup {
 	LANGUAGE_GROUP_LATIN,
 	LANGUAGE_GROUP_LATIN_CYRILLIC,
@@ -186,7 +186,7 @@ public:
 		: value (v)
 		, description (d)
 	{}
-	
+
 	T value;
 	std::string description;
 };
@@ -222,7 +222,7 @@ public:
 
 	boost::optional<Language> language_description_to_enum (std::string) const;
 
-private:	
+private:
 	std::map<std::string, STLBinaryCode<DisplayStandard> > _display_standard_map;
 	std::map<std::string, STLBinaryCode<LanguageGroup> > _language_group_map;
 	std::map<std::string, STLBinaryCode<Language> > _language_map;

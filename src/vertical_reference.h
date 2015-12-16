@@ -33,7 +33,7 @@ enum VerticalReference
 };
 
 VerticalReference string_to_vertical_reference (std::string s);
-	
+
 }
 
 #endif

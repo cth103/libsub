@@ -50,7 +50,7 @@ sub::reader_factory (boost::filesystem::path file_name)
                         return shared_ptr<Reader> (new SMPTEDCPReader (file_name, false));
                 }
         }
-        
+
         if (ext == ".mxf") {
                 /* Assume this is some MXF-wrapped SMPTE subtitles */
                 return shared_ptr<Reader> (new SMPTEDCPReader (file_name, true));

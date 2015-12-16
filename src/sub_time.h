@@ -23,7 +23,7 @@
 #include <boost/optional.hpp>
 
 namespace sub {
-	
+
 class Rational
 {
 public:
@@ -31,7 +31,7 @@ public:
 		: numerator (numerator_)
 		, denominator (denominator_)
 	{}
-	
+
 	int numerator;
 	int denominator;
 
@@ -59,7 +59,7 @@ public:
 
 	static Time from_hmsf (int h, int m, int s, int f, boost::optional<Rational> rate = boost::optional<Rational> ());
 	static Time from_hms (int h, int m, int s, int ms);
-	
+
 private:
 	friend bool operator< (Time const & a, Time const & b);
 	friend bool operator> (Time const & a, Time const & b);
@@ -71,7 +71,7 @@ private:
 		, _frames (frames)
 		, _rate (rate)
 	{}
-	
+
 	int _seconds;
 	int _frames;
 	boost::optional<Rational> _rate;
@@ -82,7 +82,7 @@ bool operator> (Time const & a, Time const & b);
 bool operator== (Time const & a, Time const & b);
 bool operator!= (Time const & a, Time const & b);
 std::ostream& operator<< (std::ostream& s, Time const & t);
-	
+
 }
 
 #endif

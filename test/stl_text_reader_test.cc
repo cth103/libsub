@@ -36,13 +36,13 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
 
-	
+
 	/* First subtitle */
 
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hmsf (0, 0, 41, 9));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hmsf (0, 0, 42, 21));
-	
+
 	list<sub::Line>::iterator j = i->lines.begin ();
 	BOOST_CHECK (j != i->lines.end ());
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
@@ -68,20 +68,20 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), 1);
 	++i;
 
-	
+
 	/* Second subtitle */
-	
+
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hmsf (0, 1, 1, 1));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hmsf (0, 1, 2, 10));
-	
+
 	BOOST_CHECK_EQUAL (i->lines.size(), 1);
 	sub::Line l = i->lines.front ();
 	BOOST_CHECK_EQUAL (l.blocks.size(), 7);
 	BOOST_CHECK_EQUAL (l.vertical_position.line.get(), 0);
 
 	list<sub::Block>::iterator k = l.blocks.begin ();
-	
+
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " This is some ");
 	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
 	++k;
-	
+
 	BOOST_CHECK (k == l.blocks.end ());
 }
 

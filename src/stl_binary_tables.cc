@@ -84,7 +84,7 @@ description_to_enum (string d, map<F, STLBinaryCode<E> > const & m)
 
 	return boost::optional<E> ();
 }
-	      
+
 DisplayStandard
 STLBinaryTables::display_standard_file_to_enum (string s) const
 {
@@ -150,13 +150,13 @@ STLBinaryTables::comment_enum_to_file (Comment v) const
 {
 	return enum_to_file (v, _comment_map);
 }
-	      
+
 string
 STLBinaryTables::display_standard_enum_to_description (DisplayStandard v) const
 {
 	return enum_to_description (v, _display_standard_map);
 }
-	
+
 string
 STLBinaryTables::language_group_enum_to_description (LanguageGroup v) const
 {
@@ -205,13 +205,13 @@ STLBinaryTables::STLBinaryTables ()
 	code<DisplayStandard, string> (_display_standard_map, "0", DISPLAY_STANDARD_OPEN_SUBTITLING, "Open subtitling");
 	code<DisplayStandard, string> (_display_standard_map, "1", DISPLAY_STANDARD_LEVEL_1_TELETEXT, "Level 1 teletext");
 	code<DisplayStandard, string> (_display_standard_map, "2", DISPLAY_STANDARD_LEVEL_2_TELETEXT, "Level 2 teletext");
-	
+
 	code<LanguageGroup, string> (_language_group_map, "00", LANGUAGE_GROUP_LATIN, "Latin");
 	code<LanguageGroup, string> (_language_group_map, "01", LANGUAGE_GROUP_LATIN_CYRILLIC, "Latin/Cyrillic");
 	code<LanguageGroup, string> (_language_group_map, "02", LANGUAGE_GROUP_LATIN_ARABIC, "Latin/Arabic");
 	code<LanguageGroup, string> (_language_group_map, "03", LANGUAGE_GROUP_LATIN_GREEK, "Latin/Greek");
 	code<LanguageGroup, string> (_language_group_map, "04", LANGUAGE_GROUP_LATIN_HEBREW, "Latin/Hebrew");
-	
+
 	code<Language, string> (_language_map, "00", LANGUAGE_UNKNOWN, "Unknown");
 	code<Language, string> (_language_map, "01", LANGUAGE_ALBANIAN, "Albanian");
 	code<Language, string> (_language_map, "02", LANGUAGE_BRETON, "Breton");

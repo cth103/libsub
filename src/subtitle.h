@@ -49,7 +49,7 @@ public:
 
 	/** Construct a Block taking any relevant information from a RawSubtitle */
 	Block (RawSubtitle s);
-	
+
 	/** Subtitle text in UTF-8 */
 	std::string text;
 	boost::optional<std::string> font;
@@ -59,7 +59,7 @@ public:
 
 	boost::optional<Effect> effect;
 	boost::optional<Colour> effect_colour;
-	
+
 	Colour colour;
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
@@ -75,7 +75,7 @@ class Line
 {
 public:
 	Line () {}
-	
+
 	/** Construct a Line taking any relevant information from a RawSubtitle */
 	Line (RawSubtitle s);
 
@@ -101,12 +101,12 @@ public:
 
 	/** Construct a Line taking any relevant information from a RawSubtitle */
 	Subtitle (RawSubtitle s);
-	
+
 	/** from time */
 	Time from;
 	/** to time */
 	Time to;
-	
+
 	boost::optional<Time> fade_up;
 	boost::optional<Time> fade_down;
 

@@ -36,7 +36,7 @@ class Reader
 {
 public:
 	virtual ~Reader () {}
-	
+
 	std::list<RawSubtitle> subtitles () const {
 		return _subs;
 	}

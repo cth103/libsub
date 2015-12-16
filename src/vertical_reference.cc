@@ -34,6 +34,6 @@ sub::string_to_vertical_reference (string s)
 	} else if (s == "bottom") {
 		return BOTTOM_OF_SCREEN;
 	}
-	
+
 	throw XMLError ("unknown subtitle valign type");
 }

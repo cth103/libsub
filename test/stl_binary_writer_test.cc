@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 		l.vertical_position.line = 0;
 		l.vertical_position.lines = 32;
 		l.vertical_position.reference = sub::TOP_OF_SCREEN;
-		
+
 		sub::Block b;
 		b.text = "This is some ";
 		b.font = "Arial";
@@ -114,6 +114,6 @@ BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 		"Editor contact",
 		"build/test/test.stl"
 		);
-		
+
 }
 
