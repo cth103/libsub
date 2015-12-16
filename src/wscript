@@ -20,6 +20,7 @@ def build(bld):
                  interop_dcp_reader.cc
                  iso6937.cc
                  iso6937_tables.cc
+                 rational.cc
                  raw_subtitle.cc
                  reader.cc
                  reader_factory.cc
@@ -48,8 +49,11 @@ def build(bld):
               dcp_reader.h
               effect.h
               font_size.h
+              interop_dcp_reader.h
+              rational.h
               raw_subtitle.h
               reader.h
+              smpte_dcp_reader.h
               stl_binary_tables.h
               stl_binary_reader.h
               stl_binary_writer.h

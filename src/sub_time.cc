@@ -18,6 +18,7 @@
 */
 
 #include "sub_time.h"
+#include "sub_assert.h"
 #include "exceptions.h"
 #include <cmath>
 #include <iomanip>
@@ -154,8 +155,54 @@ Time::from_hms (int h, int m, int s, int ms)
 	return Time (h * 3600 + m * 60 + s, ms, Rational (1000, 1));
 }
 
+/** Create a Time from a number of frames.
+ *  rate must be integer.
+ */
+Time
+Time::from_frames (int f, Rational rate)
+{
+	SUB_ASSERT (rate.denominator != 0);
+	SUB_ASSERT (rate.integer ());
+	return Time (f / rate.integer_fraction(), f % rate.integer_fraction(), rate);
+}
+
 double
 Time::all_as_seconds () const
 {
 	return _seconds + double(milliseconds ()) / 1000;
+}
+
+/** Add a time to this one.  This time must have an integer _rate
+ *  and t must have the same rate.
+ */
+void
+Time::add (Time t)
+{
+	SUB_ASSERT (_rate);
+
+	_seconds += t._seconds;
+	_frames += t._frames;
+
+	SUB_ASSERT (_rate.get().denominator != 0);
+	SUB_ASSERT (_rate.get().integer ());
+
+	if (_frames >= _rate.get().integer_fraction()) {
+		_frames -= _rate.get().integer_fraction();
+		++_seconds;
+	}
+}
+
+void
+Time::scale (float f)
+{
+	SUB_ASSERT (_rate);
+	SUB_ASSERT (_rate->denominator != 0);
+	SUB_ASSERT (_rate->integer ());
+
+	_seconds = rint (_seconds * f);
+	_frames = rint (_frames * f);
+	if (_frames >= _rate->integer_fraction()) {
+		_frames -= _rate->integer_fraction ();
+		++_seconds;
+	}
 }

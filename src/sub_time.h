@@ -20,25 +20,10 @@
 #ifndef LIBSUB_SUB_TIME_H
 #define LIBSUB_SUB_TIME_H
 
+#include "rational.h"
 #include <boost/optional.hpp>
 
 namespace sub {
-
-class Rational
-{
-public:
-	Rational (int numerator_, int denominator_)
-		: numerator (numerator_)
-		, denominator (denominator_)
-	{}
-
-	int numerator;
-	int denominator;
-
-	double fraction () const {
-		return double (numerator) / denominator;
-	}
-};
 
 class Time
 {
@@ -57,8 +42,12 @@ public:
 
 	double all_as_seconds () const;
 
+	void add (Time t);
+	void scale (float f);
+
 	static Time from_hmsf (int h, int m, int s, int f, boost::optional<Rational> rate = boost::optional<Rational> ());
 	static Time from_hms (int h, int m, int s, int ms);
+	static Time from_frames (int frames, Rational rate);
 
 private:
 	friend bool operator< (Time const & a, Time const & b);
