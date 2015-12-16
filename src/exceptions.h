@@ -25,81 +25,64 @@
 
 namespace sub {
 
-class MessageError : public std::exception
-{
-public:
-	MessageError (std::string const & message)
-		: _message (message) {}
-	~MessageError () throw () {}
-
-	/** @return error message */
-	char const * what () const throw () {
-		return _message.c_str ();
-	}
-
-private:
-	/** error message */
-	std::string _message;
-};
-
 /** @class XMLError
  *  @brief An error raised when reading an XML file.
  */
-class XMLError : public MessageError
+class XMLError : public std::runtime_error
 {
 public:
 	XMLError (std::string const & message)
-		: MessageError (message)
+		: std::runtime_error (message)
 	{}
 };
 
 /** @class STLError
  *  @brief An error raised when reading a binary STL file.
  */
-class STLError : public MessageError
+class STLError : public std::runtime_error
 {
 public:
 	STLError (std::string const & message)
-		: MessageError (message)
+		: std::runtime_error (message)
 	{}
 };
 
 /** @class SubripError
  *  @brief An error raised when reading a Subrip file.
  */
-class SubripError : public MessageError
+class SubripError : public std::runtime_error
 {
 public:
 	SubripError (std::string saw, std::string expecting)
-		: MessageError ("Error in SubRip file: saw " + saw + " while expecting " + expecting)
+		: std::runtime_error ("Error in SubRip file: saw " + saw + " while expecting " + expecting)
 	{}
 };
 
-class MXFError : public MessageError
+class MXFError : public std::runtime_error
 {
 public:
 	MXFError (std::string const & message)
-		: MessageError (message)
+		: std::runtime_error (message)
 	{}
 };
 
-class UnknownFrameRateError : public MessageError
+class UnknownFrameRateError : public std::runtime_error
 {
 public:
 	UnknownFrameRateError ()
-		: MessageError ("unknown frame rate")
+		: std::runtime_error ("unknown frame rate")
 	{}
 };
 
-class DCPError : public MessageError
+class DCPError : public std::runtime_error
 {
 public:
 	DCPError (std::string const & message)
-		: MessageError (message)
+		: std::runtime_error (message)
 	{}
 };
 
-class ProgrammingError : public MessageError
+class ProgrammingError : public std::runtime_error
 {
 public:
 	ProgrammingError (std::string file, int line);

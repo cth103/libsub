@@ -24,7 +24,7 @@ using std::string;
 using namespace sub;
 
 ProgrammingError::ProgrammingError (string file, int line)
-	: MessageError (String::compose ("Programming error at %1:%2", file, line))
+	: runtime_error (String::compose ("Programming error at %1:%2", file, line))
 {
 
 }
