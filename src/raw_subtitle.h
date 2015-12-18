@@ -54,7 +54,7 @@ public:
 
 	boost::optional<Effect> effect;
 	boost::optional<Colour> effect_colour;
-	
+
 	Colour colour;
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
@@ -67,12 +67,12 @@ public:
 	Time from;
 	/** to time */
 	Time to;
-	
+
 	boost::optional<Time> fade_up;
 	boost::optional<Time> fade_down;
 };
 
-bool operator< (RawSubtitle const &, RawSubtitle const &);	
+bool operator< (RawSubtitle const &, RawSubtitle const &);
 
 }
 

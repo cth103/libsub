@@ -27,9 +27,9 @@ BOOST_AUTO_TEST_CASE (vertical_position_test)
 {
 	sub::VerticalPosition a;
 	sub::VerticalPosition b;
-	
+
 	/* Simple */
-	
+
 	a.proportional = 0.3;
 	a.reference = sub::TOP_OF_SCREEN;
 	b.proportional = 0.4;
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE (vertical_position_test)
 	BOOST_CHECK (b < a);
 
 	/* Different line counts with lines */
-	
+
 	a.proportional = optional<float> ();
 	b.proportional = optional<float> ();
 

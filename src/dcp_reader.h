@@ -38,7 +38,7 @@ namespace dcp {
  */
 class DCPReader : public Reader
 {
-protected:	
+protected:
 
 	struct ParseState {
 		std::list<boost::shared_ptr<dcp::Font> > font_nodes;
@@ -49,11 +49,11 @@ protected:
 	void parse_common (cxml::NodePtr root, boost::optional<int> tcr);
 
 	std::string _id;
-	
+
 private:
 	void parse_node (xmlpp::Node const * node, ParseState& parse_state, boost::optional<int> tcr);
 	void maybe_add_subtitle (std::string text, ParseState const & parse_state);
-	
+
 	std::string _reel_number;
 	std::string _language;
 };

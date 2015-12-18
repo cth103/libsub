@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,42 +17,29 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
-
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
-
-struct subrip_reader_convert_line_test;
-
 namespace sub {
 
-/** @class Reader
- *  @brief Parent for classes which can read particular subtitle formats.
- */
-class Reader
+class Rational
 {
 public:
-	virtual ~Reader () {}
+	Rational (int numerator_, int denominator_)
+		: numerator (numerator_)
+		, denominator (denominator_)
+	{}
 
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
+	int numerator;
+	int denominator;
+
+	double fraction () const {
+		return double (numerator) / denominator;
 	}
 
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
+	bool integer () const;
+	int integer_fraction () const {
+		return numerator / denominator;
 	}
-
-protected:
-	friend struct ::subrip_reader_convert_line_test;
-
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
 };
 
-}
+bool operator== (Rational const & a, Rational const & b);
 
-#endif
+}

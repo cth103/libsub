@@ -17,42 +17,6 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
+#include "exceptions.h"
 
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
-
-struct subrip_reader_convert_line_test;
-
-namespace sub {
-
-/** @class Reader
- *  @brief Parent for classes which can read particular subtitle formats.
- */
-class Reader
-{
-public:
-	virtual ~Reader () {}
-
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
-	}
-
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
-	}
-
-protected:
-	friend struct ::subrip_reader_convert_line_test;
-
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
-};
-
-}
-
-#endif
+#define SUB_ASSERT(x) if (!(x)) throw ProgrammingError (__FILE__, __LINE__);

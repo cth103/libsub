@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,42 +17,14 @@
 
 */
 
-#ifndef LIBSUB_READER_H
-#define LIBSUB_READER_H
+#include "compose.hpp"
+#include "exceptions.h"
 
-#include "raw_subtitle.h"
-#include <list>
-#include <map>
-#include <string>
+using std::string;
+using namespace sub;
 
-struct subrip_reader_convert_line_test;
-
-namespace sub {
-
-/** @class Reader
- *  @brief Parent for classes which can read particular subtitle formats.
- */
-class Reader
+ProgrammingError::ProgrammingError (string file, int line)
+	: runtime_error (String::compose ("Programming error at %1:%2", file, line))
 {
-public:
-	virtual ~Reader () {}
-
-	std::list<RawSubtitle> subtitles () const {
-		return _subs;
-	}
-
-	virtual std::map<std::string, std::string> metadata () const {
-		return std::map<std::string, std::string> ();
-	}
-
-protected:
-	friend struct ::subrip_reader_convert_line_test;
-
-	void warn (std::string) const;
-
-	std::list<RawSubtitle> _subs;
-};
 
 }
-
-#endif
