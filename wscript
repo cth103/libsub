@@ -1,5 +1,6 @@
 import subprocess
 import os
+from waflib import Context
 
 APPNAME = 'libsub'
 VERSION = '1.1.9devel'
@@ -36,11 +37,12 @@ def configure(conf):
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.HAVE_ASDCPLIB_CTH = 1
-        conf.env.STATIC_ASDCPLIB_CTH = ['asdcplib-cth', 'kumu-cth']
-        conf.check_cfg(package='libasdcp-cth', atleast_version='2.5.11-cth1', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.env.STLIB_ASDCPLIB_CTH = ['asdcp-cth', 'kumu-cth']
+        conf.env.LIB_ASDCPLIB_CTH = ['ssl', 'crypto']
+        conf.check_cfg(package='libasdcp-cth', atleast_version='0.0.1', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libasdcp-cth', atleast_version='2.5.11-cth1', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.check_cfg(package='libasdcp-cth', atleast_version='0.0.1', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:
@@ -88,6 +90,13 @@ def configure(conf):
     if not conf.env.DISABLE_TESTS:
         conf.recurse('test')
 
+    # libxml++ 2.39.1 and later must be built with -std=c++11
+    libxmlpp_version = conf.cmd_and_log(['pkg-config', '--modversion', 'libxml++-2.6'], output=Context.STDOUT, quiet=Context.BOTH)
+    s = libxmlpp_version.split('.')
+    v = (int(s[0]) << 16) | (int(s[1]) << 8) | int(s[2])
+    if v >= 0x022701:
+        conf.env.append_value('CXXFLAGS', '-std=c++11')
+        
 def build(bld):
     create_version_cc(bld, VERSION)
 
