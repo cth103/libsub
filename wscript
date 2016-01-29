@@ -37,10 +37,10 @@ def configure(conf):
         conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.HAVE_ASDCPLIB_CTH = 1
         conf.env.STATIC_ASDCPLIB_CTH = ['asdcplib-cth', 'kumu-cth']
-        conf.check_cfg(package='libasdcp-cth', atleast_version='2.5.11-cth1', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.check_cfg(package='libasdcp-cth', atleast_version='0.0.1', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libasdcp-cth', atleast_version='2.5.11-cth1', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.check_cfg(package='libasdcp-cth', atleast_version='0.0.1', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:
