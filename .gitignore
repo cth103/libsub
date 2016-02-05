@@ -1,6 +1,7 @@
 *~
 build
 .waf-*
+.waf3-*
 .lock-waf*
 src/version.cc
 UnicodeData.txt
