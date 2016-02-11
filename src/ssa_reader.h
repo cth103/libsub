@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2016 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,34 +17,29 @@
 
 */
 
-#include "font_size.h"
+/** @file  src/ssa_reader.h
+ *  @brief SSAReader class.
+ */
 
-using namespace sub;
+#ifndef LIBSUB_SSA_READER_H
+#define LIBSUB_SSA_READER_H
 
-float
-FontSize::proportional (int screen_height_in_points) const
+#include "reader.h"
+#include <boost/function.hpp>
+
+namespace sub {
+
+class SSAReader : public Reader
 {
-	if (_proportional) {
-		return _proportional.get ();
-	}
+public:
+	SSAReader (FILE* f);
+	SSAReader (std::string const & subs);
 
-	return float (_points.get ()) / screen_height_in_points;
+private:
+	void read (boost::function<boost::optional<std::string> ()> get_line);
+	Time parse_time (std::string t) const;
+};
+
 }
 
-int
-FontSize::points (int screen_height_in_points) const
-{
-	if (_points) {
-		return _points.get ();
-	}
-
-	return _proportional.get() * screen_height_in_points;
-}
-
-FontSize
-FontSize::from_points (int p)
-{
-	FontSize s;
-	s.set_points (p);
-	return s;
-}
+#endif

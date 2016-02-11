@@ -52,6 +52,8 @@ public:
 	float proportional (int screen_height_in_points) const;
 	int points (int screen_height_in_points) const;
 
+	static FontSize from_points (int p);
+
 private:
 	/** as a proportion of screen height */
 	boost::optional<float> _proportional;
