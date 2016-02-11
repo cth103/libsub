@@ -17,11 +17,14 @@
 
 */
 
+#include <boost/optional.hpp>
 #include <string>
 
 namespace sub {
 
 extern bool empty_or_white_space (std::string s);
+extern boost::optional<std::string> get_line_stringstream (std::stringstream* str);
+extern boost::optional<std::string> get_line_file (FILE* f);
 
 }
 

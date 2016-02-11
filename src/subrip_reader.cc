@@ -23,6 +23,7 @@
 
 #include "subrip_reader.h"
 #include "exceptions.h"
+#include "util.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -47,37 +48,13 @@ using namespace sub;
 SubripReader::SubripReader (string const & s)
 {
 	stringstream str (s);
-	this->read (boost::bind (&SubripReader::get_line_stringstream, this, &str));
+	this->read (boost::bind (&get_line_stringstream, &str));
 }
 
 /** @param f Subtitle file encoded in UTF-8 */
 SubripReader::SubripReader (FILE* f)
 {
-	this->read (boost::bind (&SubripReader::get_line_file, this, f));
-}
-
-optional<string>
-SubripReader::get_line_stringstream (stringstream* str) const
-{
-	string s;
-	getline (*str, s);
-	if (!str->good ()) {
-		return optional<string> ();
-	}
-
-	return s;
-}
-
-optional<string>
-SubripReader::get_line_file (FILE* f) const
-{
-	char buffer[256];
-	char* r = fgets (buffer, sizeof (buffer), f);
-	if (r == 0 || feof (f)) {
-		return optional<string> ();
-	}
-
-	return string (buffer);
+	this->read (boost::bind (&get_line_file, f));
 }
 
 void

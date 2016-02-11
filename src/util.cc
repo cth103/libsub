@@ -18,8 +18,14 @@
 */
 
 #include "util.h"
+#include <string>
+#include <sstream>
+#include <cstdio>
 
 using std::string;
+using std::stringstream;
+using std::getline;
+using boost::optional;
 
 /** @param s A string.
  *  @return true if the string contains only space, newline or tab characters, or is empty.
@@ -34,4 +40,28 @@ sub::empty_or_white_space (string s)
 	}
 
 	return true;
+}
+
+optional<string>
+sub::get_line_stringstream (stringstream* str)
+{
+	string s;
+	getline (*str, s);
+	if (!str->good ()) {
+		return optional<string> ();
+	}
+
+	return s;
+}
+
+optional<string>
+sub::get_line_file (FILE* f)
+{
+	char buffer[256];
+	char* r = fgets (buffer, sizeof (buffer), f);
+	if (r == 0 || feof (f)) {
+		return optional<string> ();
+	}
+
+	return string (buffer);
 }
