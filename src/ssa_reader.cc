@@ -26,6 +26,7 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <sstream>
+#include <iostream>
 #include <vector>
 
 using std::string;
@@ -223,6 +224,12 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.bold = style.bold;
 						sub.italic = style.italic;
 						sub.effect = style.effect;
+
+						/* XXX: arbitrary */
+						sub.vertical_position.lines = 32;
+						sub.vertical_position.reference = TOP_OF_SUBTITLE;
+						sub.vertical_position.line = 0;
+
 					} else if (event_format[i] == "Text") {
 						sub.text = event[i];
 					}
