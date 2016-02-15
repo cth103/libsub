@@ -188,7 +188,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 			}
 			break;
 		case BACKSLASH:
-			if (c == 'n' && !current.text.empty ()) {
+			if ((c == 'n' || c == 'N') && !current.text.empty ()) {
 				subs.push_back (current);
 				current.text = "";
 				current.vertical_position.line = current.vertical_position.line.get() + 1;
