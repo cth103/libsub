@@ -69,3 +69,41 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test)
 
 	BOOST_CHECK (i == subs.end());
 }
+
+BOOST_AUTO_TEST_CASE (ssa_reader_line_test1)
+{
+	sub::RawSubtitle base;
+	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (base, "This is a line with some {i1}italics{i0} and then\\nthere is a new line.");
+
+	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	BOOST_CHECK_EQUAL (i->text, "This is a line with some ");
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	BOOST_REQUIRE (i != r.end ());
+
+	BOOST_CHECK_EQUAL (i->text, "italics");
+	BOOST_CHECK_EQUAL (i->italic, true);
+	++i;
+	BOOST_REQUIRE (i != r.end ());
+
+	BOOST_CHECK_EQUAL (i->text, " and then");
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	BOOST_REQUIRE (i != r.end ());
+
+	BOOST_CHECK_EQUAL (i->text, "there is a new line.");
+	++i;
+	BOOST_REQUIRE (i == r.end ());
+}
+
+BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
+{
+	sub::RawSubtitle base;
+	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (base, "{i1}It's all just italics{i0}");
+
+	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	BOOST_CHECK_EQUAL (i->text, "It's all just italics");
+	BOOST_CHECK_EQUAL (i->italic, true);
+	++i;
+	BOOST_REQUIRE (i == r.end ());
+}

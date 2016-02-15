@@ -35,6 +35,8 @@ public:
 	SSAReader (FILE* f);
 	SSAReader (std::string const & subs);
 
+	static std::list<RawSubtitle> parse_line (RawSubtitle base, std::string line);
+
 private:
 	void read (boost::function<boost::optional<std::string> ()> get_line);
 	Time parse_time (std::string t) const;

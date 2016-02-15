@@ -34,6 +34,7 @@ using std::stringstream;
 using std::vector;
 using std::map;
 using std::cout;
+using std::list;
 using boost::optional;
 using boost::function;
 using namespace boost::algorithm;
@@ -135,6 +136,68 @@ SSAReader::parse_time (string t) const
 		raw_convert<int> (bits[2]),
 		raw_convert<int> (bits[3]) * 10
 		);
+}
+
+list<RawSubtitle>
+SSAReader::parse_line (RawSubtitle base, string line)
+{
+	enum {
+		TEXT,
+		STYLE,
+		BACKSLASH
+	} state = TEXT;
+
+	list<RawSubtitle> subs;
+	RawSubtitle current = base;
+	string style;
+
+	current.vertical_position.line = 0;
+
+	for (size_t i = 0; i < line.length(); ++i) {
+		char const c = line[i];
+		switch (state) {
+		case TEXT:
+			if (c == '{') {
+				state = STYLE;
+			} else if (c == '\\') {
+				state = BACKSLASH;
+			} else {
+				current.text += c;
+			}
+			break;
+		case STYLE:
+			if (c == '}') {
+				if (!current.text.empty ()) {
+					subs.push_back (current);
+					current.text = "";
+				}
+				if (style == "i1") {
+					current.italic = true;
+				} else if (style == "i0") {
+					current.italic = false;
+				}
+				style = "";
+				state = TEXT;
+			} else {
+				style += c;
+			}
+			break;
+		case BACKSLASH:
+			if (c == 'n' && !current.text.empty ()) {
+				subs.push_back (current);
+				current.text = "";
+				current.vertical_position.line = current.vertical_position.line.get() + 1;
+			}
+			state = TEXT;
+			break;
+		}
+	}
+
+	if (!current.text.empty ()) {
+		subs.push_back (current);
+	}
+
+	return subs;
 }
 
 void
