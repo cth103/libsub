@@ -156,6 +156,8 @@ SSAReader::parse_line (RawSubtitle base, string line)
 	string style;
 
 	current.vertical_position.line = 0;
+	/* XXX: arbitrary */
+	current.vertical_position.lines = 32;
 	current.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	for (size_t i = 0; i < line.length(); ++i) {
@@ -166,7 +168,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 				state = STYLE;
 			} else if (c == '\\') {
 				state = BACKSLASH;
-			} else {
+			} else if (c != '\r' && c != '\n') {
 				current.text += c;
 			}
 			break;
