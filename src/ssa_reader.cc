@@ -138,6 +138,10 @@ SSAReader::parse_time (string t) const
 		);
 }
 
+/** @param base RawSubtitle filled in with any required common values.
+ *  @param line SSA line string.
+ *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
+ */
 list<RawSubtitle>
 SSAReader::parse_line (RawSubtitle base, string line)
 {
@@ -152,6 +156,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 	string style;
 
 	current.vertical_position.line = 0;
+	current.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	for (size_t i = 0; i < line.length(); ++i) {
 		char const c = line[i];
