@@ -301,11 +301,11 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.vertical_position.line = 0;
 
 					} else if (event_format[i] == "Text") {
-						sub.text = event[i];
+						BOOST_FOREACH (sub::RawSubtitle j, parse_line (sub, event[i])) {
+							_subs.push_back (j);
+						}
 					}
 				}
-
-				_subs.push_back (sub);
 			}
 		}
 
