@@ -66,11 +66,13 @@ SubripReader::read (function<optional<string> ()> get_line)
 		CONTENT
 	} state = COUNTER;
 
-	Time from;
-	Time to;
-
-	string line;
-	int line_number = 0;
+	RawSubtitle rs;
+	rs.font = "Arial";
+	rs.font_size.set_points (48);
+	rs.vertical_position.line = 0;
+	/* XXX: arbitrary */
+	rs.vertical_position.lines = 32;
+	rs.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	while (true) {
 		optional<string> line = get_line ();
@@ -100,6 +102,12 @@ SubripReader::read (function<optional<string> ()> get_line)
 			}
 
 			state = METADATA;
+
+			/* Reset stuff that should not persist across separate subtitles */
+			rs.bold = false;
+			rs.italic = false;
+			rs.underline = false;
+			rs.vertical_position.line = 0;
 		}
 		break;
 		case METADATA:
@@ -110,8 +118,8 @@ SubripReader::read (function<optional<string> ()> get_line)
 				throw SubripError (*line, "a time/position line");
 			}
 
-			from = convert_time (p[0]);
-			to = convert_time (p[2]);
+			rs.from = convert_time (p[0]);
+			rs.to = convert_time (p[2]);
 
 			/* XXX: should not ignore coordinate specifications */
 
@@ -121,10 +129,9 @@ SubripReader::read (function<optional<string> ()> get_line)
 		case CONTENT:
 			if (line->empty ()) {
 				state = COUNTER;
-				line_number = 0;
 			} else {
-				convert_line (*line, line_number, from, to);
-				line_number++;
+				convert_line (*line, rs);
+				rs.vertical_position.line = rs.vertical_position.line.get() + 1;
 			}
 			break;
 		}
@@ -152,7 +159,7 @@ SubripReader::convert_time (string t)
 }
 
 void
-SubripReader::convert_line (string t, int line_number, Time from, Time to)
+SubripReader::convert_line (string t, RawSubtitle& p)
 {
 	enum {
 		TEXT,
@@ -160,16 +167,6 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 	} state = TEXT;
 
 	string tag;
-
-	RawSubtitle p;
-	p.font = "Arial";
-	p.font_size.set_points (48);
-	p.from = from;
-	p.to = to;
-	p.vertical_position.line = line_number;
-	/* XXX: arbitrary */
-	p.vertical_position.lines = 32;
-	p.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	list<Colour> colours;
 	colours.push_back (Colour (1, 1, 1));
@@ -233,6 +230,7 @@ SubripReader::convert_line (string t, int line_number, Time from, Time to)
 	maybe_content (p);
 }
 
+/* Push p into _subs if it has some text, and clear the text out of p */
 void
 SubripReader::maybe_content (RawSubtitle& p)
 {

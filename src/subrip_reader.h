@@ -45,7 +45,7 @@ private:
 	SubripReader () {}
 
 	static Time convert_time (std::string t);
-	void convert_line (std::string t, int line_number, Time from, Time to);
+	void convert_line (std::string t, RawSubtitle& p);
 	void maybe_content (RawSubtitle& p);
 	void read (boost::function<boost::optional<std::string> ()> get_line);
 };

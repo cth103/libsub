@@ -22,3 +22,8 @@ Is this a dagger I see before me?
 6
 00:03:54,560 --> 00:03:56,471
 Hello world.
+
+7
+00:04:50,123 --> 00:04:55,023
+<i>Some italics over
+multiple lines</i>
