@@ -113,6 +113,10 @@ SubripReader::read (function<optional<string> ()> get_line)
 		case METADATA:
 		{
 			vector<string> p;
+
+			/* Further trim this line, removing spaces from the end */
+			trim_right_if (*line, boost::is_any_of (" "));
+
 			boost::algorithm::split (p, *line, boost::algorithm::is_any_of (" "));
 			if (p.size() != 3 && p.size() != 7) {
 				throw SubripError (*line, "a time/position line");
