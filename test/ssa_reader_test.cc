@@ -107,3 +107,19 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 	++i;
 	BOOST_REQUIRE (i == r.end ());
 }
+
+static void
+test (boost::filesystem::path p)
+{
+	p = private_test / p;
+	FILE* f = fopen (p.string().c_str(), "r");
+	BOOST_REQUIRE (f);
+	sub::SSAReader r (f);
+	fclose (f);
+}
+
+/** Test of reading some typical .srt files */
+BOOST_AUTO_TEST_CASE (ssa_reader_test2)
+{
+	test ("DKH_UT_EN20160601def.ssa");
+}
