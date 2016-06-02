@@ -65,3 +65,18 @@ sub::get_line_file (FILE* f)
 
 	return string (buffer);
 }
+
+void
+sub::remove_unicode_bom (optional<string>& line)
+{
+	if (
+		line->length() >= 3 &&
+		static_cast<unsigned char> (line.get()[0]) == 0xef &&
+		static_cast<unsigned char> (line.get()[1]) == 0xbb &&
+		static_cast<unsigned char> (line.get()[2]) == 0xbf
+		) {
+
+		/* Skip Unicode byte order mark */
+		line = line->substr (3);
+	}
+}

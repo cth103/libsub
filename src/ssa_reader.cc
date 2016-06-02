@@ -227,6 +227,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 		}
 
 		trim (*line);
+		remove_unicode_bom (line);
 
 		if (starts_with (*line, ";") || line->empty ()) {
 			continue;

@@ -81,17 +81,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 		}
 
 		trim_right_if (*line, boost::is_any_of ("\n\r"));
-
-		if (
-			line->length() >= 3 &&
-			static_cast<unsigned char> (line.get()[0]) == 0xef &&
-			static_cast<unsigned char> (line.get()[1]) == 0xbb &&
-			static_cast<unsigned char> (line.get()[2]) == 0xbf
-			) {
-
-			/* Skip Unicode byte order mark */
-			line = line->substr (3);
-		}
+		remove_unicode_bom (line);
 
 		switch (state) {
 		case COUNTER:
