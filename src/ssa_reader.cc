@@ -274,6 +274,15 @@ SSAReader::read (function<optional<string> ()> get_line)
 				vector<string> event;
 				split (event, body, is_any_of (","));
 
+				/* There may be commas in the subtitle part; reassemble any extra parts
+				   from when we just split it.
+				*/
+				while (event.size() > event_format.size()) {
+					string const ex = event.back ();
+					event.pop_back ();
+					event.back() += "," + ex;
+				}
+
 				SUB_ASSERT (!event.empty());
 				SUB_ASSERT (event_format.size() == event.size());
 
