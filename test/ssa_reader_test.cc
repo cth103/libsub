@@ -118,8 +118,52 @@ test (boost::filesystem::path p)
 	fclose (f);
 }
 
-/** Test of reading some typical .srt files */
+/** Test of reading some typical .ssa files */
 BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 {
 	test ("DKH_UT_EN20160601def.ssa");
+}
+
+/** Test reading of a file within the libsub tree which exercises the parser */
+BOOST_AUTO_TEST_CASE (ssa_reader_test3)
+{
+	boost::filesystem::path p = "test/data/test.ssa";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SSAReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+
+	BOOST_REQUIRE (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 1, 230));
+	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 4, 550));
+	list<sub::Line>::iterator j = i->lines.begin();
+	BOOST_REQUIRE (j != i->lines.end ());
+	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
+	sub::Block b = j->blocks.front ();
+	BOOST_CHECK_EQUAL (b.text, "Hello world");
+	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
+	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
+	BOOST_CHECK_EQUAL (b.bold, false);
+	BOOST_CHECK_EQUAL (b.italic, false);
+	BOOST_CHECK_EQUAL (b.underline, false);
+	++i;
+
+	BOOST_REQUIRE (i != subs.end ());
+	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 5, 740));
+	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 11, 0));
+	j = i->lines.begin();
+	BOOST_REQUIRE (j != i->lines.end ());
+	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
+	b = j->blocks.front ();
+	BOOST_CHECK_EQUAL (b.text, "This is vertically moved");
+	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
+	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
+	BOOST_CHECK_EQUAL (b.bold, false);
+	BOOST_CHECK_EQUAL (b.italic, false);
+	BOOST_CHECK_EQUAL (b.underline, false);
+	++i;
+
+	BOOST_REQUIRE (i == subs.end ());
 }
