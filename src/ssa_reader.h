@@ -29,6 +29,12 @@
 
 namespace sub {
 
+/** @class SSAReader
+ *  @brief Reader for SubStation Alpha (SSA) and Advanced Substation Alpha (ASS) subtitles.
+ *
+ *  This reader implements some of the SSA and ASS "standards", as gathered from various
+ *  documents on the web.
+ */
 class SSAReader : public Reader
 {
 public:

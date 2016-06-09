@@ -48,3 +48,9 @@ FontSize::from_points (int p)
 	s.set_points (p);
 	return s;
 }
+
+bool
+FontSize::specified () const
+{
+	return _proportional || _points;
+}

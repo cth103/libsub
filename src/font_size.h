@@ -49,6 +49,8 @@ public:
 		return _points;
 	}
 
+	bool specified () const;
+
 	float proportional (int screen_height_in_points) const;
 	int points (int screen_height_in_points) const;
 

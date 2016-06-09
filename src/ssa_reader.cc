@@ -57,17 +57,21 @@ class Style
 {
 public:
 	Style ()
-		: font_size (24)
+		: font_size (72)
 		, primary_colour (255, 255, 255)
 		, bold (false)
 		, italic (false)
+		, vertical_reference (BOTTOM_OF_SCREEN)
+		, vertical_margin (0)
 	{}
 
 	Style (string format_line, string style_line)
-		: font_size (24)
+		: font_size (72)
 		, primary_colour (255, 255, 255)
 		, bold (false)
 		, italic (false)
+		, vertical_reference (BOTTOM_OF_SCREEN)
+		, vertical_margin (0)
 	{
 		vector<string> keys;
 		split (keys, format_line, is_any_of (","));
@@ -99,6 +103,21 @@ public:
 				if (style[i] == "1") {
 					effect = SHADOW;
 				}
+			} else if (keys[i] == "Alignment") {
+				/* These values from libass' source code */
+				switch (raw_convert<int> (style[i]) & 12) {
+				case 4:
+					vertical_reference = TOP_OF_SCREEN;
+					break;
+				case 8:
+					vertical_reference = CENTRE_OF_SCREEN;
+					break;
+				case 0:
+					vertical_reference = BOTTOM_OF_SCREEN;
+					break;
+				}
+			} else if (keys[i] == "MarginV") {
+				vertical_margin = raw_convert<int> (style[i]);
 			}
 		}
 	}
@@ -112,6 +131,8 @@ public:
 	bool bold;
 	bool italic;
 	optional<Effect> effect;
+	VerticalReference vertical_reference;
+	int vertical_margin;
 
 private:
 	Colour colour (int c) const
@@ -139,7 +160,7 @@ SSAReader::parse_time (string t) const
 }
 
 /** @param base RawSubtitle filled in with any required common values.
- *  @param line SSA line string.
+ *  @param line SSA line string (i.e. just the subtitle, possibly with embedded stuff)
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
  */
 list<RawSubtitle>
@@ -155,10 +176,46 @@ SSAReader::parse_line (RawSubtitle base, string line)
 	RawSubtitle current = base;
 	string style;
 
-	current.vertical_position.line = 0;
-	/* XXX: arbitrary */
-	current.vertical_position.lines = 32;
-	current.vertical_position.reference = TOP_OF_SUBTITLE;
+	if (!current.vertical_position.reference) {
+		current.vertical_position.reference = BOTTOM_OF_SCREEN;
+	}
+
+	if (!current.vertical_position.proportional) {
+		current.vertical_position.proportional = 0;
+	}
+
+	/* We must have a font size, as there could be a margin specified
+	   in pixels and in that case we must know how big the subtitle
+	   lines are to work out the position on screen.
+	*/
+	if (!current.font_size.points()) {
+		current.font_size.set_points (72);
+	}
+
+	/* Count the number of line breaks */
+	int line_breaks = 0;
+	for (size_t i = 0; i < line.length() - 1; ++i) {
+		if (line[i] == '\\' && (line[i+1] == 'n' || line[i+1] == 'N')) {
+			++line_breaks;
+		}
+	}
+
+	/* Imagine that the screen is 792 points (i.e. 11 inches) high (as with DCP) */
+	double const line_size = current.font_size.proportional(792) * 1.2;
+
+	/* Tweak vertical_position accordingly */
+	switch (current.vertical_position.reference.get()) {
+	case TOP_OF_SCREEN:
+	case TOP_OF_SUBTITLE:
+		/* Nothing to do */
+		break;
+	case CENTRE_OF_SCREEN:
+		current.vertical_position.proportional = current.vertical_position.proportional.get() - ((line_breaks + 1) * line_size) / 2;
+		break;
+	case BOTTOM_OF_SCREEN:
+		current.vertical_position.proportional = current.vertical_position.proportional.get() + line_breaks * line_size;
+		break;
+	}
 
 	for (size_t i = 0; i < line.length(); ++i) {
 		char const c = line[i];
@@ -193,7 +250,12 @@ SSAReader::parse_line (RawSubtitle base, string line)
 			if ((c == 'n' || c == 'N') && !current.text.empty ()) {
 				subs.push_back (current);
 				current.text = "";
-				current.vertical_position.line = current.vertical_position.line.get() + 1;
+				/* Move down one line (1.2 times the font size) */
+				if (current.vertical_position.reference.get() == BOTTOM_OF_SCREEN) {
+					current.vertical_position.proportional = current.vertical_position.proportional.get() - line_size;
+				} else {
+					current.vertical_position.proportional = current.vertical_position.proportional.get() + line_size;
+				}
 			}
 			state = TEXT;
 			break;
@@ -216,6 +278,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 		EVENTS
 	} part = INFO;
 
+	int play_res_y = 288;
 	map<string, Style> styles;
 	string style_format_line;
 	vector<string> event_format;
@@ -253,6 +316,9 @@ SSAReader::read (function<optional<string> ()> get_line)
 
 		switch (part) {
 		case INFO:
+			if (type == "PlayResY") {
+				play_res_y = raw_convert<int> (body);
+			}
 			break;
 		case STYLES:
 			if (type == "Format") {
@@ -304,12 +370,10 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.bold = style.bold;
 						sub.italic = style.italic;
 						sub.effect = style.effect;
-
-						/* XXX: arbitrary */
-						sub.vertical_position.lines = 32;
-						sub.vertical_position.reference = TOP_OF_SUBTITLE;
-						sub.vertical_position.line = 0;
-
+						sub.vertical_position.reference = style.vertical_reference;
+						sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
+					} else if (event_format[i] == "MarginV") {
+						sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 					} else if (event_format[i] == "Text") {
 						BOOST_FOREACH (sub::RawSubtitle j, parse_line (sub, event[i])) {
 							_subs.push_back (j);

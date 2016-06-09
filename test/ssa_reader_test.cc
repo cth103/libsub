@@ -140,6 +140,10 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 4, 550));
 	list<sub::Line>::iterator j = i->lines.begin();
 	BOOST_REQUIRE (j != i->lines.end ());
+	BOOST_CHECK (j->vertical_position.proportional);
+	BOOST_CHECK_EQUAL (j->vertical_position.proportional.get(), 0);
+	BOOST_CHECK (j->vertical_position.reference);
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
 	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
 	sub::Block b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "Hello world");
@@ -155,6 +159,14 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 11, 0));
 	j = i->lines.begin();
 	BOOST_REQUIRE (j != i->lines.end ());
+	BOOST_CHECK (j->vertical_position.proportional);
+	/* The first line should be 900 pixels and one line (20
+	   points, 1.2 times spaced, as a proportion of the total
+	   screen height 729 points) up.
+	*/
+	BOOST_CHECK (fabs (j->vertical_position.proportional.get() - (900.0 / 1080) - (20.0 * 1.2 / 792)) < 1e-5);
+	BOOST_CHECK (j->vertical_position.reference);
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
 	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
 	b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "This is vertically moved");
@@ -163,6 +175,20 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
+	++j;
+	BOOST_CHECK (fabs (j->vertical_position.proportional.get() - (900.0 / 1080)) < 1e-5);
+	BOOST_CHECK (j->vertical_position.reference);
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
+	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
+	b = j->blocks.front ();
+	BOOST_CHECK_EQUAL (b.text, "and has two lines.");
+	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
+	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
+	BOOST_CHECK_EQUAL (b.bold, false);
+	BOOST_CHECK_EQUAL (b.italic, false);
+	BOOST_CHECK_EQUAL (b.underline, false);
+	++j;
+	BOOST_REQUIRE (j == i->lines.end());
 	++i;
 
 	BOOST_REQUIRE (i == subs.end ());

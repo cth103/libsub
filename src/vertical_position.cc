@@ -18,9 +18,9 @@
 */
 
 #include "vertical_position.h"
+#include <iostream>
 
 using namespace sub;
-
 
 float
 VerticalPosition::fraction_from_screen_top () const
