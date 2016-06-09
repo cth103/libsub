@@ -49,9 +49,11 @@ bool
 VerticalPosition::operator== (VerticalPosition const & other) const
 {
 	if (proportional && reference && other.proportional && other.reference) {
-		return proportional.get() == other.proportional.get() && reference.get() == other.reference.get();
+		return proportional == other.proportional && reference == other.reference;
 	} else if (reference && line && lines && other.reference && other.line && other.lines) {
-		return line.get() == other.line.get() && lines.get() == other.lines.get() && reference.get() == other.reference.get();
+		return line == other.line && lines == other.lines && reference == other.reference;
+	} else if (reference && line && other.reference && other.line) {
+		return reference == other.reference && line == other.line;
 	}
 
 	return false;
