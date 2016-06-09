@@ -29,6 +29,9 @@ enum VerticalReference
 	TOP_OF_SCREEN,
 	CENTRE_OF_SCREEN,
 	BOTTOM_OF_SCREEN,
+	/** position on screen is not known, so we are referring
+	 *  to the top of the subtitle.
+	 */
 	TOP_OF_SUBTITLE
 };
 
