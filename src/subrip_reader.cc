@@ -67,11 +67,11 @@ SubripReader::read (function<optional<string> ()> get_line)
 	} state = COUNTER;
 
 	RawSubtitle rs;
-	rs.font = "Arial";
-	rs.font_size.set_points (48);
+
+	/* This reader extracts no information about where the subtitle
+	   should be on screen, so its reference is TOP_OF_SUBTITLE.
+	*/
 	rs.vertical_position.line = 0;
-	/* XXX: arbitrary */
-	rs.vertical_position.lines = 32;
 	rs.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	while (true) {

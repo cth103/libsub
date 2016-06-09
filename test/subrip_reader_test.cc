@@ -55,8 +55,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 	sub::Block b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "This is a subtitle");
-	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
-	BOOST_CHECK_EQUAL (b.font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
@@ -68,8 +69,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
 	b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "and that's a line break");
-	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
-	BOOST_CHECK_EQUAL (b.font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
@@ -94,8 +96,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "This is some ");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
@@ -103,8 +106,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "bold");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, true);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
@@ -112,8 +116,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " and some ");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
@@ -121,8 +126,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "bold italic");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, true);
 	BOOST_CHECK_EQUAL (k->italic, true);
 	BOOST_CHECK_EQUAL (k->underline, false);
@@ -130,8 +136,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " and some ");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
@@ -139,8 +146,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "underlined");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, true);
@@ -148,8 +156,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, ".");
-	BOOST_CHECK_EQUAL (k->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (k->font_size.points().get(), 48);
+	/* No font is specified by subrip, so none should be seen here */
+	BOOST_CHECK (!b.font);
+	BOOST_CHECK (!b.font_size.specified());
 	BOOST_CHECK_EQUAL (k->bold, false);
 	BOOST_CHECK_EQUAL (k->italic, false);
 	BOOST_CHECK_EQUAL (k->underline, false);
