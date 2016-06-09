@@ -26,11 +26,14 @@ namespace sub {
 
 enum VerticalReference
 {
+	/** distance is from the top of the screen, positive moves down */
 	TOP_OF_SCREEN,
+	/** distance is from the centre of the screen, positive moves down */
 	CENTRE_OF_SCREEN,
+	/** distance is from the bottom of the screen, positive moves up */
 	BOTTOM_OF_SCREEN,
 	/** position on screen is not known, so we are referring
-	 *  to the top of the subtitle.
+	 *  to the top of the subtitle; positive distances move down from there
 	 */
 	TOP_OF_SUBTITLE
 };
