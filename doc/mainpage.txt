@@ -2,14 +2,22 @@
 
 @mainpage libsub
 
-libsub is a library to read and write subtitles in a variety of formats.  It can be used to read subtitles for
-processing, to write them or to convert between formats.
+libsub is a library to read and write subtitles in a variety of
+formats.  It can be used to read subtitles for processing, to write
+them or to convert between formats.
 
-The current version has reasonable support for the following subtitle formats:
+The current version has reasonable support for the following subtitle
+formats:
+
 - Digital Cinema Package (DCP) XML
 - SubRip (.srt)
+- SubStation Alpha and Advanced SubStation Alpha (SSA/ASS)
 - EBU-STL text and binary
 
+The general `philosophy' of libsub is that it should not guess any
+subtitle details that are not explicitly stated in the file unless it
+is absolutely neessary.  For example, if a file does not specify a
+font size it will be returned as unknown for the caller to fill in.
 
 Reading subtitles
 --
@@ -22,15 +30,14 @@ The basic process is:
 We first have:
 
     shared_ptr<sub::Reader> reader = reader_factory (filename);
- 
+
 This looks at the extension of `filename' and, if necessary, its header, and guesses
 what format it is in.  Based on the format it creates an appropriate Reader object.
 This reader object can then return its subtitles using
 
     reader->subtitles ();
 
-    
-
-
+This method returns a set of RawSubtitle objects which are then formed into Subtitle,
+Line and Block objects by collect().
 
 */
