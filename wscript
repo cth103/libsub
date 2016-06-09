@@ -29,6 +29,9 @@ def configure(conf):
     else:
         conf.env.append_value('CXXFLAGS', '-O3')
 
+    # Disable libxml++ deprecation warnings for now
+    conf.env.append_value('CXXFLAGS', ['-Wno-deprecated-declarations'])
+
     conf.check_cfg(package='openssl', args='--cflags --libs', uselib_store='OPENSSL', mandatory=True)
 
     if conf.options.static:
