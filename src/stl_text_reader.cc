@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2016 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,10 +39,11 @@ using namespace sub;
 
 STLTextReader::STLTextReader (istream& in)
 {
+	/* This reader extracts no information about where the subtitle
+	   should be on screen, so its reference is TOP_OF_SUBTITLE.
+	*/
 	_subtitle.vertical_position.line = 0;
-	/* XXX: no idea what this should be */
-	_subtitle.vertical_position.lines = 32;
-	_subtitle.vertical_position.reference = TOP_OF_SCREEN;
+	_subtitle.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	while (in.good ()) {
 		string line;
