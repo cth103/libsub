@@ -24,8 +24,10 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <cstdio>
+#include <cmath>
 
 using std::list;
+using std::fabs;
 
 BOOST_AUTO_TEST_CASE (ssa_reader_test)
 {
