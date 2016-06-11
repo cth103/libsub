@@ -239,6 +239,12 @@ SSAReader::parse_line (RawSubtitle base, string line)
 					current.italic = true;
 				} else if (style == "\\i0" || style == "\\i") {
 					current.italic = false;
+				} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
+					current.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+				} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
+					current.vertical_position.reference = sub::CENTRE_OF_SCREEN;
+				} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
+					current.vertical_position.reference = sub::TOP_OF_SCREEN;
 				}
 				style = "";
 				state = TEXT;
