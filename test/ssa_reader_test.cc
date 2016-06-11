@@ -126,6 +126,34 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 	test ("DKH_UT_EN20160601def.ssa");
 }
 
+#define SUB_START(f, t) \
+	BOOST_REQUIRE (i != subs.end ()); \
+	BOOST_CHECK_EQUAL (i->from, f); \
+	BOOST_CHECK_EQUAL (i->to, t); \
+	j = i->lines.begin ();
+
+#define LINE(p, r)							\
+	BOOST_REQUIRE (j != i->lines.end ()); \
+	BOOST_CHECK (j->vertical_position.proportional); \
+	BOOST_CHECK (fabs (j->vertical_position.proportional.get() - p) < 1e-5); \
+	BOOST_CHECK (j->vertical_position.reference); \
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), r); \
+	k = j->blocks.begin (); \
+	++j;
+
+#define BLOCK(t, f, s, b, i, u) \
+	BOOST_REQUIRE (k != j->blocks.end ()); \
+	BOOST_CHECK_EQUAL (k->text, t); \
+        BOOST_CHECK_EQUAL (k->font.get(), f); \
+	BOOST_CHECK_EQUAL (k->font_size.points().get(), s); \
+	BOOST_CHECK_EQUAL (k->bold, b); \
+	BOOST_CHECK_EQUAL (k->italic, i); \
+	BOOST_CHECK_EQUAL (k->underline, u); \
+	++k;
+
+#define SUB_END() \
+	++i;
+
 /** Test reading of a file within the libsub tree which exercises the parser */
 BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 {
@@ -136,101 +164,34 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
+	list<sub::Line>::iterator j;
+	list<sub::Block>::iterator k;
 
 	/* Hello world */
-	BOOST_REQUIRE (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 1, 230));
-	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 4, 550));
-	list<sub::Line>::iterator j = i->lines.begin();
-	BOOST_REQUIRE (j != i->lines.end ());
-	BOOST_CHECK (j->vertical_position.proportional);
-	BOOST_CHECK_EQUAL (j->vertical_position.proportional.get(), 0);
-	BOOST_CHECK (j->vertical_position.reference);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-	sub::Block b = j->blocks.front ();
-	BOOST_CHECK_EQUAL (b.text, "Hello world");
-	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
-	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (b.bold, false);
-	BOOST_CHECK_EQUAL (b.italic, false);
-	BOOST_CHECK_EQUAL (b.underline, false);
-	++i;
+	SUB_START (sub::Time::from_hms (0, 0, 1, 230), sub::Time::from_hms (0, 0, 4, 550));
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Hello world", "Arial", 20, false, false, false);
+	SUB_END();
 
 	/* This is vertically moved\nand has two lines. */
-	BOOST_REQUIRE (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 5, 740));
-	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 11, 0));
-	j = i->lines.begin();
-	BOOST_REQUIRE (j != i->lines.end ());
-	BOOST_CHECK (j->vertical_position.proportional);
+	SUB_START (sub::Time::from_hms (0, 0, 5, 740), sub::Time::from_hms (0, 0, 11, 0));
 	/* The first line should be 900 pixels and one line (20
 	   points, 1.2 times spaced, as a proportion of the total
 	   screen height 729 points) up.
 	*/
-	BOOST_CHECK (fabs (j->vertical_position.proportional.get() - (900.0 / 1080) - (20.0 * 1.2 / 792)) < 1e-5);
-	BOOST_CHECK (j->vertical_position.reference);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-	b = j->blocks.front ();
-	BOOST_CHECK_EQUAL (b.text, "This is vertically moved");
-	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
-	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (b.bold, false);
-	BOOST_CHECK_EQUAL (b.italic, false);
-	BOOST_CHECK_EQUAL (b.underline, false);
-	++j;
-
-	BOOST_CHECK (fabs (j->vertical_position.proportional.get() - (900.0 / 1080)) < 1e-5);
-	BOOST_CHECK (j->vertical_position.reference);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-	b = j->blocks.front ();
-	BOOST_CHECK_EQUAL (b.text, "and has two lines.");
-	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
-	BOOST_CHECK_EQUAL (b.font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (b.bold, false);
-	BOOST_CHECK_EQUAL (b.italic, false);
-	BOOST_CHECK_EQUAL (b.underline, false);
-	++j;
-	++i;
+	LINE((900.0 / 1080) - (20.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK("This is vertically moved", "Arial", 20, false, false, false);
+	LINE((900.0 / 1080), sub::BOTTOM_OF_SCREEN);
+	BLOCK("and has two lines.", "Arial", 20, false, false, false);
+	SUB_END();
 
 	/* Some {\i1}italics{\i} are here. */
-	BOOST_REQUIRE (i != subs.end ());
-	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 7, 740));
-	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 9, 0));
-	j = i->lines.begin();
-	BOOST_REQUIRE (j != i->lines.end ());
-	BOOST_CHECK (j->vertical_position.proportional);
-	BOOST_CHECK_EQUAL (j->vertical_position.proportional.get(), 0);
-	BOOST_CHECK (j->vertical_position.reference);
-	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 3);
-	list<sub::Block>::const_iterator bi = j->blocks.begin ();
-	BOOST_CHECK_EQUAL (bi->text, "Some ");
-	BOOST_CHECK_EQUAL (bi->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (bi->font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (bi->bold, false);
-	BOOST_CHECK_EQUAL (bi->italic, false);
-	BOOST_CHECK_EQUAL (bi->underline, false);
-	++bi;
-	BOOST_CHECK_EQUAL (bi->text, "italics");
-	BOOST_CHECK_EQUAL (bi->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (bi->font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (bi->bold, false);
-	BOOST_CHECK_EQUAL (bi->italic, true);
-	BOOST_CHECK_EQUAL (bi->underline, false);
-	++bi;
-	BOOST_CHECK_EQUAL (bi->text, " are here.");
-	BOOST_CHECK_EQUAL (bi->font.get(), "Arial");
-	BOOST_CHECK_EQUAL (bi->font_size.points().get(), 20);
-	BOOST_CHECK_EQUAL (bi->bold, false);
-	BOOST_CHECK_EQUAL (bi->italic, false);
-	BOOST_CHECK_EQUAL (bi->underline, false);
-	++bi;
-	++j;
-	BOOST_REQUIRE (j == i->lines.end());
-	++i;
+	SUB_START (sub::Time::from_hms (0, 0, 7, 740), sub::Time::from_hms (0, 0, 9, 0));
+	LINE(0, sub::BOTTOM_OF_SCREEN);
+	BLOCK("Some ", "Arial", 20, false, false, false);
+	BLOCK("italics", "Arial", 20, false, true, false);
+	BLOCK(" are here.", "Arial", 20, false, false, false);
+	SUB_END();
 
 	BOOST_REQUIRE (i == subs.end ());
 }
