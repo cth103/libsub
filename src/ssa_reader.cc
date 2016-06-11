@@ -235,9 +235,9 @@ SSAReader::parse_line (RawSubtitle base, string line)
 					subs.push_back (current);
 					current.text = "";
 				}
-				if (style == "i1") {
+				if (style == "\\i1") {
 					current.italic = true;
-				} else if (style == "i0") {
+				} else if (style == "\\i0" || style == "\\i") {
 					current.italic = false;
 				}
 				style = "";
