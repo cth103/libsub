@@ -316,9 +316,9 @@ SSAReader::read (function<optional<string> ()> get_line)
 
 		size_t const colon = line->find (":");
 		SUB_ASSERT (colon != string::npos);
-		SUB_ASSERT (line->length() > colon + 1);
 		string const type = line->substr (0, colon);
-		string const body = line->substr (colon + 2);
+		string body = line->substr (colon + 1);
+		trim (body);
 
 		switch (part) {
 		case INFO:
@@ -367,6 +367,10 @@ SSAReader::read (function<optional<string> ()> get_line)
 					} else if (event_format[i] == "End") {
 						sub.to = parse_time (event[i]);
 					} else if (event_format[i] == "Style") {
+						/* libass trims leading '*'s from style names, commenting that
+						   "they seem to mean literally nothing".  Go figure...
+						*/
+						trim_left_if (event[i], boost::is_any_of ("*"));
 						SUB_ASSERT (styles.find(event[i]) != styles.end());
 						Style style = styles[event[i]];
 						sub.font = style.font_name;

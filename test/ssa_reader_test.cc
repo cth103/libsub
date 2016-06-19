@@ -124,6 +124,7 @@ test (boost::filesystem::path p)
 BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 {
 	test ("DKH_UT_EN20160601def.ssa");
+	test ("dcpsubtest-en.ssa");
 }
 
 #define SUB_START(f, t) \
