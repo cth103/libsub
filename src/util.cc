@@ -59,7 +59,7 @@ sub::get_line_file (FILE* f)
 {
 	char buffer[256];
 	char* r = fgets (buffer, sizeof (buffer), f);
-	if (r == 0 || feof (f)) {
+	if (r == 0) {
 		return optional<string> ();
 	}
 

@@ -23,8 +23,10 @@
 #include "subtitle.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <cstdio>
 #include <cmath>
+#include <iostream>
 
 using std::list;
 using std::fabs;
@@ -108,6 +110,16 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 	BOOST_CHECK_EQUAL (i->italic, true);
 	++i;
 	BOOST_REQUIRE (i == r.end ());
+
+	r = sub::SSAReader::parse_line (base, "{\\i1}Italic{\\i0}\\Nand new line");
+	i = r.begin ();
+	BOOST_CHECK_EQUAL (i->text, "Italic");
+	BOOST_CHECK_EQUAL (i->italic, true);
+	BOOST_CHECK (fabs ((72.0 * 1.2 / 792) - i->vertical_position.proportional.get()) < 1e-5);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "and new line");
+	BOOST_CHECK_EQUAL (i->italic, false);
+	BOOST_CHECK (i->vertical_position.proportional.get() < 1e-5);
 }
 
 static void
@@ -242,4 +254,52 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	BOOST_REQUIRE (i == subs.end ());
+}
+
+/** Test reading of a file within the libsub-test-private tree which exercises the parser */
+BOOST_AUTO_TEST_CASE (ssa_reader_test4)
+{
+	boost::filesystem::path p = private_test / "dcpsubtest2-en.ssa";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SSAReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+	list<sub::Line>::iterator j;
+	list<sub::Block>::iterator k;
+
+	BOOST_REQUIRE (i != subs.end ());
+
+	SUB_START (sub::Time::from_hms (0, 0, 1, 0), sub::Time::from_hms (0, 0, 3, 0));
+	/* The first line should be one line (50 points, 1.2 times
+	   spaced, as a proportion of the total screen height 729
+	   points) up.
+	*/
+	LINE ((50.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("1st line: This is normal", "Verdana", 50, false, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2d line: this is bold", "Verdana", 50, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 3, 100), sub::Time::from_hms (0, 0, 5, 100));
+	LINE ((50.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("1st line: this is bold", "Verdana", 50, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd line: This is normal", "Verdana", 50, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 5, 200), sub::Time::from_hms (0, 0, 7, 200));
+	LINE ((50.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("1st line: this is bold", "Verdana", 50, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd line: this is italics", "Verdana", 50, false, true, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 7, 300), sub::Time::from_hms (0, 0, 9, 300));
+	LINE ((50.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("1st line: this is italics", "Verdana", 50, false, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd line: this is bold", "Verdana", 50, true, false, false);
+	SUB_END ();
 }

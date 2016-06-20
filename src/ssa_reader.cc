@@ -239,6 +239,10 @@ SSAReader::parse_line (RawSubtitle base, string line)
 					current.italic = true;
 				} else if (style == "\\i0" || style == "\\i") {
 					current.italic = false;
+				} else if (style == "\\b1") {
+					current.bold = true;
+				} else if (style == "\\b0") {
+					current.bold = false;
 				} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
 					current.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
 				} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
@@ -253,9 +257,11 @@ SSAReader::parse_line (RawSubtitle base, string line)
 			}
 			break;
 		case BACKSLASH:
-			if ((c == 'n' || c == 'N') && !current.text.empty ()) {
-				subs.push_back (current);
-				current.text = "";
+			if (c == 'n' || c == 'N') {
+				if (!current.text.empty ()) {
+					subs.push_back (current);
+					current.text = "";
+				}
 				/* Move down one line (1.2 times the font size) */
 				if (current.vertical_position.reference.get() == BOTTOM_OF_SCREEN) {
 					current.vertical_position.proportional = current.vertical_position.proportional.get() - line_size;
