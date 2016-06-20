@@ -303,3 +303,51 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test4)
 	BLOCK ("2nd line: this is bold", "Verdana", 50, true, false, false);
 	SUB_END ();
 }
+
+/** Test reading of a .ass file */
+BOOST_AUTO_TEST_CASE (ssa_reader_test5)
+{
+	boost::filesystem::path p = private_test / "dcpsubtest-en.ass";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SSAReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+	list<sub::Line>::iterator j;
+	list<sub::Block>::iterator k;
+
+	BOOST_REQUIRE (i != subs.end ());
+
+	SUB_START (sub::Time::from_hms (0, 0, 1, 0), sub::Time::from_hms (0, 0, 3, 0));
+	/* The first line should be one line (26 points, 1.2 times
+	   spaced, as a proportion of the total screen height 729
+	   points) up.
+	*/
+	LINE ((26.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("1st subtitle, 1st line", "arial", 26, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd subtitle, 2nd line", "arial", 26, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 3, 100), sub::Time::from_hms (0, 0, 5, 100));
+	LINE ((26.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd subtitle, 1st line", "arial", 26, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("2nd subtitle, 2nd line", "arial", 26, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 5, 200), sub::Time::from_hms (0, 0, 7, 200));
+	LINE ((26.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("3rd subtitle, 1st line", "arial", 26, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("3rd subtitle, 2nd line", "arial", 26, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 7, 300), sub::Time::from_hms (0, 0, 9, 300));
+	LINE ((26.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("4th subtitle, 1st line", "arial", 26, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("4th subtitle, 2nd line", "arial", 26, true, false, false);
+	SUB_END ();
+}

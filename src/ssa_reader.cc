@@ -312,7 +312,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 			/* Section heading */
 			if (line.get() == "[Script Info]") {
 				part = INFO;
-			} else if (line.get() == "[V4 Styles]") {
+			} else if (line.get() == "[V4 Styles]" || line.get() == "[V4+ Styles]") {
 				part = STYLES;
 			} else if (line.get() == "[Events]") {
 				part = EVENTS;
