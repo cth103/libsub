@@ -230,7 +230,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 			}
 			break;
 		case STYLE:
-			if (c == '}') {
+			if (c == '}' || c == '\\') {
 				if (!current.text.empty ()) {
 					subs.push_back (current);
 					current.text = "";
@@ -250,7 +250,11 @@ SSAReader::parse_line (RawSubtitle base, string line)
 				} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
 					current.vertical_position.reference = sub::TOP_OF_SCREEN;
 				}
+
 				style = "";
+			}
+
+			if (c == '}') {
 				state = TEXT;
 			} else {
 				style += c;

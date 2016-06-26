@@ -351,3 +351,84 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test5)
 	BLOCK ("4th subtitle, 2nd line", "arial", 26, true, false, false);
 	SUB_END ();
 }
+
+/** Test reading of another .ass file */
+BOOST_AUTO_TEST_CASE (ssa_reader_test6)
+{
+	boost::filesystem::path p = private_test / "DCP-o-matic_test_subs_1.ass";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SSAReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+	list<sub::Line>::iterator j;
+	list<sub::Block>::iterator k;
+
+	BOOST_REQUIRE (i != subs.end ());
+
+	SUB_START (sub::Time::from_hms (0, 0, 0, 70), sub::Time::from_hms (0, 0, 1, 110));
+	/* The first line should be one line (30 points, 1.2 times
+	   spaced, as a proportion of the total screen height 729
+	   points) up.
+	*/
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 1, 200), sub::Time::from_hms (0, 0, 2, 240));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 2, 300), sub::Time::from_hms (0, 0, 3, 380));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is italic", "Arial", 30, false, true, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 3, 400), sub::Time::from_hms (0, 0, 4, 480));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is italic", "Arial", 30, false, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 4, 510), sub::Time::from_hms (0, 0, 5, 600));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("italic AND bold", "Arial", 30, true, true, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 5, 620), sub::Time::from_hms (0, 0, 6, 710));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("First three words", "Arial", 30, true, true, false);
+	BLOCK (" are italic AND bold", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 6, 730), sub::Time::from_hms (0, 0, 8, 30));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 8, 90), sub::Time::from_hms (0, 0, 9, 210));
+	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
+	LINE (0, sub::BOTTOM_OF_SCREEN);
+	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
+	SUB_END ();
+}
