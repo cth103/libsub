@@ -380,3 +380,106 @@ BOOST_AUTO_TEST_CASE (subrip_read_test)
 	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
 	test ("EU13.srt");
 }
+
+#define SUB_START(f, t) \
+	BOOST_REQUIRE (i != subs.end ()); \
+	BOOST_CHECK_EQUAL (i->from, f); \
+	BOOST_CHECK_EQUAL (i->to, t); \
+	j = i->lines.begin ();
+
+#define LINE(p)							\
+	BOOST_REQUIRE (j != i->lines.end ()); \
+	BOOST_CHECK (j->vertical_position.line); \
+	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), p); \
+	BOOST_CHECK (j->vertical_position.reference); \
+	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE); \
+	k = j->blocks.begin (); \
+	++j;
+
+#define BLOCK(t, f, s, b, i, u) \
+	BOOST_REQUIRE (k != j->blocks.end ()); \
+	BOOST_CHECK_EQUAL (k->text, t); \
+	BOOST_CHECK_EQUAL (k->bold, b); \
+	BOOST_CHECK_EQUAL (k->italic, i); \
+	BOOST_CHECK_EQUAL (k->underline, u); \
+	++k;
+
+#define SUB_END() \
+	++i;
+
+/** Test reading of another .srt file */
+BOOST_AUTO_TEST_CASE (subrip_reader_test3)
+{
+	boost::filesystem::path p = private_test / "DCP-o-matic_test_subs_1.srt";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SubripReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+	list<sub::Line>::iterator j;
+	list<sub::Block>::iterator k;
+
+	BOOST_REQUIRE (i != subs.end ());
+
+	SUB_START (sub::Time::from_hms (0, 0, 0, 76), sub::Time::from_hms (0, 0, 1, 116));
+	LINE (0);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	LINE (1);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 1, 206), sub::Time::from_hms (0, 0, 2, 246));
+	LINE (0);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	LINE (1);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 2, 308), sub::Time::from_hms (0, 0, 3, 380));
+	LINE (0);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	LINE (1);
+	BLOCK ("This line is italic", "Arial", 30, false, true, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 3, 404), sub::Time::from_hms (0, 0, 4, 484));
+	LINE (0);
+	BLOCK ("This line is italic", "Arial", 30, false, true, false);
+	LINE (1);
+	BLOCK ("This line is bold", "Arial", 30, true, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 4, 519), sub::Time::from_hms (0, 0, 5, 604));
+	LINE (0);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (1);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("italic AND bold", "Arial", 30, true, true, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 5, 628), sub::Time::from_hms (0, 0, 6, 712));
+	LINE (0);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (1);
+	BLOCK ("First three words", "Arial", 30, true, true, false);
+	BLOCK (" are italic AND bold", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 6, 736), sub::Time::from_hms (0, 0, 8, 31));
+	LINE (0);
+	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
+	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
+	LINE (1);
+	BLOCK ("This line is normal", "Arial", 30, false, false, false);
+	SUB_END ();
+
+	SUB_START (sub::Time::from_hms (0, 0, 8, 94), sub::Time::from_hms (0, 0, 9, 211));
+	LINE (0);
+	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
+	LINE (1);
+	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
+	SUB_END ();
+}
