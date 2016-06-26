@@ -20,6 +20,7 @@
 #include "util.h"
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <cstdio>
 
 using std::string;
@@ -45,12 +46,12 @@ sub::empty_or_white_space (string s)
 optional<string>
 sub::get_line_stringstream (stringstream* str)
 {
-	string s;
-	getline (*str, s);
 	if (!str->good ()) {
 		return optional<string> ();
 	}
 
+	string s;
+	getline (*str, s);
 	return s;
 }
 

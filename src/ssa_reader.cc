@@ -61,6 +61,7 @@ public:
 		, primary_colour (255, 255, 255)
 		, bold (false)
 		, italic (false)
+		, underline (false)
 		, vertical_reference (BOTTOM_OF_SCREEN)
 		, vertical_margin (0)
 	{}
@@ -70,6 +71,7 @@ public:
 		, primary_colour (255, 255, 255)
 		, bold (false)
 		, italic (false)
+		, underline (false)
 		, vertical_reference (BOTTOM_OF_SCREEN)
 		, vertical_margin (0)
 	{
@@ -99,6 +101,8 @@ public:
 				bold = style[i] == "-1";
 			} else if (keys[i] == "Italic") {
 				italic = style[i] == "-1";
+			} else if (keys[i] == "Underline") {
+				underline = style[i] == "-1";
 			} else if (keys[i] == "BorderStyle") {
 				if (style[i] == "1") {
 					effect = SHADOW;
@@ -130,6 +134,7 @@ public:
 	optional<Colour> back_colour;
 	bool bold;
 	bool italic;
+	bool underline;
 	optional<Effect> effect;
 	VerticalReference vertical_reference;
 	int vertical_margin;
@@ -389,6 +394,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.effect_colour = style.back_colour;
 						sub.bold = style.bold;
 						sub.italic = style.italic;
+						sub.underline = style.underline;
 						sub.effect = style.effect;
 						sub.vertical_position.reference = style.vertical_reference;
 						sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
