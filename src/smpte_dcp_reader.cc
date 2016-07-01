@@ -20,10 +20,10 @@
 #include "smpte_dcp_reader.h"
 #include "exceptions.h"
 #include "xml.h"
-#include "AS_DCP.h"
-#include "KM_util.h"
 #include "dcp/font.h"
 #include "dcp/smpte_load_font.h"
+#include <asdcp/KM_util.h>
+#include <asdcp/AS_DCP.h>
 #include <libcxml/cxml.h>
 #include <boost/foreach.hpp>
 
