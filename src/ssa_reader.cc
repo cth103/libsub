@@ -248,6 +248,10 @@ SSAReader::parse_line (RawSubtitle base, string line)
 					current.bold = true;
 				} else if (style == "\\b0") {
 					current.bold = false;
+				} else if (style == "\\u1") {
+					current.underline = true;
+				} else if (style == "\\u0") {
+					current.underline = false;
 				} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
 					current.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
 				} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
