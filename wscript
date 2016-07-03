@@ -3,7 +3,7 @@ import os
 from waflib import Context
 
 APPNAME = 'libsub'
-VERSION = '1.1.12devel'
+VERSION = '1.1.13'
 API_VERSION = '-1.0'
 
 def options(opt):
