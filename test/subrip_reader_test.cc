@@ -25,6 +25,7 @@
 #include <boost/filesystem.hpp>
 #include <cmath>
 #include <iostream>
+#include <cstdio>
 
 using std::list;
 using std::cerr;
