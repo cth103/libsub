@@ -22,10 +22,8 @@
 #include "subtitle.h"
 #include "test.h"
 #include <fstream>
-#include <iostream>
 
 using std::list;
-using std::cout;
 using std::ifstream;
 
 /* Test reading of a binary STL file */

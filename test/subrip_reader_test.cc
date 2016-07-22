@@ -23,13 +23,11 @@
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include <fstream>
 #include <cmath>
 #include <iostream>
 
 using std::list;
 using std::cerr;
-using std::ifstream;
 using std::vector;
 using std::fabs;
 

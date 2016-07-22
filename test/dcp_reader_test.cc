@@ -21,12 +21,9 @@
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/optional/optional_io.hpp>
-#include <fstream>
-#include <iostream>
 
 using std::list;
 using std::cout;
-using std::ifstream;
 using boost::shared_ptr;
 
 /* Test reading of a DCP XML file */
