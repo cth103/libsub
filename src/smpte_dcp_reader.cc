@@ -46,9 +46,7 @@ SMPTEDCPReader::SMPTEDCPReader (boost::filesystem::path file, bool mxf)
 
 		string s;
 		reader.ReadTimedTextResource (s, 0, 0);
-		stringstream t;
-		t << s;
-		xml->read_stream (t);
+		xml->read_string (s);
 
 		ASDCP::WriterInfo info;
 		reader.FillWriterInfo (info);
