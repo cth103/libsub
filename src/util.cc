@@ -18,13 +18,12 @@
 */
 
 #include "util.h"
+#include <locked_sstream.h>
 #include <string>
-#include <sstream>
 #include <iostream>
 #include <cstdio>
 
 using std::string;
-using std::stringstream;
 using std::getline;
 using boost::optional;
 
@@ -44,7 +43,7 @@ sub::empty_or_white_space (string s)
 }
 
 optional<string>
-sub::get_line_stringstream (stringstream* str)
+sub::get_line_stringstream (locked_stringstream* str)
 {
 	if (!str->good ()) {
 		return optional<string> ();

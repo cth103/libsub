@@ -22,15 +22,14 @@
 #include "sub_assert.h"
 #include "raw_convert.h"
 #include "subtitle.h"
+#include <locked_sstream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <sstream>
 #include <iostream>
 #include <vector>
 
 using std::string;
-using std::stringstream;
 using std::vector;
 using std::map;
 using std::cout;
@@ -43,7 +42,7 @@ using namespace sub;
 /** @param s Subtitle string encoded in UTF-8 */
 SSAReader::SSAReader (string const & s)
 {
-	stringstream str (s);
+	locked_stringstream str (s);
 	this->read (boost::bind (&get_line_stringstream, &str));
 }
 

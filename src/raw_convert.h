@@ -20,7 +20,7 @@
 #ifndef LIBSUB_RAW_CONVERT_H
 #define LIBSUB_RAW_CONVERT_H
 
-#include <sstream>
+#include <locked_sstream.h>
 #include <iomanip>
 
 namespace sub {
@@ -32,7 +32,7 @@ template <typename P, typename Q>
 P
 raw_convert (Q v, int precision = 16)
 {
-	std::stringstream s;
+	locked_stringstream s;
 	s.imbue (std::locale::classic ());
 	s << std::setprecision (precision);
 	s << v;

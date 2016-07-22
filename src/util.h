@@ -20,11 +20,13 @@
 #include <boost/optional.hpp>
 #include <string>
 
+class locked_stringstream;
+
 namespace sub {
 
 extern bool empty_or_white_space (std::string s);
 extern void remove_unicode_bom (boost::optional<std::string>& line);
-extern boost::optional<std::string> get_line_stringstream (std::stringstream* str);
+extern boost::optional<std::string> get_line_stringstream (locked_stringstream* str);
 extern boost::optional<std::string> get_line_file (FILE* f);
 
 }

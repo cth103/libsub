@@ -72,7 +72,7 @@ put_string (char* p, unsigned int n, string s)
 static void
 put_int_as_string (char* p, int v, unsigned int n)
 {
-	std::stringstream s;
+	locked_stringstream s;
 	/* Be careful to ensure we get no thousands separators */
 	s.imbue (std::locale::classic ());
 	s << setw (n) << setfill ('0');

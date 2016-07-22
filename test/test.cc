@@ -19,6 +19,7 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE libsub_test
+#include <locked_sstream.h>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
@@ -34,7 +35,6 @@ using std::max;
 using std::hex;
 using std::ifstream;
 using std::getline;
-using std::stringstream;
 
 boost::filesystem::path private_test;
 
@@ -106,7 +106,7 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 		BOOST_CHECK_EQUAL (r, this_time);
 
 		for (uintmax_t i = 0; i < this_time; ++i) {
-			stringstream s;
+			locked_stringstream s;
 			s << "Files differ at offset " << (offset + i)
 			  << "; reference is " << hex << ((int) ref_buffer[i])
 			  << ", check is " << hex << ((int) check_buffer[i]);

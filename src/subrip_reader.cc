@@ -24,6 +24,7 @@
 #include "subrip_reader.h"
 #include "exceptions.h"
 #include "util.h"
+#include <locked_sstream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -37,7 +38,6 @@ using std::vector;
 using std::list;
 using std::cout;
 using std::hex;
-using std::stringstream;
 using boost::lexical_cast;
 using boost::to_upper;
 using boost::optional;
@@ -47,7 +47,7 @@ using namespace sub;
 /** @param s Subtitle string encoded in UTF-8 */
 SubripReader::SubripReader (string const & s)
 {
-	stringstream str (s);
+	locked_stringstream str (s);
 	this->read (boost::bind (&get_line_stringstream, &str));
 }
 
