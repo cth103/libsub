@@ -152,7 +152,6 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test5)
 		);
 }
 
-
 BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
 {
 	if (private_test.empty ()) {
@@ -177,5 +176,28 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
 	check_file (
 		private_test / "Paddington_FTR_FullSubs_DE_24fps.stl",
 		"build/test/Paddington_FTR_FullSubs_DE_24fps.stl"
+		);
+}
+
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test7)
+{
+	boost::filesystem::path p = "test/data/test3.xml";
+	sub::write_stl_binary (
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
+		24,
+		sub::LANGUAGE_GERMAN,
+		"", "",
+		"", "",
+		"", "",
+		"300514", "300514", 0,
+		"GBR",
+		"",
+		"", "",
+		"build/test/test3.stl"
+		);
+
+	check_file (
+		"test/ref/test3.stl",
+		"build/test/test3.stl"
 		);
 }

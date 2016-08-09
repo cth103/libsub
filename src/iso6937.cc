@@ -38,7 +38,7 @@ sub::iso6937_to_utf16 (string s)
 	if (iso6937::diacriticals.empty ()) {
 		make_iso6937_tables ();
 	}
-	
+
 	wstring o;
 
 	boost::optional<unsigned char> diacritical;
@@ -79,7 +79,7 @@ sub::utf16_to_iso6937 (wstring s)
 	if (iso6937::diacriticals.empty ()) {
 		make_iso6937_tables ();
 	}
-	
+
 	/* XXX: slow */
 
 	string o;
@@ -103,9 +103,16 @@ sub::utf16_to_iso6937 (wstring s)
 			   a normal opening one (0x201c, which is 170 in ISO6937).
 			*/
 			o += (char) 170;
+		} else if (s[i] == 0x2013 || s[i] == 0x2014) {
+			/* ISO6397 does not support en- or em-dashes, so use a horizontal bar (0x2015,
+			   which is 208 in ISO6937).
+			*/
+			o += (char) 208;
+		} else if (s[i] == 0x2010 || s[i] == 0x2011 || s[i] == 0x2012) {
+			/* Similar story with hyphen, non-breaking hyphen, figure dash */
+			o += '-';
 		}
 	}
 
 	return o;
 }
-
