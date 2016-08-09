@@ -312,6 +312,7 @@ sub::make_iso6937_tables ()
 	main[161] = 0x00A1;
 	main[162] = 0x00A2;
 	main[163] = 0x00A3;
+	main[164] = 0x0024;
 	main[165] = 0x00A5;
 	main[167] = 0x00A7;
 	main[168] = 0x00A4;
