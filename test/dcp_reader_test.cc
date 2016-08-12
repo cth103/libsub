@@ -23,7 +23,6 @@
 #include <boost/optional/optional_io.hpp>
 
 using std::list;
-using std::cout;
 using boost::shared_ptr;
 
 /* Test reading of a DCP XML file */
