@@ -23,6 +23,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
+#include <iostream>
 #include "iso6937_tables.h"
 
 using std::string;
@@ -63,10 +64,10 @@ check_text (boost::filesystem::path a, boost::filesystem::path b)
 	if (!boost::filesystem::exists (b)) {
 		cerr << "File not found: " << b << "\n";
 	}
-	
+
 	BOOST_CHECK (boost::filesystem::exists (a));
 	BOOST_CHECK (boost::filesystem::exists (b));
-	
+
 	ifstream p (a.c_str ());
 	ifstream q (b.c_str ());
 
@@ -91,7 +92,7 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 	BOOST_CHECK (ref_file);
 	FILE* check_file = fopen (check.string().c_str(), "rb");
 	BOOST_CHECK (check_file);
-	
+
 	int const buffer_size = 65536;
 	uint8_t* ref_buffer = new uint8_t[buffer_size];
 	uint8_t* check_buffer = new uint8_t[buffer_size];

@@ -1,7 +1,7 @@
 import os
 
 def dependencies(target):
-    return (('libdcp', '06851d8'),)
+    return (('libdcp', '7b3e6b4'),)
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
@@ -22,7 +22,10 @@ def make_doxygen(target):
     target.command('doxygen')
     return os.path.abspath('build/doc/html')
 
-def test(target):
+def test(target, test):
     if target.platform != 'windows':
         target.set('LC_ALL', 'C')
-        target.command('run/tests')
+        if test is None:
+            target.command('run/tests')
+        else:
+            target.command('run/tests --run_test=%s' % test)
