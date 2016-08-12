@@ -357,6 +357,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 {
 	boost::filesystem::path p = private_test / "DCP-o-matic_test_subs_1.ass";
 	FILE* f = fopen (p.string().c_str(), "r");
+	BOOST_REQUIRE (f);
 	sub::SSAReader reader (f);
 	fclose (f);
 	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
