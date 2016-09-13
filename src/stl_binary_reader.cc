@@ -94,6 +94,12 @@ STLBinaryReader::STLBinaryReader (istream& in)
 		vector<string> lines;
 		split (lines, whole, is_any_of ("\x8a"));
 
+		/* Italic / underline specifications can span lines, so we need to track them
+		   outside the lines loop.
+		*/
+		bool italic = false;
+		bool underline = false;
+
 		for (size_t i = 0; i < lines.size(); ++i) {
 			RawSubtitle sub;
 			sub.from = get_timecode (5);
@@ -101,7 +107,10 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			sub.vertical_position.line = get_int (13, 1) + i;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
+			sub.italic = italic;
+			sub.underline = underline;
 
+			/* Loop over characters */
 			string text;
 			for (size_t j = 0; j < lines[i].size(); ++j) {
 
@@ -121,21 +130,24 @@ STLBinaryReader::STLBinaryReader (istream& in)
 
 				switch (c) {
 				case 0x80:
-					sub.italic = true;
+					italic = true;
 					break;
 				case 0x81:
-					sub.italic = false;
+					italic = false;
 					break;
 				case 0x82:
-					sub.underline = true;
+					underline = true;
 					break;
 				case 0x83:
-					sub.underline = false;
+					underline = false;
 					break;
 				default:
 					text += lines[i][j];
 					break;
 				}
+
+				sub.italic = italic;
+				sub.underline = underline;
 			}
 
 			if (!text.empty ()) {
