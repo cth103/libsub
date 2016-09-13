@@ -24,7 +24,7 @@ def setup(output_diacritical_name):
 def fill(unicode_diacritical_name, output_diacritical_name, letters):
 
     print>>output_h,'extern std::map<char, wchar_t> %s;' % output_diacritical_name
-    
+
     for letter in letters:
         if letter.isupper():
             case = 'CAPITAL'
@@ -140,6 +140,9 @@ for i in range(32, 127):
 print>>output_c,"\tmain[161] = 0x00A1;"
 print>>output_c,"\tmain[162] = 0x00A2;"
 print>>output_c,"\tmain[163] = 0x00A3;"
+# Wikipedia says the dollar is 0x24, but Annotation
+# Edit (and some other sources) disagree.
+print>>output_c,"\tmain[164] = 0x0024;"
 print>>output_c,"\tmain[165] = 0x00A5;"
 print>>output_c,"\tmain[167] = 0x00A7;"
 print>>output_c,"\tmain[168] = 0x00A4;"
