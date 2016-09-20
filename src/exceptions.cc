@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2016 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,12 +19,21 @@
 
 #include "compose.hpp"
 #include "exceptions.h"
+#include <boost/foreach.hpp>
 
 using std::string;
+using std::list;
 using namespace sub;
 
 ProgrammingError::ProgrammingError (string file, int line)
 	: runtime_error (String::compose ("Programming error at %1:%2", file, line))
+{
+
+}
+
+SubripError::SubripError (string saw, string expecting, list<string> context)
+	: runtime_error ("Error in SubRip file: saw " + (saw.empty() ? "an empty string" : saw) + " when expecting " + expecting)
+	, _context (context)
 {
 
 }

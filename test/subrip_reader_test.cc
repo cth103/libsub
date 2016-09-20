@@ -353,8 +353,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 /** Test SubripReader::convert_time */
 BOOST_AUTO_TEST_CASE (subrip_reader_convert_time_test)
 {
-	BOOST_CHECK_EQUAL (sub::SubripReader::convert_time ("00:03:10,500"), sub::Time::from_hms (0, 3, 10, 500));
-	BOOST_CHECK_EQUAL (sub::SubripReader::convert_time ("04:19:51,782"), sub::Time::from_hms (4, 19, 51, 782));
+	sub::SubripReader reader;
+	BOOST_CHECK_EQUAL (reader.convert_time ("00:03:10,500"), sub::Time::from_hms (0, 3, 10, 500));
+	BOOST_CHECK_EQUAL (reader.convert_time ("04:19:51,782"), sub::Time::from_hms (4, 19, 51, 782));
 }
 
 static void

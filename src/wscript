@@ -49,6 +49,7 @@ def build(bld):
               colour.h
               dcp_reader.h
               effect.h
+              exceptions.h
               font_size.h
               interop_dcp_reader.h
               rational.h

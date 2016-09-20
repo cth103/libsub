@@ -44,10 +44,12 @@ private:
 	friend struct ::subrip_reader_convert_time_test;
 	SubripReader () {}
 
-	static Time convert_time (std::string t);
+	Time convert_time (std::string t);
 	void convert_line (std::string t, RawSubtitle& p);
 	void maybe_content (RawSubtitle& p);
 	void read (boost::function<boost::optional<std::string> ()> get_line);
+
+	std::list<std::string> _context;
 };
 
 }

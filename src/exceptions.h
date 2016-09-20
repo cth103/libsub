@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2016 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <list>
 
 namespace sub {
 
@@ -53,9 +54,14 @@ public:
 class SubripError : public std::runtime_error
 {
 public:
-	SubripError (std::string saw, std::string expecting)
-		: std::runtime_error ("Error in SubRip file: saw " + saw + " while expecting " + expecting)
-	{}
+	SubripError (std::string saw, std::string expecting, std::list<std::string> context);
+
+	std::list<std::string> context () const {
+		return _context;
+	}
+
+private:
+	std::list<std::string> _context;
 };
 
 class MXFError : public std::runtime_error

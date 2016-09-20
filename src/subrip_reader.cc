@@ -83,6 +83,12 @@ SubripReader::read (function<optional<string> ()> get_line)
 		trim_right_if (*line, boost::is_any_of ("\n\r"));
 		remove_unicode_bom (line);
 
+		/* Keep some history in case there is an error to report */
+		_context.push_back (*line);
+		if (_context.size() > 5) {
+			_context.pop_front ();
+		}
+
 		switch (state) {
 		case COUNTER:
 		{
@@ -109,7 +115,13 @@ SubripReader::read (function<optional<string> ()> get_line)
 
 			boost::algorithm::split (p, *line, boost::algorithm::is_any_of (" "));
 			if (p.size() != 3 && p.size() != 7) {
-				throw SubripError (*line, "a time/position line");
+				for (int i = 0; i < 2; ++i) {
+					optional<string> ex = get_line ();
+					if (ex) {
+						_context.push_back (*ex);
+					}
+				}
+				throw SubripError (*line, "a time/position line", _context);
 			}
 
 			rs.from = convert_time (p[0]);
@@ -138,7 +150,7 @@ SubripReader::convert_time (string t)
 	vector<string> a;
 	boost::algorithm::split (a, t, boost::is_any_of (":"));
 	if (a.size() != 3) {
-		throw SubripError (t, "time in the format h:m:s,ms");
+		throw SubripError (t, "time in the format h:m:s,ms", _context);
 	}
 
 	vector<string> b;
