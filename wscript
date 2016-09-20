@@ -153,3 +153,6 @@ def create_version_cc(bld, version):
 def post(ctx):
     if ctx.cmd == 'install':
         ctx.exec_command('/sbin/ldconfig')
+
+def tags(bld):
+    os.system('etags src/*.cc src/*.h')
