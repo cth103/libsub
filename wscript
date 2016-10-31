@@ -44,7 +44,7 @@ def configure(conf):
         conf.env.LIB_ASDCPLIB_CTH = ['ssl', 'crypto']
         conf.check_cfg(package='libasdcp-cth', atleast_version='0.0.1', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
     else:
-        conf.check_cfg(package='libcxml', atleast_version='0.15.1', args='--cflags --libs', uselib_store='CXML', mandatory=True)
+        conf.check_cfg(package='libcxml', atleast_version='0.15.2', args='--cflags --libs', uselib_store='CXML', mandatory=True)
         conf.check_cfg(package='libasdcp-cth', atleast_version='0.1.0', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
 
     boost_lib_suffix = ''
