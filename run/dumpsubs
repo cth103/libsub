@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
-export LD_LIBRARY_PATH=build/src
+export LD_LIBRARY_PATH=build/src:$LD_LIBRARY_PATH
 build/tools/dumpsubs $*
