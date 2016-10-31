@@ -282,8 +282,6 @@ sub::write_stl_binary (
 				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
 			}
 
-			text += "\x8A";
-
 			/* Turn italic/underline off before the end of this subtitle */
 
 			if (underline) {
@@ -293,6 +291,8 @@ sub::write_stl_binary (
 			if (italic) {
 				text += "\x81";
 			}
+
+			text += "\x8A";
 
 			if (text.length() > 111) {
 				text = text.substr (111);
