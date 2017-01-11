@@ -44,6 +44,7 @@ def build(bld):
               effect.h
               exceptions.h
               font_size.h
+              horizontal_position.h
               rational.h
               raw_subtitle.h
               reader.h
