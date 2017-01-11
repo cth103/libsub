@@ -18,10 +18,9 @@
 */
 
 #include "reader_factory.h"
-#include "interop_dcp_reader.h"
-#include "smpte_dcp_reader.h"
 #include "stl_binary_reader.h"
 #include "stl_text_reader.h"
+#include "dcp_reader.h"
 #include <libxml++/libxml++.h>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
@@ -39,21 +38,12 @@ sub::reader_factory (boost::filesystem::path file_name)
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 
 	if (ext == ".xml") {
-                /* XXX: unfortunate API weakness in libcxml; we can't find out what a
-                   file's root node name is.
-                */
-                xmlpp::DomParser parser (file_name.string ());
-                string const root = parser.get_document()->get_root_node()->get_name();
-                if (root == "DCSubtitle") {
-                        return shared_ptr<Reader> (new InteropDCPReader (file_name));
-                } else if (root == "SubtitleReel") {
-                        return shared_ptr<Reader> (new SMPTEDCPReader (file_name, false));
-                }
+		return shared_ptr<Reader> (new DCPReader (file_name));
         }
 
         if (ext == ".mxf") {
                 /* Assume this is some MXF-wrapped SMPTE subtitles */
-                return shared_ptr<Reader> (new SMPTEDCPReader (file_name, true));
+                return shared_ptr<Reader> (new DCPReader (file_name));
         }
 
 	if (ext == ".stl") {

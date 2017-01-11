@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2017 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,97 +18,114 @@
 */
 
 #include "dcp_reader.h"
-#include "vertical_reference.h"
-#include "xml.h"
-#include "util.h"
-#include "dcp/font.h"
-#include "dcp/text.h"
-#include "dcp/subtitle.h"
-#include <libcxml/cxml.h>
-#include <libxml++/libxml++.h>
-#include <iostream>
+#include "compose.hpp"
+#include "exceptions.h"
+#include <dcp/subtitle_string.h>
+#include <dcp/interop_subtitle_asset.h>
+#include <dcp/smpte_subtitle_asset.h>
+#include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
 
 using std::list;
 using std::cout;
 using std::string;
+using std::exception;
 using boost::shared_ptr;
 using boost::optional;
 using namespace sub;
 
-void
-DCPReader::parse_common (cxml::NodePtr root, optional<int> tcr)
+static Time
+dcp_to_sub_time (dcp::Time t)
 {
-	_reel_number = root->string_child ("ReelNumber");
-	_language = root->string_child ("Language");
-
-	ParseState parse_state;
-	parse_node (root->node(), parse_state, tcr);
+	return Time::from_hms (t.h, t.m, t.s, t.e * 1000.0 / t.tcr);
 }
 
-void
-DCPReader::parse_node (xmlpp::Node const * node, ParseState& parse_state, optional<int> tcr)
+static Colour
+dcp_to_sub_colour (dcp::Colour c)
 {
-	xmlpp::Node::NodeList children = node->get_children ();
-	for (xmlpp::Node::NodeList::iterator i = children.begin(); i != children.end(); ++i) {
-		xmlpp::ContentNode const * c = dynamic_cast<xmlpp::ContentNode const *> (*i);
-		if (c) {
-			maybe_add_subtitle (c->get_content (), parse_state);
-		}
-
-		xmlpp::Element* e = dynamic_cast<xmlpp::Element *> (*i);
-		if (e) {
-			cxml::NodePtr n (new cxml::Node (e));
-			if (n->name() == "Font") {
-				parse_state.font_nodes.push_back (shared_ptr<dcp::Font> (new dcp::Font (n)));
-				parse_node (e, parse_state, tcr);
-				parse_state.font_nodes.pop_back ();
-			} else if (n->name() == "Text") {
-				parse_state.text_nodes.push_back (shared_ptr<dcp::Text> (new dcp::Text (n)));
-				parse_node (e, parse_state, tcr);
-				parse_state.text_nodes.pop_back ();
-			} else if (n->name() == "Subtitle") {
-				parse_state.subtitle_nodes.push_back (shared_ptr<dcp::Subtitle> (new dcp::Subtitle (n, tcr)));
-				parse_node (e, parse_state, tcr);
-				parse_state.subtitle_nodes.pop_back ();
-			} else if (n->name() == "SubtitleList") {
-				parse_node (e, parse_state, tcr);
-			}
-		}
-	}
+	return Colour (c.r / 255.0, c.g / 255.0, c.b / 255.0);
 }
 
-void
-DCPReader::maybe_add_subtitle (string text, ParseState const & parse_state)
+DCPReader::DCPReader (boost::filesystem::path file)
 {
-	if (empty_or_white_space (text)) {
-		return;
+	shared_ptr<dcp::SubtitleAsset> sc;
+	string interop_error;
+	string smpte_error;
+
+	try {
+		sc.reset (new dcp::InteropSubtitleAsset (file));
+	} catch (exception& e) {
+		interop_error = e.what ();
 	}
 
-	if (parse_state.text_nodes.empty() || parse_state.subtitle_nodes.empty ()) {
-		return;
+	if (!sc) {
+		try {
+			sc.reset (new dcp::SMPTESubtitleAsset (file));
+		} catch (exception& e) {
+			smpte_error = e.what();
+		}
 	}
 
-	dcp::Font effective_font (parse_state.font_nodes);
-	dcp::Text effective_text (*parse_state.text_nodes.back ());
-	dcp::Subtitle effective_subtitle (*parse_state.subtitle_nodes.back ());
+	if (!sc) {
+		throw DCPError (String::compose ("Could not read subtitles (%1 / %2)", interop_error, smpte_error));
+	}
 
-	RawSubtitle rs;
 
-	rs.text = text;
-	rs.font = effective_font.id;
-	rs.font_size.set_proportional (float (effective_font.size) / (72 * 11));
-	rs.effect = effective_font.effect;
-	rs.effect_colour = effective_font.effect_colour;
-	rs.colour = effective_font.colour.get();
-	rs.bold = false;
-	rs.italic = effective_font.italic.get();
-	rs.underline = false;
-	rs.vertical_position.proportional = float (effective_text.v_position) / 100;
-	rs.vertical_position.reference = effective_text.v_align;
-	rs.from = effective_subtitle.in;
-	rs.to = effective_subtitle.out;
-	rs.fade_up = effective_subtitle.fade_up_time;
-	rs.fade_down = effective_subtitle.fade_down_time;
+	BOOST_FOREACH (dcp::SubtitleString const & i, sc->subtitles ()) {
+		RawSubtitle rs;
+		rs.text = i.text ();
+		rs.font = i.font ();
+		rs.font_size = FontSize::from_proportional (i.size() / (72.0 * 11.0));
 
-	_subs.push_back (rs);
+		switch (i.effect ()) {
+		case BORDER:
+			rs.effect = BORDER;
+			break;
+		case SHADOW:
+			rs.effect = SHADOW;
+			break;
+		default:
+			break;
+		}
+
+		rs.effect_colour = dcp_to_sub_colour (i.effect_colour());
+
+		rs.colour = dcp_to_sub_colour (i.colour());
+		rs.bold = i.bold ();
+		rs.italic = i.italic ();
+		rs.underline = i.underline ();
+
+		switch (i.h_align()) {
+		case dcp::HALIGN_LEFT:
+			rs.horizontal_position = LEFT;
+			break;
+		case dcp::HALIGN_CENTER:
+			rs.horizontal_position = CENTRE;
+			break;
+		case dcp::HALIGN_RIGHT:
+			rs.horizontal_position = RIGHT;
+			break;
+		}
+
+		rs.vertical_position.proportional = i.v_position();
+		switch (i.v_align()) {
+		case dcp::VALIGN_TOP:
+			rs.vertical_position.reference = TOP_OF_SCREEN;
+			break;
+		case dcp::VALIGN_CENTER:
+			rs.vertical_position.reference = CENTRE_OF_SCREEN;
+			break;
+		case dcp::VALIGN_BOTTOM:
+			rs.vertical_position.reference = BOTTOM_OF_SCREEN;
+			break;
+		}
+
+		rs.from = dcp_to_sub_time (i.in ());
+		rs.to = dcp_to_sub_time (i.out ());
+
+		rs.fade_up = dcp_to_sub_time (i.fade_up_time ());
+		rs.fade_down = dcp_to_sub_time (i.fade_down_time ());
+
+		_subs.push_back (rs);
+	}
 }

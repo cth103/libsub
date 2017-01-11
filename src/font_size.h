@@ -55,6 +55,7 @@ public:
 	int points (int screen_height_in_points) const;
 
 	static FontSize from_points (int p);
+	static FontSize from_proportional (float p);
 
 private:
 	/** as a proportion of screen height */

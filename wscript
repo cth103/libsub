@@ -35,17 +35,19 @@ def configure(conf):
     conf.check_cfg(package='openssl', args='--cflags --libs', uselib_store='OPENSSL', mandatory=True)
 
     if conf.options.static:
+        conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.HAVE_CXML = 1
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
-        conf.check_cfg(package='libcxml', atleast_version='0.14.0', args='--cflags', uselib_store='CXML', mandatory=True)
-        conf.env.HAVE_ASDCPLIB_CTH = 1
-        conf.env.STLIB_ASDCPLIB_CTH = ['asdcp-cth', 'kumu-cth']
-        conf.env.LIB_ASDCPLIB_CTH = ['ssl', 'crypto']
-        conf.check_cfg(package='libasdcp-cth', atleast_version='0.1.3', args='--cflags', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.4.4', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.env.HAVE_DCP = 1
+        conf.env.STLIB_DCP = ['dcp-1.0']
+        conf.env.LIB_DCP = ['ssl', 'crypto']
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.15.2', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libasdcp-cth', atleast_version='0.1.3', args='--cflags --libs', uselib_store='ASDCPLIB_CTH', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.4.4', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+
+    conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS:

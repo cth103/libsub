@@ -18,8 +18,7 @@
 */
 
 #include "test.h"
-#include "interop_dcp_reader.h"
-#include "smpte_dcp_reader.h"
+#include "dcp_reader.h"
 #include "stl_binary_writer.h"
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
@@ -36,7 +35,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test1)
 
 	boost::filesystem::path p = private_test / "fd586c30-6d38-48f2-8241-27359acf184c_sub.xml";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader(p).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -63,7 +62,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test2)
 
 	boost::filesystem::path p = private_test / "93e8a6bf-499e-4d36-9350-a9bfa2e6758a_sub.xml";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader(p).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -90,7 +89,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test3)
 
 	boost::filesystem::path p = private_test / "Paddington_FTR_Subs_DE-FR_24fps_R1.xml";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader(p).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -112,7 +111,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test3)
 BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test4)
 {
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader("test/data/test1.xml").subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader("test/data/test1.xml").subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -134,7 +133,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test5)
 
 	boost::filesystem::path p = private_test / "065d39ff-6723-4dbf-a94f-849cde82f5e1_sub.mxf";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::SMPTEDCPReader(p, true).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		25,
 		sub::LANGUAGE_FRENCH,
 		"", "",
@@ -161,7 +160,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
 
 	boost::filesystem::path p = private_test / "Paddington_FTR_FullSubs_DE_24fps.xml";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader(p).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		24,
 		sub::LANGUAGE_GERMAN,
 		"", "",
@@ -184,7 +183,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test7)
 {
 	boost::filesystem::path p = "test/data/test3.xml";
 	sub::write_stl_binary (
-		sub::collect<list<sub::Subtitle> > (sub::InteropDCPReader(p).subtitles ()),
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		24,
 		sub::LANGUAGE_GERMAN,
 		"", "",

@@ -17,7 +17,7 @@
 
 */
 
-#include "interop_dcp_reader.h"
+#include "dcp_reader.h"
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/optional/optional_io.hpp>
@@ -28,7 +28,7 @@ using boost::shared_ptr;
 /* Test reading of a DCP XML file */
 BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 {
-	sub::InteropDCPReader reader ("test/data/test1.xml");
+	sub::DCPReader reader ("test/data/test1.xml");
 	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 /* And another one */
 BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 {
-	sub::InteropDCPReader reader ("test/data/test2.xml");
+	sub::DCPReader reader ("test/data/test2.xml");
 	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
 
 	list<sub::Subtitle>::iterator i = subs.begin ();
