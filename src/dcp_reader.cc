@@ -78,10 +78,10 @@ DCPReader::DCPReader (boost::filesystem::path file)
 		rs.font_size = FontSize::from_proportional (i.size() / (72.0 * 11.0));
 
 		switch (i.effect ()) {
-		case BORDER:
+		case dcp::BORDER:
 			rs.effect = BORDER;
 			break;
-		case SHADOW:
+		case dcp::SHADOW:
 			rs.effect = SHADOW;
 			break;
 		default:
