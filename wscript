@@ -42,7 +42,7 @@ def configure(conf):
         conf.check_cfg(package='libdcp-1.0', atleast_version='1.4.4', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.HAVE_DCP = 1
         conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-cth', 'kumu-cth', 'openjp2']
-        conf.env.LIB_DCP = ['ssl', 'crypto']
+        conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1']
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.15.2', args='--cflags --libs', uselib_store='CXML', mandatory=True)
         conf.check_cfg(package='libdcp-1.0', atleast_version='1.4.4', args='--cflags --libs', uselib_store='DCP', mandatory=True)
