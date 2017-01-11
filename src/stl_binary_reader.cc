@@ -110,6 +110,21 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			sub.italic = italic;
 			sub.underline = underline;
 
+			/* XXX: not sure what to do with JC = 0, "unchanged presentation" */
+			int const h = get_int (14, 1);
+			switch (h) {
+			case 0:
+			case 2:
+				sub.horizontal_position = CENTRE;
+				break;
+			case 1:
+				sub.horizontal_position = LEFT;
+				break;
+			case 3:
+				sub.horizontal_position = RIGHT;
+				break;
+			}
+
 			/* Loop over characters */
 			string text;
 			for (size_t j = 0; j < lines[i].size(); ++j) {

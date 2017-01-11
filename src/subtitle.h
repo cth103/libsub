@@ -25,6 +25,7 @@
 #include "effect.h"
 #include "font_size.h"
 #include "vertical_position.h"
+#include "horizontal_position.h"
 #include "raw_subtitle.h"
 #include <boost/optional.hpp>
 #include <string>
@@ -74,10 +75,14 @@ public:
 class Line
 {
 public:
-	Line () {}
+	Line ()
+		: horizontal_position (CENTRE)
+	{}
 
 	/** Construct a Line taking any relevant information from a RawSubtitle */
 	Line (RawSubtitle s);
+
+	HorizontalPosition horizontal_position;
 
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;

@@ -26,6 +26,7 @@
 #include "effect.h"
 #include "font_size.h"
 #include "vertical_position.h"
+#include "horizontal_position.h"
 #include <boost/optional.hpp>
 #include <string>
 #include <list>
@@ -59,6 +60,8 @@ public:
 	bool bold;      ///< true to use a bold version of font
 	bool italic;    ///< true to use an italic version of font
 	bool underline; ///< true to underline
+
+	HorizontalPosition horizontal_position;
 
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;

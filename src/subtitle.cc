@@ -37,7 +37,8 @@ Subtitle::same_metadata (RawSubtitle s) const
 }
 
 Line::Line (RawSubtitle s)
-	: vertical_position (s.vertical_position)
+	: horizontal_position (s.horizontal_position)
+	, vertical_position (s.vertical_position)
 {
 	blocks.push_back (Block (s));
 }
