@@ -379,6 +379,7 @@ BOOST_AUTO_TEST_CASE (subrip_read_test)
 	test ("sintel_fr.srt");
 	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
 	test ("EU13.srt");
+	test ("Subtitulos_HURTO_eng.srt");
 }
 
 #define SUB_START(f, t) \

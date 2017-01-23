@@ -113,7 +113,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 			/* Further trim this line, removing spaces from the end */
 			trim_right_if (*line, boost::is_any_of (" "));
 
-			boost::algorithm::split (p, *line, boost::algorithm::is_any_of (" "));
+			boost::algorithm::split (p, *line, boost::algorithm::is_any_of (" "), boost::token_compress_on);
 			if (p.size() != 3 && p.size() != 7) {
 				for (int i = 0; i < 2; ++i) {
 					optional<string> ex = get_line ();
