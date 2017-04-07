@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/util.h
+ *  @brief Utility methods.
+ */
+
 #include <boost/optional.hpp>
 #include <string>
 
