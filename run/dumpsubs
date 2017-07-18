@@ -1,4 +1,5 @@
 #!/bin/bash -e
 
-export LD_LIBRARY_PATH=build/src:$LD_LIBRARY_PATH
-build/tools/dumpsubs $*
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export LD_LIBRARY_PATH=$DIR/../build/src:$LD_LIBRARY_PATH
+$DIR/../build/tools/dumpsubs $*
