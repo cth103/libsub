@@ -41,5 +41,6 @@ public:
 };
 
 bool operator== (Rational const & a, Rational const & b);
+Rational max (Rational const & a, Rational const & b);
 
 }

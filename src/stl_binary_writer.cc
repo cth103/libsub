@@ -179,7 +179,7 @@ sub::write_stl_binary (
 			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
 				t += k->text.size ();
 			}
-			longest = max (longest, t);
+			longest = std::max (longest, t);
 		}
 	}
 

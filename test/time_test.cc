@@ -20,6 +20,7 @@
 #include "sub_time.h"
 #include "exceptions.h"
 #include <boost/test/unit_test.hpp>
+#include <iostream>
 
 /* Check time construction */
 BOOST_AUTO_TEST_CASE (time_construction_test)
@@ -71,4 +72,12 @@ BOOST_AUTO_TEST_CASE (time_other_test)
 {
 	BOOST_CHECK_THROW (sub::Time::from_hmsf (2, 1, 58, 4).all_as_seconds(), sub::UnknownFrameRateError);
 	BOOST_CHECK_CLOSE (sub::Time::from_hmsf (2, 1, 58, 4, sub::Rational (24, 1)).all_as_seconds(), 7318.1667, 0.001);
+}
+
+/* Check an addition case that gave an odd result */
+BOOST_AUTO_TEST_CASE (time_add_test)
+{
+	sub::Time t = sub::Time::from_hmsf (0, 4, 8, 208, sub::Rational(1000, 1));
+	t.add (sub::Time::from_frames(54641, sub::Rational(24, 1)));
+	BOOST_CHECK_EQUAL (t, sub::Time::from_hmsf (0, 42, 4, 916, sub::Rational(1000, 1)));
 }

@@ -19,4 +19,4 @@
 
 #include "exceptions.h"
 
-#define SUB_ASSERT(x) if (!(x)) throw ProgrammingError (__FILE__, __LINE__);
+#define SUB_ASSERT(x) if (!(x)) throw sub::ProgrammingError (__FILE__, __LINE__);

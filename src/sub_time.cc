@@ -172,24 +172,15 @@ Time::all_as_seconds () const
 	return _seconds + double(milliseconds ()) / 1000;
 }
 
-/** Add a time to this one.  This time must have an integer _rate
- *  and t must have the same rate.
- */
+/** Add a time to this one.  Both *this and t must have a specified _rate */
 void
 Time::add (Time t)
 {
 	SUB_ASSERT (_rate);
+	SUB_ASSERT (t._rate);
 
-	_seconds += t._seconds;
-	_frames += t._frames;
-
-	SUB_ASSERT (_rate.get().denominator != 0);
-	SUB_ASSERT (_rate.get().integer ());
-
-	if (_frames >= _rate.get().integer_fraction()) {
-		_frames -= _rate.get().integer_fraction();
-		++_seconds;
-	}
+	Rational result_rate = max (*_rate, *t._rate);
+	*this = Time::from_frames((all_as_seconds() + t.all_as_seconds()) * result_rate.fraction(), result_rate);
 }
 
 void

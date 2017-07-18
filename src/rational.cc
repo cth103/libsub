@@ -31,3 +31,13 @@ Rational::integer () const
 {
 	return (numerator % denominator) == 0;
 }
+
+Rational
+sub::max (Rational const & a, Rational const & b)
+{
+	if (a.fraction() > b.fraction()) {
+		return a;
+	}
+
+	return b;
+}
