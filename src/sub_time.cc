@@ -169,7 +169,7 @@ Time::from_frames (int f, Rational rate)
 double
 Time::all_as_seconds () const
 {
-	return _seconds + double(milliseconds ()) / 1000;
+	return _seconds + double(milliseconds()) / 1000;
 }
 
 /** Add a time to this one.  Both *this and t must have a specified _rate */
@@ -190,10 +190,7 @@ Time::scale (float f)
 	SUB_ASSERT (_rate->denominator != 0);
 	SUB_ASSERT (_rate->integer ());
 
-	_seconds = rint (_seconds * f);
-	_frames = rint (_frames * f);
-	if (_frames >= _rate->integer_fraction()) {
-		_frames -= _rate->integer_fraction ();
-		++_seconds;
-	}
+	double const s = Time::all_as_seconds() * f;
+	_seconds = floor (s);
+	_frames = rint ((s - _seconds) * _rate->fraction());
 }

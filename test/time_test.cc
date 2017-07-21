@@ -81,3 +81,19 @@ BOOST_AUTO_TEST_CASE (time_add_test)
 	t.add (sub::Time::from_frames(54641, sub::Rational(24, 1)));
 	BOOST_CHECK_EQUAL (t, sub::Time::from_hmsf (0, 42, 4, 916, sub::Rational(1000, 1)));
 }
+
+BOOST_AUTO_TEST_CASE (time_scale_test1)
+{
+	sub::Time t = sub::Time::from_hmsf (0, 0, 1, 0, sub::Rational(1000, 1));
+	t.scale (0.96);
+	BOOST_CHECK_EQUAL (t.seconds(), 0);
+	BOOST_CHECK_EQUAL (t.frames_at(sub::Rational(1000, 1)), 960);
+}
+
+BOOST_AUTO_TEST_CASE (time_scale_test2)
+{
+	sub::Time t = sub::Time::from_hmsf (0, 0, 2, 0, sub::Rational(1000, 1));
+	t.scale (0.96);
+	BOOST_CHECK_EQUAL (t.seconds(), 1);
+	BOOST_CHECK_EQUAL (t.frames_at(sub::Rational(1000, 1)), 920);
+}
