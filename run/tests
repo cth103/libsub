@@ -10,5 +10,5 @@ elif [ "$1" == "--valgrind" ]; then
     shift
     valgrind --tool="memcheck" build/test/tests $private $*
 else
-    build/test/tests $private $*
+    build/test/tests $* -- $private
 fi
