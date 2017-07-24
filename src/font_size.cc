@@ -62,3 +62,9 @@ FontSize::specified () const
 {
 	return _proportional || _points;
 }
+
+bool
+sub::operator== (FontSize const & a, FontSize const & b)
+{
+	return a.proportional() == b.proportional() && a.points() == b.points();
+}

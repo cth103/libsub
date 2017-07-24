@@ -67,6 +67,8 @@ public:
 	bool underline; ///< true to underline
 };
 
+extern bool operator== (Block const & a, Block const & b);
+
 /** @class Line
  *  @brief A line of text within a subtitle.
  *
@@ -91,6 +93,8 @@ public:
 
 	bool same_metadata (RawSubtitle) const;
 };
+
+extern bool operator== (Line const & a, Line const & b);
 
 /** @class Subtitle
  *  @brief A subtitle which has been collected into lines and blocks.
@@ -119,6 +123,8 @@ public:
 
 	bool same_metadata (RawSubtitle) const;
 };
+
+extern bool operator== (Subtitle const & a, Subtitle const & b);
 
 }
 

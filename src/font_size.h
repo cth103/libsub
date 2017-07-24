@@ -65,6 +65,8 @@ private:
 
 };
 
+extern bool operator== (FontSize const & a, FontSize const & b);
+
 }
 
 #endif

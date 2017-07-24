@@ -62,3 +62,22 @@ Block::Block (RawSubtitle s)
 {
 
 }
+
+bool
+sub::operator== (Subtitle const & a, Subtitle const & b)
+{
+	return a.from == b.from && a.to == b.to && a.fade_up == b.fade_up && a.fade_down == b.fade_down && a.lines == b.lines;
+}
+
+bool
+sub::operator== (Line const & a, Line const & b)
+{
+	return a.horizontal_position == b.horizontal_position && a.vertical_position == b.vertical_position && a.blocks == b.blocks;
+}
+
+bool
+sub::operator== (Block const & a, Block const & b)
+{
+	return a.text == b.text && a.font == b.font && a.font_size == b.font_size && a.effect == b.effect && a.effect_colour == b.effect_colour
+		&& a.colour == b.colour && a.bold == b.bold && a.italic == b.italic && a.underline == b.underline;
+}
