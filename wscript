@@ -80,7 +80,7 @@ def configure(conf):
 			    """,
                    msg='Checking for boost locale library',
                    libpath='/usr/local/lib',
-                   lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
+                   lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix, 'icui18n', 'icuio', 'icule', 'iculx', 'icutu', 'icuuc'],
                    uselib_store='BOOST_LOCALE')
 
     conf.check_cxx(fragment="""
