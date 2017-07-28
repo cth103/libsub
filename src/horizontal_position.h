@@ -27,7 +27,14 @@ namespace sub {
 class HorizontalPosition
 {
 public:
+	HorizontalPosition ()
+		: reference(HORIZONTAL_CENTRE_OF_SCREEN)
+		, proportional(0)
+	{}
+
 	HorizontalReference reference;
+	/** proportion of screen width offset from reference */
+	float proportional;
 
 	bool operator== (HorizontalPosition const & other) const;
 };

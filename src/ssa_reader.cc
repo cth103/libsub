@@ -61,6 +61,7 @@ public:
 		, bold (false)
 		, italic (false)
 		, underline (false)
+		, horizontal_reference (HORIZONTAL_CENTRE_OF_SCREEN)
 		, vertical_reference (BOTTOM_OF_SCREEN)
 		, vertical_margin (0)
 	{}
@@ -71,13 +72,14 @@ public:
 		, bold (false)
 		, italic (false)
 		, underline (false)
+		, horizontal_reference (HORIZONTAL_CENTRE_OF_SCREEN)
 		, vertical_reference (BOTTOM_OF_SCREEN)
 		, vertical_margin (0)
 	{
 		vector<string> keys;
-		split (keys, format_line, is_any_of (","));
+		split (keys, format_line, boost::is_any_of (","));
 		vector<string> style;
-		split (style, style_line, is_any_of (","));
+		split (style, style_line, boost::is_any_of (","));
 
 		SUB_ASSERT (!keys.empty());
 		SUB_ASSERT (!style.empty());
@@ -108,6 +110,17 @@ public:
 				}
 			} else if (keys[i] == "Alignment") {
 				/* These values from libass' source code */
+				switch ((raw_convert<int> (style[i]) - 1) % 3) {
+				case 0:
+					horizontal_reference = LEFT_OF_SCREEN;
+					break;
+				case 1:
+					horizontal_reference = HORIZONTAL_CENTRE_OF_SCREEN;
+					break;
+				case 2:
+					horizontal_reference = RIGHT_OF_SCREEN;
+					break;
+				}
 				switch (raw_convert<int> (style[i]) & 12) {
 				case 4:
 					vertical_reference = TOP_OF_SCREEN;
@@ -135,6 +148,7 @@ public:
 	bool italic;
 	bool underline;
 	optional<Effect> effect;
+	HorizontalReference horizontal_reference;
 	VerticalReference vertical_reference;
 	int vertical_margin;
 
@@ -168,7 +182,7 @@ SSAReader::parse_time (string t) const
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
  */
 list<RawSubtitle>
-SSAReader::parse_line (RawSubtitle base, string line)
+SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_res_y)
 {
 	enum {
 		TEXT,
@@ -257,6 +271,14 @@ SSAReader::parse_line (RawSubtitle base, string line)
 					current.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
 				} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
 					current.vertical_position.reference = sub::TOP_OF_SCREEN;
+				} else if (boost::starts_with(style, "\\pos")) {
+					vector<string> bits;
+					boost::algorithm::split (bits, style, boost::is_any_of("(,"));
+					SUB_ASSERT (bits.size() == 3);
+					current.horizontal_position.reference = sub::LEFT_OF_SCREEN;
+					current.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
+					current.vertical_position.reference = sub::TOP_OF_SCREEN;
+					current.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
 				}
 
 				style = "";
@@ -302,6 +324,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 		EVENTS
 	} part = INFO;
 
+	int play_res_x = 288;
 	int play_res_y = 288;
 	map<string, Style> styles;
 	string style_format_line;
@@ -340,7 +363,9 @@ SSAReader::read (function<optional<string> ()> get_line)
 
 		switch (part) {
 		case INFO:
-			if (type == "PlayResY") {
+			if (type == "PlayResX") {
+				play_res_x = raw_convert<int> (body);
+			} else if (type == "PlayResY") {
 				play_res_y = raw_convert<int> (body);
 			}
 			break;
@@ -399,12 +424,13 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.italic = style.italic;
 						sub.underline = style.underline;
 						sub.effect = style.effect;
+						sub.horizontal_position.reference = style.horizontal_reference;
 						sub.vertical_position.reference = style.vertical_reference;
 						sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
 					} else if (event_format[i] == "MarginV") {
 						sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 					} else if (event_format[i] == "Text") {
-						BOOST_FOREACH (sub::RawSubtitle j, parse_line (sub, event[i])) {
+						BOOST_FOREACH (sub::RawSubtitle j, parse_line (sub, event[i], play_res_x, play_res_y)) {
 							_subs.push_back (j);
 						}
 					}
