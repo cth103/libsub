@@ -268,14 +268,14 @@ sub::write_stl_binary (
 
 		/* Justification code */
 		/* XXX: this assumes the first line has the right value */
-		switch (i->lines.front().horizontal_position) {
-		case LEFT:
+		switch (i->lines.front().horizontal_position.reference) {
+		case LEFT_OF_SCREEN:
 			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
 			break;
-		case CENTRE:
+		case HORIZONTAL_CENTRE_OF_SCREEN:
 			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
 			break;
-		case RIGHT:
+		case RIGHT_OF_SCREEN:
 			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
 			break;
 		}

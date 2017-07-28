@@ -17,6 +17,7 @@ def build(bld):
                  effect.cc
                  exceptions.cc
                  font_size.cc
+                 horizontal_position.cc
                  iso6937.cc
                  iso6937_tables.cc
                  rational.cc
@@ -45,6 +46,7 @@ def build(bld):
               exceptions.h
               font_size.h
               horizontal_position.h
+              horizontal_reference.h
               rational.h
               raw_subtitle.h
               reader.h

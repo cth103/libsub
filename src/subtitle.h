@@ -78,8 +78,9 @@ class Line
 {
 public:
 	Line ()
-		: horizontal_position (CENTRE)
-	{}
+	{
+		horizontal_position.reference = HORIZONTAL_CENTRE_OF_SCREEN;
+	}
 
 	/** Construct a Line taking any relevant information from a RawSubtitle */
 	Line (RawSubtitle s);

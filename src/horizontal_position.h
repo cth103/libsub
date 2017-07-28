@@ -20,15 +20,18 @@
 #ifndef LIBSUB_HORIZONTAL_POSITION_H
 #define LIBSUB_HORIZONTAL_POSITION_H
 
+#include "horizontal_reference.h"
+
 namespace sub {
 
-enum HorizontalPosition
+class HorizontalPosition
 {
-	LEFT,
-	CENTRE,
-	RIGHT
+public:
+	HorizontalReference reference;
+
+	bool operator== (HorizontalPosition const & other) const;
 };
-	
+
 }
 
 #endif

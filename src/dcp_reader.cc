@@ -97,13 +97,13 @@ DCPReader::DCPReader (boost::filesystem::path file)
 
 		switch (i.h_align()) {
 		case dcp::HALIGN_LEFT:
-			rs.horizontal_position = LEFT;
+			rs.horizontal_position.reference = LEFT_OF_SCREEN;
 			break;
 		case dcp::HALIGN_CENTER:
-			rs.horizontal_position = CENTRE;
+			rs.horizontal_position.reference = HORIZONTAL_CENTRE_OF_SCREEN;
 			break;
 		case dcp::HALIGN_RIGHT:
-			rs.horizontal_position = RIGHT;
+			rs.horizontal_position.reference = RIGHT_OF_SCREEN;
 			break;
 		}
 

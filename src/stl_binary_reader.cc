@@ -115,13 +115,13 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			switch (h) {
 			case 0:
 			case 2:
-				sub.horizontal_position = CENTRE;
+				sub.horizontal_position.reference = HORIZONTAL_CENTRE_OF_SCREEN;
 				break;
 			case 1:
-				sub.horizontal_position = LEFT;
+				sub.horizontal_position.reference = LEFT_OF_SCREEN;
 				break;
 			case 3:
-				sub.horizontal_position = RIGHT;
+				sub.horizontal_position.reference = RIGHT_OF_SCREEN;
 				break;
 			}
 
