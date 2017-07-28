@@ -30,7 +30,7 @@ sub::string_to_vertical_reference (string s)
 	if (s == "top") {
 		return TOP_OF_SCREEN;
 	} else if (s == "center") {
-		return CENTRE_OF_SCREEN;
+		return VERTICAL_CENTRE_OF_SCREEN;
 	} else if (s == "bottom") {
 		return BOTTOM_OF_SCREEN;
 	}

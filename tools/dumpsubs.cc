@@ -102,7 +102,7 @@ main (int argc, char* argv[])
 				case TOP_OF_SCREEN:
 					cout << "top";
 					break;
-				case CENTRE_OF_SCREEN:
+				case VERTICAL_CENTRE_OF_SCREEN:
 					cout << "centre";
 					break;
 				case BOTTOM_OF_SCREEN:

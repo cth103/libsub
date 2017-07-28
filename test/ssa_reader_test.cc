@@ -224,17 +224,17 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 260), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::CENTRE_OF_SCREEN);
+	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN);
 	BLOCK("middle left", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 270), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::CENTRE_OF_SCREEN);
+	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN);
 	BLOCK("middle centre", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 280), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::CENTRE_OF_SCREEN);
+	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN);
 	BLOCK("middle right", "Arial", 20, false, false, false);
 	SUB_END ();
 

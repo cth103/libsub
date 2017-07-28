@@ -34,7 +34,7 @@ VerticalPosition::fraction_from_screen_top () const
 	switch (reference.get ()) {
 	case TOP_OF_SCREEN:
 		return prop;
-	case CENTRE_OF_SCREEN:
+	case VERTICAL_CENTRE_OF_SCREEN:
 		return prop + 0.5;
 	case BOTTOM_OF_SCREEN:
 		return 1 - prop;

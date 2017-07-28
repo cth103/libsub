@@ -29,7 +29,7 @@ enum VerticalReference
 	/** distance is from the top of the screen, positive moves down */
 	TOP_OF_SCREEN,
 	/** distance is from the centre of the screen, positive moves down */
-	CENTRE_OF_SCREEN,
+	VERTICAL_CENTRE_OF_SCREEN,
 	/** distance is from the bottom of the screen, positive moves up */
 	BOTTOM_OF_SCREEN,
 	/** position on screen is not known, so we are referring

@@ -113,7 +113,7 @@ public:
 					vertical_reference = TOP_OF_SCREEN;
 					break;
 				case 8:
-					vertical_reference = CENTRE_OF_SCREEN;
+					vertical_reference = VERTICAL_CENTRE_OF_SCREEN;
 					break;
 				case 0:
 					vertical_reference = BOTTOM_OF_SCREEN;
@@ -213,7 +213,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 	case TOP_OF_SUBTITLE:
 		/* Nothing to do */
 		break;
-	case CENTRE_OF_SCREEN:
+	case VERTICAL_CENTRE_OF_SCREEN:
 		current.vertical_position.proportional = current.vertical_position.proportional.get() - ((line_breaks + 1) * line_size) / 2;
 		break;
 	case BOTTOM_OF_SCREEN:
@@ -254,7 +254,7 @@ SSAReader::parse_line (RawSubtitle base, string line)
 				} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
 					current.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
 				} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
-					current.vertical_position.reference = sub::CENTRE_OF_SCREEN;
+					current.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
 				} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
 					current.vertical_position.reference = sub::TOP_OF_SCREEN;
 				}

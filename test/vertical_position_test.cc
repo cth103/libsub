@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE (vertical_position_test)
 	a.proportional = 0.7;
 	a.reference = sub::TOP_OF_SCREEN;
 	b.proportional = 0.3;
-	b.reference = sub::CENTRE_OF_SCREEN;
+	b.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
 	BOOST_CHECK (a < b);
 
 	a.proportional = 0.9;

@@ -113,7 +113,7 @@ DCPReader::DCPReader (boost::filesystem::path file)
 			rs.vertical_position.reference = TOP_OF_SCREEN;
 			break;
 		case dcp::VALIGN_CENTER:
-			rs.vertical_position.reference = CENTRE_OF_SCREEN;
+			rs.vertical_position.reference = VERTICAL_CENTRE_OF_SCREEN;
 			break;
 		case dcp::VALIGN_BOTTOM:
 			rs.vertical_position.reference = BOTTOM_OF_SCREEN;

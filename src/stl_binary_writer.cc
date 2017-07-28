@@ -99,7 +99,7 @@ vertical_position (sub::Line const & line)
 		case TOP_OF_SCREEN:
 			vp = rint (line.vertical_position.proportional.get() * ROWS);
 			break;
-		case CENTRE_OF_SCREEN:
+		case VERTICAL_CENTRE_OF_SCREEN:
 			vp = rint (line.vertical_position.proportional.get() * ROWS + (ROWS / 2.0));
 			break;
 		case BOTTOM_OF_SCREEN:
@@ -114,7 +114,7 @@ vertical_position (sub::Line const & line)
 		case TOP_OF_SCREEN:
 			vp = prop * ROWS;
 			break;
-		case CENTRE_OF_SCREEN:
+		case VERTICAL_CENTRE_OF_SCREEN:
 			vp = (prop + 0.5) * ROWS;
 			break;
 		case BOTTOM_OF_SCREEN:
