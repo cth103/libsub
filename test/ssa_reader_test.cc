@@ -450,7 +450,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 }
 
 /** Test \pos */
-BOOST_AUTO_TEST_CASE (ssa_reader_line_pos)
+BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 {
 	boost::filesystem::path p = "test/data/test2.ssa";
 	FILE* f = fopen (p.string().c_str(), "r");
@@ -469,4 +469,26 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_pos)
 	LINE (300.0 / 1080, sub::TOP_OF_SCREEN, 400.0 / 1920, sub::LEFT_OF_SCREEN);
 	BLOCK ("positioning.", "Arial", 20, false, false, false);
 	SUB_END();
+}
+
+/** Test \fs */
+BOOST_AUTO_TEST_CASE (ssa_reader_fs)
+{
+	sub::RawSubtitle base;
+	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+		base,
+		"This is a line with some {\\fs64}font sizing.",
+		1920, 1080
+		);
+
+	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	BOOST_CHECK_EQUAL (i->text, "This is a line with some ");
+	++i;
+	BOOST_REQUIRE (i != r.end ());
+
+	BOOST_CHECK_EQUAL (i->text, "font sizing.");
+	BOOST_CHECK (i->font_size.points());
+	BOOST_CHECK_EQUAL (i->font_size.points().get(), 64);
+	++i;
+	BOOST_REQUIRE (i == r.end ());
 }

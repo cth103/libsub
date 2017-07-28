@@ -279,8 +279,10 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 					current.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
 					current.vertical_position.reference = sub::TOP_OF_SCREEN;
 					current.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
+				} else if (boost::starts_with(style, "\\fs")) {
+					SUB_ASSERT (style.length() > 3);
+					current.font_size.set_points (raw_convert<int>(style.substr(3)));
 				}
-
 				style = "";
 			}
 
