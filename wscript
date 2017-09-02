@@ -78,7 +78,7 @@ def configure(conf):
     locale_libs = ['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix]
     for pkg in subprocess.check_output(['pkg-config', '--list-all']).splitlines():
         if pkg.startswith("icu-"):
-            for lib in subprocess.check_output(['pkg-config', '--libs', pkg.split()[0]]).split():
+            for lib in subprocess.check_output(['pkg-config', '--libs-only-l', pkg.split()[0]]).split():
                 name = lib[2:]
                 if not name in locale_libs:
                     locale_libs.append(name)
