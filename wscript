@@ -74,13 +74,22 @@ def configure(conf):
                    lib=['boost_filesystem%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
                    uselib_store='BOOST_FILESYSTEM')
 
+    # Find the icu- libraries on the system as we need to link to them when we look for boost locale.
+    locale_libs = ['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix]
+    for pkg in subprocess.check_output(['pkg-config', '--list-all']).splitlines():
+        if pkg.startswith("icu-"):
+            for lib in subprocess.check_output(['pkg-config', '--libs', pkg.split()[0]]).split():
+                name = lib[2:]
+                if not name in locale_libs:
+                    locale_libs.append(name)
+
     conf.check_cxx(fragment="""
     			    #include <boost/locale.hpp>\n
     			    int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
 			    """,
                    msg='Checking for boost locale library',
                    libpath='/usr/local/lib',
-                   lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix, 'icuio', 'icule', 'iculx', 'icutu', 'icuuc'],
+                   lib=locale_libs,
                    uselib_store='BOOST_LOCALE')
 
     conf.check_cxx(fragment="""
