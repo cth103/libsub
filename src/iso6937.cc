@@ -112,8 +112,10 @@ sub::utf16_to_iso6937 (wstring s)
 		} else if (s[i] == 0x2010 || s[i] == 0x2011 || s[i] == 0x2012) {
 			/* Similar story with hyphen, non-breaking hyphen, figure dash */
 			o += '-';
+		} else if (s[i] == 0x2032) {
+			/* And prime */
+			o += '\'';
 		}
-
 	}
 
 	return o;

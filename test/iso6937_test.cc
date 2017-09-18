@@ -41,4 +41,5 @@ BOOST_AUTO_TEST_CASE (utf16_to_iso6937_test)
 	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("All must have çedillas")), "All must have \xCB""cedillas");
 	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Mötorhead")), "M\xC8otorhead");
 	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Pass\nnewlines\nthrough")), "Pass\nnewlines\nthrough");
+	BOOST_CHECK_EQUAL (sub::utf16_to_iso6937 (utf_to_utf<wchar_t> ("Ignore prime′s and just use quote's")), "Ignore prime's and just use quote's");
 }
