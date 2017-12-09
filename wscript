@@ -51,10 +51,13 @@ def options(opt):
     opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to cxml and dcp')
     opt.add_option('--target-windows', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package')
     opt.add_option('--disable-tests', action='store_true', default=False, help='disable building of tests')
+    opt.add_option('--force-cpp11', action='store_true', default=False, help='force use of C++11')
 
 def configure(conf):
     conf.load('compiler_cxx')
     conf.env.append_value('CXXFLAGS', ['-Wall', '-Wextra', '-D_FILE_OFFSET_BITS=64', '-D__STDC_FORMAT_MACROS'])
+    if conf.options.force_cpp11:
+        conf.env.append_value('CXXFLAGS', ['-std=c++11', '-DBOOST_NO_CXX11_SCOPED_ENUMS'])
     conf.env.append_value('CXXFLAGS', ['-DLIBSUB_VERSION="%s"' % VERSION])
 
     conf.env.ENABLE_DEBUG = conf.options.enable_debug
@@ -142,13 +145,6 @@ def configure(conf):
 
     if not conf.env.DISABLE_TESTS:
         conf.recurse('test')
-
-    # libxml++ 2.39.1 and later must be built with -std=c++11
-    libxmlpp_version = conf.cmd_and_log(['pkg-config', '--modversion', 'libxml++-2.6'], output=Context.STDOUT, quiet=Context.BOTH)
-    s = libxmlpp_version.split('.')
-    v = (int(s[0]) << 16) | (int(s[1]) << 8) | int(s[2])
-    if v >= 0x022701:
-        conf.env.append_value('CXXFLAGS', '-std=c++11')
 
 def build(bld):
     create_version_cc(bld, VERSION)
