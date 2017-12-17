@@ -119,7 +119,8 @@ def configure(conf):
     # Find the icu- libraries on the system as we need to link to them when we look for boost locale.
     locale_libs = ['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix]
     for pkg in subprocess.check_output(['pkg-config', '--list-all']).splitlines():
-        if pkg.startswith(b"icu"):
+        pkg = pkg.decode('utf-8')
+        if pkg.startswith("icu"):
             for lib in subprocess.check_output(['pkg-config', '--libs-only-l', pkg.split()[0]]).split():
                 name = lib[2:]
                 if not name in locale_libs:
