@@ -124,7 +124,7 @@ def configure(conf):
             for lib in subprocess.check_output(['pkg-config', '--libs-only-l', pkg.split()[0]]).split():
                 name = lib[2:]
                 if not name in locale_libs:
-                    locale_libs.append(name)
+                    locale_libs.append(name.decode('utf-8'))
 
     conf.check_cxx(fragment="""
     			    #include <boost/locale.hpp>\n
