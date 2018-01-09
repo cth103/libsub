@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2018 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,9 @@
 #ifndef LIBSUB_COLOUR_H
 #define LIBSUB_COLOUR_H
 
+#include <dcp/types.h>
 #include <string>
+#include <cmath>
 
 namespace sub {
 
@@ -51,6 +53,10 @@ public:
 	float g;
 	/** blue component (from 0 to 1) */
 	float b;
+
+	dcp::Colour dcp() const {
+		return dcp::Colour(lrintf(r * 255), lrintf(g * 255), lrintf(b * 255));
+	}
 };
 
 bool
