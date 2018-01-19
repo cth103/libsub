@@ -35,11 +35,11 @@ about_equal (float a, float b)
 string
 sub::stl_frame_rate_to_dfc (float r)
 {
-	/* This is the FAB Subtitler mapping, as used by Annotation Edit */
+	/* As requested by TJ in January 2018, and as apparently used by Annotation Edit in recent versions */
 	if (about_equal (r, 23.976)) {
-		return "STL24.01";
-	} else if (about_equal (r, 24)) {
 		return "STL23.01";
+	} else if (about_equal (r, 24)) {
+		return "STL24.01";
 	} else if (about_equal (r, 25)) {
 		return "STL25.01";
 	} else if (about_equal (r, 30)) {
@@ -52,9 +52,9 @@ sub::stl_frame_rate_to_dfc (float r)
 float
 sub::stl_dfc_to_frame_rate (string s)
 {
-	if (s == "STL24.01") {
+	if (s == "STL23.01") {
 		return 23.976;
-	} else if (s == "STL23.01") {
+	} else if (s == "STL24.01") {
 		return 24;
 	} else if (s == "STL25.01") {
 		return 25;
