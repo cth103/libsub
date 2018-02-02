@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-private=../libsub1-test-private
+private=../libsub-test-private
 
 export LD_LIBRARY_PATH=build/src:build/asdcplib/src:/home/c.hetherington/lib:$LD_LIBRARY_PATH
 if [ "$1" == "--debug" ]; then
@@ -10,5 +10,5 @@ elif [ "$1" == "--valgrind" ]; then
     shift
     valgrind --tool="memcheck" build/test/tests $private $*
 else
-    build/test/tests $* -- $private
+    build/test/tests $* $private
 fi
