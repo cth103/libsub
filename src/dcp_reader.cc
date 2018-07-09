@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2017 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2018 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ using std::string;
 using std::exception;
 using boost::shared_ptr;
 using boost::optional;
+using boost::dynamic_pointer_cast;
 using namespace sub;
 
 static Time
@@ -71,13 +72,20 @@ DCPReader::DCPReader (boost::filesystem::path file)
 	}
 
 
-	BOOST_FOREACH (dcp::SubtitleString const & i, sc->subtitles ()) {
-		RawSubtitle rs;
-		rs.text = i.text ();
-		rs.font = i.font ();
-		rs.font_size = FontSize::from_proportional (i.size() / (72.0 * 11.0));
+	BOOST_FOREACH (shared_ptr<dcp::Subtitle> i, sc->subtitles ()) {
 
-		switch (i.effect ()) {
+		/* We don't deal with image subs */
+		shared_ptr<dcp::SubtitleString> is = dynamic_pointer_cast<dcp::SubtitleString>(i);
+		if (!is) {
+			continue;
+		}
+
+		RawSubtitle rs;
+		rs.text = is->text ();
+		rs.font = is->font ();
+		rs.font_size = FontSize::from_proportional (is->size() / (72.0 * 11.0));
+
+		switch (is->effect ()) {
 		case dcp::BORDER:
 			rs.effect = BORDER;
 			break;
@@ -88,14 +96,14 @@ DCPReader::DCPReader (boost::filesystem::path file)
 			break;
 		}
 
-		rs.effect_colour = dcp_to_sub_colour (i.effect_colour());
+		rs.effect_colour = dcp_to_sub_colour (is->effect_colour());
 
-		rs.colour = dcp_to_sub_colour (i.colour());
-		rs.bold = i.bold ();
-		rs.italic = i.italic ();
-		rs.underline = i.underline ();
+		rs.colour = dcp_to_sub_colour (is->colour());
+		rs.bold = is->bold ();
+		rs.italic = is->italic ();
+		rs.underline = is->underline ();
 
-		switch (i.h_align()) {
+		switch (is->h_align()) {
 		case dcp::HALIGN_LEFT:
 			rs.horizontal_position.reference = LEFT_OF_SCREEN;
 			break;
@@ -107,8 +115,8 @@ DCPReader::DCPReader (boost::filesystem::path file)
 			break;
 		}
 
-		rs.vertical_position.proportional = i.v_position();
-		switch (i.v_align()) {
+		rs.vertical_position.proportional = is->v_position();
+		switch (is->v_align()) {
 		case dcp::VALIGN_TOP:
 			rs.vertical_position.reference = TOP_OF_SCREEN;
 			break;
@@ -120,11 +128,11 @@ DCPReader::DCPReader (boost::filesystem::path file)
 			break;
 		}
 
-		rs.from = dcp_to_sub_time (i.in ());
-		rs.to = dcp_to_sub_time (i.out ());
+		rs.from = dcp_to_sub_time (is->in ());
+		rs.to = dcp_to_sub_time (is->out ());
 
-		rs.fade_up = dcp_to_sub_time (i.fade_up_time ());
-		rs.fade_down = dcp_to_sub_time (i.fade_down_time ());
+		rs.fade_up = dcp_to_sub_time (is->fade_up_time ());
+		rs.fade_down = dcp_to_sub_time (is->fade_down_time ());
 
 		_subs.push_back (rs);
 	}
