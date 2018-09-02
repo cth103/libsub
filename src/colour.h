@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/colour.h
+ *  @brief Colour class.
+ */
+
 #ifndef LIBSUB_COLOUR_H
 #define LIBSUB_COLOUR_H
 
