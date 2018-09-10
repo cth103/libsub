@@ -18,6 +18,7 @@
 
 import subprocess
 import os
+import shlex
 from waflib import Context
 
 APPNAME = 'libsub'
