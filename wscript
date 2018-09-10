@@ -1,9 +1,40 @@
+#
+#    Copyright (C) 2012-2018 Carl Hetherington <cth@carlh.net>
+#
+#    This file is part of libsub.
+#
+#    libsub is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    libsub is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with libsub.  If not, see <http://www.gnu.org/licenses/>.
+
 import subprocess
 import os
 from waflib import Context
 
 APPNAME = 'libsub'
-VERSION = '1.3.0devel'
+
+this_version = subprocess.Popen(shlex.split('git tag -l --points-at HEAD'), stdout=subprocess.PIPE).communicate()[0]
+last_version = subprocess.Popen(shlex.split('git describe --tags --abbrev=0'), stdout=subprocess.PIPE).communicate()[0]
+
+if isinstance(this_version, bytes):
+    this_version = this_version.decode('UTF-8')
+if isinstance(last_version, bytes):
+    last_version = last_version.decode('UTF-8')
+
+if this_version == '':
+    VERSION = '%sdevel' % last_version[1:].strip()
+else:
+    VERSION = this_version[1:].strip()
+
 API_VERSION = '-1.0'
 
 try:
