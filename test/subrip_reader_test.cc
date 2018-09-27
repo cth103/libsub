@@ -333,6 +333,23 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
+	r.convert_line ("<Font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	i = r._subs.begin ();
+	BOOST_CHECK_EQUAL (i->text, "some red text ");
+	BOOST_CHECK_EQUAL (i->bold, false);
+	BOOST_CHECK_CLOSE (i->colour.r, 1, 0.1);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK (fabs (i->colour.b) < 0.01);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "in bold");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_CLOSE (i->colour.r, 1, 0.1);
+	BOOST_CHECK (fabs (i->colour.g) < 0.01);
+	BOOST_CHECK (fabs (i->colour.b) < 0.01);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#0000ff\">some blue text <b>in bold</b></font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 2);
 	i = r._subs.begin ();

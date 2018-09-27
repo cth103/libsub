@@ -227,7 +227,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 				tag.clear ();
 				state = TEXT;
 			} else {
-				tag += t[i];
+				tag += tolower (t[i]);
 			}
 			break;
 		}
