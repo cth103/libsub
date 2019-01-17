@@ -21,6 +21,8 @@
 #include "stl_binary_reader.h"
 #include "stl_text_reader.h"
 #include "dcp_reader.h"
+#include "subrip_reader.h"
+#include "sub_assert.h"
 #include <libxml++/libxml++.h>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
@@ -57,6 +59,14 @@ sub::reader_factory (boost::filesystem::path file_name)
 		} else {
 			return shared_ptr<Reader> (new STLTextReader (f));
 		}
+	}
+
+	if (ext == ".srt") {
+		FILE* f = fopen (file_name.string().c_str(), "r");
+		SUB_ASSERT (f);
+		shared_ptr<Reader> r (new SubripReader(f));
+		fclose (f);
+		return r;
 	}
 
 	return shared_ptr<Reader> ();
