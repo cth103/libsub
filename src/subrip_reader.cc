@@ -42,6 +42,7 @@ using boost::lexical_cast;
 using boost::to_upper;
 using boost::optional;
 using boost::function;
+using boost::algorithm::replace_all;
 using namespace sub;
 
 /** @param s Subtitle string encoded in UTF-8 */
@@ -232,6 +233,11 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 			break;
 		}
 	}
+
+	/* Strip Unicode U+202B (right-to-left embedding) as sometimes it is rendered
+	   as a missing character.  This may be a hack.
+	*/
+	replace_all (p.text, "\xe2\x80\xab", "");
 
 	maybe_content (p);
 }

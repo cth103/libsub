@@ -501,3 +501,27 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test3)
 	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
 	SUB_END ();
 }
+
+/** Test reading of a .srt file with RTL text */
+BOOST_AUTO_TEST_CASE (subrip_reader_test4)
+{
+	boost::filesystem::path p = private_test / "rtl.srt";
+	FILE* f = fopen (p.string().c_str(), "r");
+	sub::SubripReader reader (f);
+	fclose (f);
+	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> >(reader.subtitles());
+
+	list<sub::Subtitle>::iterator i = subs.begin ();
+	std::cout << i->lines.front().blocks.front().text << "\n";
+
+	std::string const t = i->lines.front().blocks.front().text;
+	for (size_t i = 0; i < t.length() - 2; ++i) {
+		/* Check that unicode U+202B (right-to-left embedding) has been stripped */
+		unsigned char const a = t[i];
+		unsigned char const b = t[i+1];
+		unsigned char const c = t[i+2];
+		BOOST_CHECK ((a != 0xe2 || b != 0x80 || c != 0xab));
+	}
+
+	BOOST_CHECK (t == "- \"(دريه فابينار)\"");
+}
