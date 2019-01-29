@@ -20,6 +20,7 @@
 #include "subrip_reader.h"
 #include "subtitle.h"
 #include "test.h"
+#include "exceptions.h"
 #include "collect.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
@@ -389,6 +390,20 @@ test (boost::filesystem::path p)
 	fclose (f);
 }
 
+static void
+test_throw (boost::filesystem::path p)
+{
+	p = private_test / p;
+	FILE* f = fopen (p.string().c_str(), "r");
+	BOOST_CHECK (f);
+	if (!f) {
+		cerr << p << " not found.\n";
+		return;
+	}
+	BOOST_CHECK_THROW (sub::SubripReader r(f), sub::SubripError);
+	fclose (f);
+}
+
 /** Test of reading some typical .srt files */
 BOOST_AUTO_TEST_CASE (subrip_read_test)
 {
@@ -397,6 +412,7 @@ BOOST_AUTO_TEST_CASE (subrip_read_test)
 	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
 	test ("EU13.srt");
 	test ("Subtitulos_HURTO_eng.srt");
+	test_throw ("subtitulo1.srt");
 }
 
 #define SUB_START(f, t) \

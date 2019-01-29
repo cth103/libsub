@@ -156,6 +156,9 @@ SubripReader::convert_time (string t)
 
 	vector<string> b;
 	boost::algorithm::split (b, a[2], boost::is_any_of (","));
+	if (b.size() != 2) {
+		throw SubripError (t, "time in the format h:m:s,ms", _context);
+	}
 
 	return Time::from_hms (
 		lexical_cast<int> (a[0]),
