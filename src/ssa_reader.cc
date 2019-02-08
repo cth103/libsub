@@ -212,7 +212,7 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 
 	/* Count the number of line breaks */
 	int line_breaks = 0;
-	if (line.length() > 1) {
+	if (line.length() > 0) {
 		for (size_t i = 0; i < line.length() - 1; ++i) {
 			if (line[i] == '\\' && (line[i+1] == 'n' || line[i+1] == 'N')) {
 				++line_breaks;
