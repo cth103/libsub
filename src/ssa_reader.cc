@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2016-2019 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #include "sub_assert.h"
 #include "raw_convert.h"
 #include "subtitle.h"
-#include <locked_sstream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
@@ -40,10 +39,9 @@ using namespace boost::algorithm;
 using namespace sub;
 
 /** @param s Subtitle string encoded in UTF-8 */
-SSAReader::SSAReader (string const & s)
+SSAReader::SSAReader (string s)
 {
-	locked_stringstream str (s);
-	this->read (boost::bind (&get_line_stringstream, &str));
+	this->read (boost::bind(&get_line_string, &s));
 }
 
 /** @param f Subtitle file encoded in UTF-8 */

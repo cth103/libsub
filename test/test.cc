@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2019 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE libsub_test
-#include <locked_sstream.h>
+#include "iso6937_tables.h"
+#include "compose.hpp"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
 #include <iostream>
-#include "iso6937_tables.h"
 
 using std::string;
 using std::cerr;
@@ -106,12 +106,10 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 		BOOST_CHECK_EQUAL (r, this_time);
 
 		for (uintmax_t i = 0; i < this_time; ++i) {
-			locked_stringstream s;
-			s << "Files differ at offset " << (offset + i)
-			  << "; reference is " << hex << ((int) ref_buffer[i])
-			  << ", check is " << hex << ((int) check_buffer[i]);
-
-			BOOST_CHECK_MESSAGE (ref_buffer[i] == check_buffer[i], s.str ());
+			string const s = String::compose (
+				"Files differ at offset %1; reference is %2, check is %3", (offset + i), ((int) ref_buffer[i]), ((int) check_buffer[i])
+				);
+			BOOST_CHECK_MESSAGE (ref_buffer[i] == check_buffer[i], s);
 		}
 
 		offset += this_time;

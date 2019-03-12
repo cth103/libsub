@@ -39,7 +39,7 @@ class SSAReader : public Reader
 {
 public:
 	SSAReader (FILE* f);
-	SSAReader (std::string const & subs);
+	SSAReader (std::string subs);
 
 	static std::list<RawSubtitle> parse_line (RawSubtitle base, std::string line, int play_res_x, int play_res_y);
 

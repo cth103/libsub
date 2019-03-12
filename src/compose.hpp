@@ -1,4 +1,5 @@
-/* Defines String::compose(fmt, arg...) for easy, i18n-friendly
+/* -*- c-basic-offset: 2 -*-
+ * Defines String::compose(fmt, arg...) for easy, i18n-friendly
  * composition of strings.
  *
  * Version 1.0.
@@ -33,10 +34,13 @@
 #ifndef STRING_COMPOSE_H
 #define STRING_COMPOSE_H
 
-#include <locked_sstream.h>
+#include "locale_convert.h"
+#include <boost/filesystem.hpp>
 #include <string>
 #include <list>
-#include <map>			// for multimap
+#include <map>
+#include <inttypes.h>
+#include <cstdio>
 
 namespace StringPrivate
 {
@@ -56,7 +60,7 @@ namespace StringPrivate
     std::string str() const;
 
   private:
-    locked_stringstream os;
+    std::string os;
     int arg_no;
 
     // we store the output as a list - when the output string is requested, the
@@ -110,26 +114,21 @@ namespace StringPrivate
     }
   }
 
-
   // implementation of class Composition
   template <typename T>
   inline Composition &Composition::arg(const T &obj)
   {
-    os << obj;
+    os += sub::locale_convert<std::string>(obj);
 
-    std::string rep = os.str();
-
-    if (!rep.empty()) {		// manipulators don't produce output
-      for (specification_map::const_iterator i = specs.lower_bound(arg_no),
-	     end = specs.upper_bound(arg_no); i != end; ++i) {
+    if (!os.empty()) {		// manipulators don't produce output
+      for (specification_map::const_iterator i = specs.lower_bound(arg_no), end = specs.upper_bound(arg_no); i != end; ++i) {
 	output_list::iterator pos = i->second;
 	++pos;
 
-	output.insert(pos, rep);
+	output.insert(pos, os);
       }
 
-      os.str(std::string());
-      //os.clear();
+      os = "";
       ++arg_no;
     }
 

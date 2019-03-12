@@ -20,7 +20,9 @@ def build(bld):
                  horizontal_position.cc
                  iso6937.cc
                  iso6937_tables.cc
+                 locale_convert.cc
                  rational.cc
+                 raw_convert.cc
                  raw_subtitle.cc
                  reader.cc
                  reader_factory.cc

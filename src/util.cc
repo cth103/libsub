@@ -18,7 +18,6 @@
 */
 
 #include "util.h"
-#include <locked_sstream.h>
 #include <string>
 #include <iostream>
 #include <cstdio>
@@ -43,15 +42,22 @@ sub::empty_or_white_space (string s)
 }
 
 optional<string>
-sub::get_line_stringstream (locked_stringstream* str)
+sub::get_line_string (string* s)
 {
-	if (!str->good ()) {
-		return optional<string> ();
+	if (s->length() == 0) {
+		return optional<string>();
 	}
 
-	string s;
-	getline (*str, s);
-	return s;
+	size_t pos = s->find ("\n");
+	if (pos == string::npos) {
+		string const c = *s;
+		*s = "";
+		return c;
+	}
+
+	string const c = s->substr (0, pos);
+	s->erase (0, pos + 1);
+	return c;
 }
 
 optional<string>

@@ -24,7 +24,6 @@
 #include "subrip_reader.h"
 #include "exceptions.h"
 #include "util.h"
-#include <locked_sstream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -46,10 +45,9 @@ using boost::algorithm::replace_all;
 using namespace sub;
 
 /** @param s Subtitle string encoded in UTF-8 */
-SubripReader::SubripReader (string const & s)
+SubripReader::SubripReader (string s)
 {
-	locked_stringstream str (s);
-	this->read (boost::bind (&get_line_stringstream, &str));
+	this->read (boost::bind(&get_line_string, &s));
 }
 
 /** @param f Subtitle file encoded in UTF-8 */

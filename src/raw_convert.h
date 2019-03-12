@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2019 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,14 +32,23 @@ template <typename P, typename Q>
 P
 raw_convert (Q v, int precision = 16)
 {
-	locked_stringstream s;
-	s.imbue (std::locale::classic ());
-	s << std::setprecision (precision);
-	s << v;
-	P r;
-	s >> r;
-	return r;
+	/* We can't write a generic version of raw_convert; all required
+	   versions must be specialised.
+	*/
+	BOOST_STATIC_ASSERT (sizeof (Q) == 0);
 }
+
+template <>
+int
+raw_convert (std::string v, int);
+
+template <>
+float
+raw_convert (std::string v, int);
+
+template <>
+std::string
+raw_convert (unsigned long v, int);
 
 };
 

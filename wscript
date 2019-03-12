@@ -93,6 +93,11 @@ def configure(conf):
     conf.env.DISABLE_TESTS = conf.options.disable_tests
     conf.env.API_VERSION = API_VERSION
 
+    if conf.options.target_windows:
+        conf.env.append_value('CXXFLAGS', '-DLIBSUB_WINDOWS')
+    else:
+        conf.env.append_value('CXXFLAGS', '-DLIBSUB_POSIX')
+
     if conf.options.enable_debug:
         conf.env.append_value('CXXFLAGS', '-g')
     else:

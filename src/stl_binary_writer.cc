@@ -28,6 +28,7 @@
 #include "compose.hpp"
 #include "sub_assert.h"
 #include <boost/locale.hpp>
+#include <boost/algorithm/string.hpp>
 #include <list>
 #include <cmath>
 #include <fstream>
@@ -70,16 +71,32 @@ put_string (char* p, unsigned int n, string s)
 	memset (p + s.length(), ' ', n - s.length ());
 }
 
+/** @param v Value
+ *  @param n Width to zero-pad v to.
+ */
 static void
 put_int_as_string (char* p, int v, unsigned int n)
 {
-	locked_stringstream s;
-	/* Be careful to ensure we get no thousands separators */
-	s.imbue (std::locale::classic ());
-	s << setw (n) << setfill ('0');
-	s << v;
-	SUB_ASSERT (s.str().length() == n);
-	put_string (p, s.str ());
+	char buffer[64];
+
+	switch (n) {
+	case 2:
+		snprintf (buffer, sizeof(buffer), "%02d", v);
+		break;
+	case 5:
+		snprintf (buffer, sizeof(buffer), "%05d", v);
+		break;
+	default:
+		SUB_ASSERT (false);
+	}
+
+	string s = buffer;
+
+	struct lconv* lc = localeconv ();
+	boost::algorithm::replace_all (s, lc->thousands_sep, "");
+	boost::algorithm::replace_all (s, lc->decimal_point, ".");
+
+	put_string (p, s);
 }
 
 static void
