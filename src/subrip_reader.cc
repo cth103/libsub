@@ -160,12 +160,33 @@ SubripReader::convert_time (string t)
 		throw SubripError (t, "time in the format h:m:s,ms", _context);
 	}
 
-	return Time::from_hms (
-		lexical_cast<int> (a[0]),
-		lexical_cast<int> (a[1]),
-		lexical_cast<int> (b[0]),
-		lexical_cast<int> (b[1])
-		);
+	int h, m, s, ms;
+
+	try {
+		h = lexical_cast<int>(a[0]);
+	} catch (boost::bad_lexical_cast &) {
+		throw SubripError (t, "integer hour value", _context);
+	}
+
+	try {
+		m = lexical_cast<int>(a[1]);
+	} catch (boost::bad_lexical_cast &) {
+		throw SubripError (t, "integer minute value", _context);
+	}
+
+	try {
+		s = lexical_cast<int>(b[0]);
+	} catch (boost::bad_lexical_cast &) {
+		throw SubripError (t, "integer second value", _context);
+	}
+
+	try {
+		ms = lexical_cast<int>(b[1]);
+	} catch (boost::bad_lexical_cast &) {
+		throw SubripError (t, "integer millisecond value", _context);
+	}
+
+	return Time::from_hms (h, m, s, ms);
 }
 
 void
