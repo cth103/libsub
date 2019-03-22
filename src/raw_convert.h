@@ -20,6 +20,7 @@
 #ifndef LIBSUB_RAW_CONVERT_H
 #define LIBSUB_RAW_CONVERT_H
 
+#include <boost/static_assert.hpp>
 #include <iomanip>
 
 namespace sub {
