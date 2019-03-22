@@ -20,7 +20,6 @@
 #ifndef LIBSUB_RAW_CONVERT_H
 #define LIBSUB_RAW_CONVERT_H
 
-#include <locked_sstream.h>
 #include <iomanip>
 
 namespace sub {
