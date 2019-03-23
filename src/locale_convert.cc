@@ -54,6 +54,19 @@ sub::locale_convert (unsigned long int x, int, bool)
 
 template<>
 string
+sub::locale_convert (unsigned long long x, int, bool)
+{
+	char buffer[64];
+#ifdef LIBSUB_WINDOWS
+	__mingw_snprintf (buffer, sizeof(buffer), "%lld", x);
+#else
+	snprintf (buffer, sizeof(buffer), "%lld", x);
+#endif
+	return buffer;
+}
+
+template<>
+string
 sub::locale_convert (string x, int, bool)
 {
 	return x;

@@ -46,6 +46,10 @@ locale_convert (unsigned long int x, int, bool);
 
 template <>
 std::string
+locale_convert (unsigned long long x, int, bool);
+
+template <>
+std::string
 locale_convert (std::string x, int, bool);
 
 template <>
