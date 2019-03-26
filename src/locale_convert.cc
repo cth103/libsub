@@ -18,6 +18,7 @@
 */
 
 #include "locale_convert.h"
+#include <cstdio>
 
 using std::string;
 
