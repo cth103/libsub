@@ -65,6 +65,14 @@ private:
 	std::list<std::string> _context;
 };
 
+class SSAError : public std::runtime_error
+{
+public:
+	SSAError (std::string message)
+		: std::runtime_error(message)
+	{}
+};
+
 class MXFError : public std::runtime_error
 {
 public:

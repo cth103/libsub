@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2016-2019 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "ssa_reader.h"
 #include "collect.h"
 #include "subtitle.h"
+#include "exceptions.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -493,4 +494,35 @@ BOOST_AUTO_TEST_CASE (ssa_reader_fs)
 	BOOST_CHECK_EQUAL (i->font_size.points().get(), 64);
 	++i;
 	BOOST_REQUIRE (i == r.end ());
+}
+
+/** Test a valid \c */
+BOOST_AUTO_TEST_CASE (ssa_reader_c)
+{
+	sub::RawSubtitle base;
+	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+		base,
+		"{\\c&H00FFFF&}Dieser Untertitel ist gelb",
+		1920, 1080
+		);
+
+	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	BOOST_CHECK_EQUAL (i->text, "Dieser Untertitel ist gelb");
+	BOOST_CHECK (i->colour == sub::Colour::from_rgb_hex("ffff00"));
+	++i;
+	BOOST_REQUIRE (i == r.end ());
+}
+
+/** Test invalid \c */
+BOOST_AUTO_TEST_CASE (ssa_reader_c_bad)
+{
+	sub::RawSubtitle base;
+	BOOST_CHECK_THROW(
+		sub::SSAReader::parse_line(
+			base,
+			"{\\c&H0}Dieser Untertitel ist gelb",
+			1920, 1080
+			),
+		sub::SSAError
+		);
 }
