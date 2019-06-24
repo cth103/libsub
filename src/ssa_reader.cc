@@ -22,6 +22,7 @@
 #include "sub_assert.h"
 #include "raw_convert.h"
 #include "subtitle.h"
+#include "compose.hpp"
 #include <locked_sstream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
@@ -284,6 +285,16 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 				} else if (boost::starts_with(style, "\\fs")) {
 					SUB_ASSERT (style.length() > 3);
 					current.font_size.set_points (raw_convert<int>(style.substr(3)));
+				} else if (boost::starts_with(style, "\\c")) {
+					/* \c&Hbbggrr& */
+					if (style.length() != 11 || style[2] != '&' || style[3] != 'H' || style[10] != '&') {
+						throw SSAError(String::compose("Badly formatted colour tag %1", style));
+					}
+					int ir, ig, ib;
+					if (sscanf(style.c_str() + 4, "%2x%2x%2x", &ib, &ig, &ir) < 3) {
+						throw SSAError(String::compose("Badly formatted colour tag %1", style));
+					}
+					current.colour = sub::Colour(ir / 255.0, ig / 255.0, ib / 255.0);
 				}
 				style = "";
 			}
