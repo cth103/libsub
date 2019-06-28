@@ -29,6 +29,7 @@
 #include <boost/foreach.hpp>
 #include <iostream>
 #include <vector>
+#include <cstdio>
 
 using std::string;
 using std::vector;
