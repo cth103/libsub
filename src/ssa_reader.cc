@@ -51,6 +51,22 @@ SSAReader::SSAReader (FILE* f)
 	this->read (boost::bind (&get_line_file, f));
 }
 
+Colour
+h_colour (string s)
+{
+	/* There are both BGR and ABGR versions of these colours */
+	if ((s.length() != 8 && s.length() != 10) || s[0] != '&' || s[1] != 'H') {
+		throw SSAError(String::compose("Badly formatted colour tag %1", s));
+	}
+	int ir, ig, ib;
+	/* XXX: ignoring alpha channel here; note that 00 is opaque and FF is transparent */
+	int const off = s.length() == 10 ? 4 : 2;
+	if (sscanf(s.c_str() + off, "%2x%2x%2x", &ib, &ig, &ir) < 3) {
+		throw SSAError(String::compose("Badly formatted colour tag %1", s));
+	}
+	return sub::Colour(ir / 255.0, ig / 255.0, ib / 255.0);
+}
+
 class Style
 {
 public:
@@ -94,9 +110,9 @@ public:
 			} else if (keys[i] == "Fontsize") {
 				font_size = raw_convert<int> (style[i]);
 			} else if (keys[i] == "PrimaryColour") {
-				primary_colour = colour (raw_convert<int> (style[i]));
+				primary_colour = colour (style[i]);
 			} else if (keys[i] == "BackColour") {
-				back_colour = colour (raw_convert<int> (style[i]));
+				back_colour = colour (style[i]);
 			} else if (keys[i] == "Bold") {
 				bold = style[i] == "-1";
 			} else if (keys[i] == "Italic") {
@@ -152,13 +168,20 @@ public:
 	int vertical_margin;
 
 private:
-	Colour colour (int c) const
+	Colour colour (string c) const
 	{
-		return Colour (
-			((c & 0x0000ff) >>  0) / 255.0,
-			((c & 0x00ff00) >>  8) / 255.0,
-			((c & 0xff0000) >> 16) / 255.0
-			);
+		if (c.length() > 0 && c[0] == '&') {
+			/* &Hbbggrr or &Haabbggrr */
+			return h_colour (c);
+		} else {
+			/* integer */
+			int i = raw_convert<int>(c);
+			return Colour (
+				((i & 0x0000ff) >>  0) / 255.0,
+				((i & 0x00ff00) >>  8) / 255.0,
+				((i & 0xff0000) >> 16) / 255.0
+				);
+		}
 	}
 };
 
@@ -285,14 +308,10 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 					current.font_size.set_points (raw_convert<int>(style.substr(3)));
 				} else if (boost::starts_with(style, "\\c")) {
 					/* \c&Hbbggrr& */
-					if (style.length() != 11 || style[2] != '&' || style[3] != 'H' || style[10] != '&') {
+					if (style.length() <= 2) {
 						throw SSAError(String::compose("Badly formatted colour tag %1", style));
 					}
-					int ir, ig, ib;
-					if (sscanf(style.c_str() + 4, "%2x%2x%2x", &ib, &ig, &ir) < 3) {
-						throw SSAError(String::compose("Badly formatted colour tag %1", style));
-					}
-					current.colour = sub::Colour(ir / 255.0, ig / 255.0, ib / 255.0);
+					current.colour = h_colour (style.substr(2, style.length() - 3));
 				}
 				style = "";
 			}
