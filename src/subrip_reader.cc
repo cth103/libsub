@@ -25,6 +25,7 @@
 #include "exceptions.h"
 #include "util.h"
 #include "sub_assert.h"
+#include "raw_convert.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -237,13 +238,28 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					p.underline = false;
 				} else if (boost::starts_with (tag, "font")) {
 					maybe_content (p);
-					boost::regex re (".*color=\"#([0123456789abcdef]+)\"");
+					boost::regex re (".*color=\"#([[:xdigit:]]+)\"");
 					boost::smatch match;
 					if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
 						p.colour = Colour::from_rgb_hex (match[1]);
 						colours.push_back (p.colour);
 					} else {
-						throw SubripError (tag, "a colour in the format #rrggbb", _context);
+						re = boost::regex (
+							".*color=\"rgba\\("
+							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+							"[[:space:]]*([[:digit:]]+)[[:space:]]*"
+							"\\)\""
+							);
+						if (boost::regex_search (tag, match, re) && match.size() == 5) {
+							p.colour.r = raw_convert<int>(string(match[1])) / 255.0;
+							p.colour.g = raw_convert<int>(string(match[2])) / 255.0;
+							p.colour.b = raw_convert<int>(string(match[3])) / 255.0;
+							colours.push_back (p.colour);
+						} else {
+							throw SubripError (tag, "a colour in the format #rrggbb or rgba(rr,gg,bb,aa)", _context);
+						}
 					}
 				} else if (tag == "/font") {
 					maybe_content (p);

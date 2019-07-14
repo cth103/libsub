@@ -541,3 +541,25 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test4)
 
 	BOOST_CHECK (t == "- \"(دريه فابينار)\"");
 }
+
+/** Test <font color="rgba(255,255,255,255)"> */
+BOOST_AUTO_TEST_CASE (subrip_reader_test5)
+{
+	sub::RawSubtitle rs;
+	sub::SubripReader r;
+	r.convert_line ("<font color=\"rgba(255,128,64,15)\">Foo bar</font>", rs);
+	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
+	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 255.0 / 255, 0.1);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 128.0 / 255, 0.1);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 64.0 / 255, 0.1);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle ();
+	r.convert_line ("<font color=\"rgba(1, 2 , 3, 4)\">Foo bar</font>", rs);
+	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
+	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1.0 / 255, 0.1);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 2.0 / 255, 0.1);
+	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 3.0 / 255, 0.1);
+}

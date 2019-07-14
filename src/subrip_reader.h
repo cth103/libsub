@@ -29,6 +29,7 @@
 
 struct subrip_reader_convert_line_test;
 struct subrip_reader_convert_time_test;
+struct subrip_reader_test5;
 
 namespace sub {
 
@@ -42,6 +43,7 @@ private:
 	/* For tests */
 	friend struct ::subrip_reader_convert_line_test;
 	friend struct ::subrip_reader_convert_time_test;
+	friend struct ::subrip_reader_test5;
 	SubripReader () {}
 
 	Time convert_time (std::string t);
