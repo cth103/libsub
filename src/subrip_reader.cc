@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2019 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "subrip_reader.h"
 #include "exceptions.h"
 #include "util.h"
+#include "sub_assert.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -241,9 +242,12 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
 						p.colour = Colour::from_rgb_hex (match[1]);
 						colours.push_back (p.colour);
+					} else {
+						throw SubripError (tag, "a colour in the format #rrggbb", _context);
 					}
 				} else if (tag == "/font") {
 					maybe_content (p);
+					SUB_ASSERT (!colours.empty());
 					colours.pop_back ();
 					p.colour = colours.back ();
 				}
