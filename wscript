@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2012-2018 Carl Hetherington <cth@carlh.net>
+#    Copyright (C) 2012-2019 Carl Hetherington <cth@carlh.net>
 #
 #    This file is part of libsub.
 #
@@ -108,13 +108,13 @@ def configure(conf):
         conf.env.HAVE_CXML = 1
         conf.env.LIB_CXML = ['glibmm-2.4', 'glib-2.0', 'pcre', 'sigc-2.0', 'rt', 'xml++-2.6', 'xml2', 'pthread', 'lzma', 'dl', 'z']
         conf.env.STLIB_CXML = ['cxml']
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.11', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.13', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.HAVE_DCP = 1
         conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-cth', 'kumu-cth', 'openjp2']
         conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1']
     else:
         conf.check_cfg(package='libcxml', atleast_version='0.16.0', args='--cflags --libs', uselib_store='CXML', mandatory=True)
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.11', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.13', args='--cflags --libs', uselib_store='DCP', mandatory=True)
 
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
@@ -135,8 +135,8 @@ def configure(conf):
                    errmsg='too old\nPlease install boost version 1.45 or higher.')
 
     conf.check_cxx(fragment="""
-    			    #include <boost/filesystem.hpp>\n
-    			    int main() { boost::filesystem::copy_file ("a", "b"); }\n
+                            #include <boost/filesystem.hpp>\n
+                            int main() { boost::filesystem::copy_file ("a", "b"); }\n
 			    """,
                    msg='Checking for boost filesystem library',
                    libpath='/usr/local/lib',
@@ -154,8 +154,8 @@ def configure(conf):
                     locale_libs.append(name.decode('utf-8'))
 
     conf.check_cxx(fragment="""
-    			    #include <boost/locale.hpp>\n
-    			    int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
+                            #include <boost/locale.hpp>\n
+                            int main() { boost::locale::conv::to_utf<char> ("a", "cp850"); }\n
 			    """,
                    msg='Checking for boost locale library',
                    libpath='/usr/local/lib',
@@ -163,8 +163,8 @@ def configure(conf):
                    uselib_store='BOOST_LOCALE')
 
     conf.check_cxx(fragment="""
-    			    #include <boost/regex.hpp>\n
-    			    int main() { boost::regex re ("foo"); }\n
+                            #include <boost/regex.hpp>\n
+                            int main() { boost::regex re ("foo"); }\n
 			    """,
                    msg='Checking for boost regex library',
                    libpath='/usr/local/lib',
