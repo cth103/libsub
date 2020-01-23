@@ -36,7 +36,10 @@ using boost::lexical_cast;
 using boost::algorithm::replace_all;
 using boost::is_any_of;
 using boost::locale::conv::utf_to_utf;
+using boost::shared_ptr;
 using namespace sub;
+
+namespace sub {
 
 class InputReader : public boost::noncopyable
 {
@@ -105,51 +108,83 @@ private:
 	std::istream& _in;
 };
 
+class FILEInputReader : public InputReader
+{
+public:
+	FILEInputReader (FILE* in)
+		: _in (in)
+	{
+
+	}
+
+	void read (int size, string what)
+	{
+		size_t const N = fread (_buffer, 1, size, _in);
+		if (static_cast<int>(N) != size) {
+			throw STLError (String::compose("Could not read %1 block from binary STL file", what));
+		}
+	}
+
+private:
+	FILE* _in;
+};
+
+}
+
 STLBinaryReader::STLBinaryReader (istream& in)
 {
-	StreamInputReader reader (in);
-	reader.read (1024, "GSI");
+	read (shared_ptr<InputReader>(new StreamInputReader(in)));
+}
 
-	code_page_number = atoi (reader.get_string(0, 3).c_str());
-	frame_rate = stl_dfc_to_frame_rate (reader.get_string(3, 8));
-	display_standard = _tables.display_standard_file_to_enum (reader.get_string(11, 1));
-	language_group = _tables.language_group_file_to_enum (reader.get_string(12, 2));
-	language = _tables.language_file_to_enum (reader.get_string(14, 2));
-	original_programme_title = reader.get_string(16, 32);
-	original_episode_title = reader.get_string(48, 32);
-	translated_programme_title = reader.get_string(80, 32);
-	translated_episode_title = reader.get_string(112, 32);
-	translator_name = reader.get_string(144, 32);
-	translator_contact_details = reader.get_string(176, 32);
-	subtitle_list_reference_code = reader.get_string(208, 16);
-	creation_date = reader.get_string(224, 6);
-	revision_date = reader.get_string(230, 6);
-	revision_number = reader.get_string(236, 2);
+STLBinaryReader::STLBinaryReader (FILE* in)
+{
+	read (shared_ptr<InputReader>(new FILEInputReader(in)));
+}
 
-	tti_blocks = atoi (reader.get_string(238, 5).c_str());
-	number_of_subtitles = atoi (reader.get_string(243, 5).c_str());
-	subtitle_groups = atoi (reader.get_string(248, 3).c_str());
-	maximum_characters = atoi (reader.get_string(251, 2).c_str());
-	maximum_rows = atoi (reader.get_string(253, 2).c_str());
-	timecode_status = _tables.timecode_status_file_to_enum (reader.get_string(255, 1));
-	start_of_programme = reader.get_string(256, 8);
-	first_in_cue = reader.get_string(264, 8);
-	disks = atoi (reader.get_string(272, 1).c_str());
-	disk_sequence_number = atoi (reader.get_string(273, 1).c_str());
-	country_of_origin = reader.get_string(274, 3);
-	publisher = reader.get_string(277, 32);
-	editor_name = reader.get_string(309, 32);
-	editor_contact_details = reader.get_string(341, 32);
+void STLBinaryReader::read (shared_ptr<InputReader> reader)
+{
+	reader->read (1024, "GSI");
+
+	code_page_number = atoi (reader->get_string(0, 3).c_str());
+	frame_rate = stl_dfc_to_frame_rate (reader->get_string(3, 8));
+	display_standard = _tables.display_standard_file_to_enum (reader->get_string(11, 1));
+	language_group = _tables.language_group_file_to_enum (reader->get_string(12, 2));
+	language = _tables.language_file_to_enum (reader->get_string(14, 2));
+	original_programme_title = reader->get_string(16, 32);
+	original_episode_title = reader->get_string(48, 32);
+	translated_programme_title = reader->get_string(80, 32);
+	translated_episode_title = reader->get_string(112, 32);
+	translator_name = reader->get_string(144, 32);
+	translator_contact_details = reader->get_string(176, 32);
+	subtitle_list_reference_code = reader->get_string(208, 16);
+	creation_date = reader->get_string(224, 6);
+	revision_date = reader->get_string(230, 6);
+	revision_number = reader->get_string(236, 2);
+
+	tti_blocks = atoi (reader->get_string(238, 5).c_str());
+	number_of_subtitles = atoi (reader->get_string(243, 5).c_str());
+	subtitle_groups = atoi (reader->get_string(248, 3).c_str());
+	maximum_characters = atoi (reader->get_string(251, 2).c_str());
+	maximum_rows = atoi (reader->get_string(253, 2).c_str());
+	timecode_status = _tables.timecode_status_file_to_enum (reader->get_string(255, 1));
+	start_of_programme = reader->get_string(256, 8);
+	first_in_cue = reader->get_string(264, 8);
+	disks = atoi (reader->get_string(272, 1).c_str());
+	disk_sequence_number = atoi (reader->get_string(273, 1).c_str());
+	country_of_origin = reader->get_string(274, 3);
+	publisher = reader->get_string(277, 32);
+	editor_name = reader->get_string(309, 32);
+	editor_contact_details = reader->get_string(341, 32);
 
 	for (int i = 0; i < tti_blocks; ++i) {
 
-		reader.read (128, "TTI");
+		reader->read (128, "TTI");
 
-		if (_tables.comment_file_to_enum (reader.get_int(15, 1)) == COMMENT_YES) {
+		if (_tables.comment_file_to_enum (reader->get_int(15, 1)) == COMMENT_YES) {
 			continue;
 		}
 
-		string const whole = reader.get_string(16, 112);
+		string const whole = reader->get_string(16, 112);
 
 		/* Split the text up into lines (8Ah is a new line) */
 		vector<string> lines;
@@ -163,16 +198,16 @@ STLBinaryReader::STLBinaryReader (istream& in)
 
 		for (size_t i = 0; i < lines.size(); ++i) {
 			RawSubtitle sub;
-			sub.from = reader.get_timecode(5, frame_rate);
-			sub.to = reader.get_timecode(9, frame_rate);
-			sub.vertical_position.line = reader.get_int(13, 1) + i;
+			sub.from = reader->get_timecode(5, frame_rate);
+			sub.to = reader->get_timecode(9, frame_rate);
+			sub.vertical_position.line = reader->get_int(13, 1) + i;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 			sub.italic = italic;
 			sub.underline = underline;
 
 			/* XXX: not sure what to do with JC = 0, "unchanged presentation" */
-			int const h = reader.get_int(14, 1);
+			int const h = reader->get_int(14, 1);
 			switch (h) {
 			case 0:
 			case 2:
