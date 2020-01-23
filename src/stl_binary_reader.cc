@@ -166,6 +166,17 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 	subtitle_groups = atoi (reader->get_string(248, 3).c_str());
 	maximum_characters = atoi (reader->get_string(251, 2).c_str());
 	maximum_rows = atoi (reader->get_string(253, 2).c_str());
+
+	if (maximum_rows == 99) {
+		/* https://tech.ebu.ch/docs/tech/tech3360.pdf says
+		   "It is recommended that for files with a large MNR value (e.g. '99') the
+		   font size (height) should be defined as ~ 1/15 of the 'Subtitle Safe Area'
+		   and a lineHeight of 120% is used to achieve a row height of ~ 1/12 of the height
+		   of the 'Subtitle Safe Area'.
+		*/
+		maximum_rows = 12;
+	}
+
 	timecode_status = _tables.timecode_status_file_to_enum (reader->get_string(255, 1));
 	start_of_programme = reader->get_string(256, 8);
 	first_in_cue = reader->get_string(264, 8);
