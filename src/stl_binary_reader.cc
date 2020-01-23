@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,57 +38,105 @@ using boost::is_any_of;
 using boost::locale::conv::utf_to_utf;
 using namespace sub;
 
-STLBinaryReader::STLBinaryReader (istream& in)
-	: _buffer (new unsigned char[1024])
+class InputReader : public boost::noncopyable
 {
-	in.read ((char *) _buffer, 1024);
-	if (in.gcount() != 1024) {
-		throw STLError ("Could not read GSI block from binary STL file");
+public:
+	InputReader (istream& in)
+		: _in (in)
+		, _buffer (new unsigned char[1024])
+	{
+
 	}
 
-	code_page_number = atoi (get_string (0, 3).c_str ());
-	frame_rate = stl_dfc_to_frame_rate (get_string (3, 8));
-	display_standard = _tables.display_standard_file_to_enum (get_string (11, 1));
-	language_group = _tables.language_group_file_to_enum (get_string (12, 2));
-	language = _tables.language_file_to_enum (get_string (14, 2));
-	original_programme_title = get_string (16, 32);
-	original_episode_title = get_string (48, 32);
-	translated_programme_title = get_string (80, 32);
-	translated_episode_title = get_string (112, 32);
-	translator_name = get_string (144, 32);
-	translator_contact_details = get_string (176, 32);
-	subtitle_list_reference_code = get_string (208, 16);
-	creation_date = get_string (224, 6);
-	revision_date = get_string (230, 6);
-	revision_number = get_string (236, 2);
+	~InputReader ()
+	{
+		delete[] _buffer;
+	}
 
-	tti_blocks = atoi (get_string (238, 5).c_str ());
-	number_of_subtitles = atoi (get_string (243, 5).c_str ());
-	subtitle_groups = atoi (get_string (248, 3).c_str ());
-	maximum_characters = atoi (get_string (251, 2).c_str ());
-	maximum_rows = atoi (get_string (253, 2).c_str ());
-	timecode_status = _tables.timecode_status_file_to_enum (get_string (255, 1));
-	start_of_programme = get_string (256, 8);
-	first_in_cue = get_string (264, 8);
-	disks = atoi (get_string (272, 1).c_str ());
-	disk_sequence_number = atoi (get_string (273, 1).c_str ());
-	country_of_origin = get_string (274, 3);
-	publisher = get_string (277, 32);
-	editor_name = get_string (309, 32);
-	editor_contact_details = get_string (341, 32);
+
+	void read (int size, string what)
+	{
+		_in.read (reinterpret_cast<char *>(_buffer), size);
+		if (_in.gcount() != size) {
+			throw STLError (String::compose("Could not read %1 block from binary STL file", what));
+		}
+	}
+
+	string get_string (int offset, int length) const
+	{
+		string s;
+		for (int i = 0; i < length; ++i) {
+			s += _buffer[offset + i];
+		}
+
+		return s;
+	}
+
+	int get_int (int offset, int length) const
+	{
+		int v = 0;
+		for (int i = 0; i < length; ++i) {
+			v |= _buffer[offset + i] << (8 * i);
+		}
+
+		return v;
+	}
+
+	Time get_timecode (int offset, int frame_rate) const
+	{
+		return Time::from_hmsf (_buffer[offset], _buffer[offset + 1], _buffer[offset + 2], _buffer[offset + 3], Rational (frame_rate, 1));
+	}
+
+private:
+	std::istream& _in;
+	unsigned char* _buffer;
+};
+
+STLBinaryReader::STLBinaryReader (istream& in)
+{
+	InputReader reader (in);
+	reader.read (1024, "GSI");
+
+	code_page_number = atoi (reader.get_string(0, 3).c_str());
+	frame_rate = stl_dfc_to_frame_rate (reader.get_string(3, 8));
+	display_standard = _tables.display_standard_file_to_enum (reader.get_string(11, 1));
+	language_group = _tables.language_group_file_to_enum (reader.get_string(12, 2));
+	language = _tables.language_file_to_enum (reader.get_string(14, 2));
+	original_programme_title = reader.get_string(16, 32);
+	original_episode_title = reader.get_string(48, 32);
+	translated_programme_title = reader.get_string(80, 32);
+	translated_episode_title = reader.get_string(112, 32);
+	translator_name = reader.get_string(144, 32);
+	translator_contact_details = reader.get_string(176, 32);
+	subtitle_list_reference_code = reader.get_string(208, 16);
+	creation_date = reader.get_string(224, 6);
+	revision_date = reader.get_string(230, 6);
+	revision_number = reader.get_string(236, 2);
+
+	tti_blocks = atoi (reader.get_string(238, 5).c_str());
+	number_of_subtitles = atoi (reader.get_string(243, 5).c_str());
+	subtitle_groups = atoi (reader.get_string(248, 3).c_str());
+	maximum_characters = atoi (reader.get_string(251, 2).c_str());
+	maximum_rows = atoi (reader.get_string(253, 2).c_str());
+	timecode_status = _tables.timecode_status_file_to_enum (reader.get_string(255, 1));
+	start_of_programme = reader.get_string(256, 8);
+	first_in_cue = reader.get_string(264, 8);
+	disks = atoi (reader.get_string(272, 1).c_str());
+	disk_sequence_number = atoi (reader.get_string(273, 1).c_str());
+	country_of_origin = reader.get_string(274, 3);
+	publisher = reader.get_string(277, 32);
+	editor_name = reader.get_string(309, 32);
+	editor_contact_details = reader.get_string(341, 32);
 
 	for (int i = 0; i < tti_blocks; ++i) {
 
-		in.read ((char *) _buffer, 128);
-		if (in.gcount() != 128) {
-			throw STLError ("Could not read TTI block from binary STL file");
-		}
+		reader.read (128, "TTI");
 
-		if (_tables.comment_file_to_enum (get_int (15, 1)) == COMMENT_YES) {
+		if (_tables.comment_file_to_enum (reader.get_int(15, 1)) == COMMENT_YES) {
 			continue;
 		}
 
-		string const whole = get_string (16, 112);
+		string const whole = reader.get_string(16, 112);
 
 		/* Split the text up into lines (8Ah is a new line) */
 		vector<string> lines;
@@ -102,16 +150,16 @@ STLBinaryReader::STLBinaryReader (istream& in)
 
 		for (size_t i = 0; i < lines.size(); ++i) {
 			RawSubtitle sub;
-			sub.from = get_timecode (5);
-			sub.to = get_timecode (9);
-			sub.vertical_position.line = get_int (13, 1) + i;
+			sub.from = reader.get_timecode(5, frame_rate);
+			sub.to = reader.get_timecode(9, frame_rate);
+			sub.vertical_position.line = reader.get_int(13, 1) + i;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 			sub.italic = italic;
 			sub.underline = underline;
 
 			/* XXX: not sure what to do with JC = 0, "unchanged presentation" */
-			int const h = get_int (14, 1);
+			int const h = reader.get_int(14, 1);
 			switch (h) {
 			case 0:
 			case 2:
@@ -173,39 +221,6 @@ STLBinaryReader::STLBinaryReader (istream& in)
 			/* XXX: justification */
 		}
 	}
-}
-
-STLBinaryReader::~STLBinaryReader ()
-{
-	delete[] _buffer;
-}
-
-string
-STLBinaryReader::get_string (int offset, int length) const
-{
-	string s;
-	for (int i = 0; i < length; ++i) {
-		s += _buffer[offset + i];
-	}
-
-	return s;
-}
-
-int
-STLBinaryReader::get_int (int offset, int length) const
-{
-	int v = 0;
-	for (int i = 0; i < length; ++i) {
-		v |= _buffer[offset + i] << (8 * i);
-	}
-
-	return v;
-}
-
-Time
-STLBinaryReader::get_timecode (int offset) const
-{
-	return Time::from_hmsf (_buffer[offset], _buffer[offset + 1], _buffer[offset + 2], _buffer[offset + 3], Rational (frame_rate, 1));
 }
 
 map<string, string>
