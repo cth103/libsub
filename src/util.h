@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,9 +28,13 @@ class locked_stringstream;
 
 namespace sub {
 
+class Reader;
+
 extern bool empty_or_white_space (std::string s);
 extern void remove_unicode_bom (boost::optional<std::string>& line);
 extern boost::optional<std::string> get_line_stringstream (locked_stringstream* str);
 extern boost::optional<std::string> get_line_file (FILE* f);
+extern boost::optional<std::string> get_line_string (std::string* s);
+extern void dump (boost::shared_ptr<const Reader> read, std::ostream& os);
 
 }

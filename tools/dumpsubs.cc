@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include "reader_factory.h"
 #include "reader.h"
 #include "collect.h"
+#include "util.h"
 #include <getopt.h>
 #include <boost/filesystem.hpp>
 #include <map>
@@ -78,74 +79,7 @@ main (int argc, char* argv[])
 		exit (EXIT_FAILURE);
 	}
 
-	map<string, string> metadata = reader->metadata ();
-	for (map<string, string>::const_iterator i = metadata.begin(); i != metadata.end(); ++i) {
-		cout << i->first << ": " << i->second << "\n";
-	}
-
-	list<sub::Subtitle> subs = collect<list<sub::Subtitle> > (reader->subtitles ());
-	int n = 0;
-	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
-		cout << "Subtitle " << n << " at " << i->from << " -> " << i->to << "\n";
-		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
-
-			cout << "\t";
-
-			if (j->vertical_position.proportional) {
-				cout << j->vertical_position.proportional.get() << " of screen";
-			} else if (j->vertical_position.line && j->vertical_position.lines) {
-				cout << j->vertical_position.line.get() << " lines of " << j->vertical_position.lines.get();
-			}
-			if (j->vertical_position.reference) {
-				cout << " from ";
-				switch (j->vertical_position.reference.get()) {
-				case TOP_OF_SCREEN:
-					cout << "top";
-					break;
-				case VERTICAL_CENTRE_OF_SCREEN:
-					cout << "centre";
-					break;
-				case BOTTOM_OF_SCREEN:
-					cout << "bottom";
-					break;
-				case TOP_OF_SUBTITLE:
-					cout << "top of subtitle";
-					break;
-				}
-			}
-
-			cout << "\t";
-			bool italic = false;
-			bool underline = false;
-			for (list<sub::Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
-				if (k->italic && !italic) {
-					cout << "<i>";
-				} else if (italic && !k->italic) {
-					cout << "</i>";
-				}
-				if (k->underline && !underline) {
-					cout << "<u>";
-				} else if (underline && !k->underline) {
-					cout << "</u>";
-				}
-
-				italic = k->italic;
-				underline = k->underline;
-
-				cout << k->text;
-			}
-
-			if (italic) {
-				cout << "</i>";
-			}
-			if (underline) {
-				cout << "</u>";
-			}
-			cout << "\n";
-		}
-
-		++n;
-	}
+	sub::dump (reader, cout);
 
 	return 0;
 }

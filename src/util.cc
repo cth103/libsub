@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,23 @@
 
 #include "util.h"
 #include <locked_sstream.h>
+#include "reader.h"
+#include "subtitle.h"
+#include "collect.h"
+#include <boost/shared_ptr.hpp>
 #include <string>
 #include <iostream>
 #include <cstdio>
+#include <map>
 
 using std::string;
 using std::getline;
+using std::ostream;
+using std::map;
+using std::list;
 using boost::optional;
+using boost::shared_ptr;
+using namespace sub;
 
 /** @param s A string.
  *  @return true if the string contains only space, newline or tab characters, or is empty.
@@ -78,5 +88,78 @@ sub::remove_unicode_bom (optional<string>& line)
 
 		/* Skip Unicode byte order mark */
 		line = line->substr (3);
+	}
+}
+
+void
+sub::dump (shared_ptr<const Reader> reader, ostream& os)
+{
+	map<string, string> metadata = reader->metadata ();
+	for (map<string, string>::const_iterator i = metadata.begin(); i != metadata.end(); ++i) {
+		os << i->first << ": " << i->second << "\n";
+	}
+
+	list<sub::Subtitle> subs = collect<list<sub::Subtitle> > (reader->subtitles ());
+	int n = 0;
+	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
+		os << "Subtitle " << n << " at " << i->from << " -> " << i->to << "\n";
+		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+
+			os << "\t";
+
+			if (j->vertical_position.proportional) {
+				os << j->vertical_position.proportional.get() << " of screen";
+			} else if (j->vertical_position.line && j->vertical_position.lines) {
+				os << j->vertical_position.line.get() << " lines of " << j->vertical_position.lines.get();
+			}
+			if (j->vertical_position.reference) {
+				os << " from ";
+				switch (j->vertical_position.reference.get()) {
+				case TOP_OF_SCREEN:
+					os << "top";
+					break;
+				case VERTICAL_CENTRE_OF_SCREEN:
+					os << "centre";
+					break;
+				case BOTTOM_OF_SCREEN:
+					os << "bottom";
+					break;
+				case TOP_OF_SUBTITLE:
+					os << "top of subtitle";
+					break;
+				}
+			}
+
+			os << "\t";
+			bool italic = false;
+			bool underline = false;
+			for (list<sub::Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
+				if (k->italic && !italic) {
+					os << "<i>";
+				} else if (italic && !k->italic) {
+					os << "</i>";
+				}
+				if (k->underline && !underline) {
+					os << "<u>";
+				} else if (underline && !k->underline) {
+					os << "</u>";
+				}
+
+				italic = k->italic;
+				underline = k->underline;
+
+				os << k->text;
+			}
+
+			if (italic) {
+				os << "</i>";
+			}
+			if (underline) {
+				os << "</u>";
+			}
+			os << "\n";
+		}
+
+		++n;
 	}
 }
