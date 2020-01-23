@@ -33,7 +33,6 @@ class STLBinaryReader : public Reader
 {
 public:
 	STLBinaryReader (std::istream &);
-	~STLBinaryReader ();
 
 	std::map<std::string, std::string> metadata () const;
 
@@ -68,12 +67,7 @@ public:
 	std::string editor_contact_details;
 
 private:
-	std::string get_string (int, int) const;
-	int get_int (int, int) const;
-	Time get_timecode (int) const;
-
 	STLBinaryTables _tables;
-	unsigned char* _buffer;
 };
 
 }
