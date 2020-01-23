@@ -41,26 +41,18 @@ using namespace sub;
 class InputReader : public boost::noncopyable
 {
 public:
-	InputReader (istream& in)
-		: _in (in)
-		, _buffer (new unsigned char[1024])
+	InputReader ()
+		: _buffer (new unsigned char[1024])
 	{
 
 	}
 
-	~InputReader ()
+	virtual ~InputReader ()
 	{
 		delete[] _buffer;
 	}
 
-
-	void read (int size, string what)
-	{
-		_in.read (reinterpret_cast<char *>(_buffer), size);
-		if (_in.gcount() != size) {
-			throw STLError (String::compose("Could not read %1 block from binary STL file", what));
-		}
-	}
+	virtual void read (int size, string what) = 0;
 
 	string get_string (int offset, int length) const
 	{
@@ -87,14 +79,35 @@ public:
 		return Time::from_hmsf (_buffer[offset], _buffer[offset + 1], _buffer[offset + 2], _buffer[offset + 3], Rational (frame_rate, 1));
 	}
 
+protected:
+	unsigned char* _buffer;
+};
+
+
+class StreamInputReader : public InputReader
+{
+public:
+	StreamInputReader (istream& in)
+		: _in (in)
+	{
+
+	}
+
+	void read (int size, string what)
+	{
+		_in.read (reinterpret_cast<char *>(_buffer), size);
+		if (_in.gcount() != size) {
+			throw STLError (String::compose("Could not read %1 block from binary STL file", what));
+		}
+	}
+
 private:
 	std::istream& _in;
-	unsigned char* _buffer;
 };
 
 STLBinaryReader::STLBinaryReader (istream& in)
 {
-	InputReader reader (in);
+	StreamInputReader reader (in);
 	reader.read (1024, "GSI");
 
 	code_page_number = atoi (reader.get_string(0, 3).c_str());
