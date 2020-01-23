@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2020 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ using std::ofstream;
 using boost::shared_ptr;
 
 /* Test reading of a binary STL file */
-BOOST_AUTO_TEST_CASE (stl_binary_reader_test)
+BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)
 {
 	if (private_test.empty ()) {
 		return;
@@ -47,4 +47,24 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test)
 	dump_stream.close ();
 
 	check_file (private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.dump", dump);
+}
+
+/* Test reading the same file but with the FILE* interface */
+BOOST_AUTO_TEST_CASE (stl_binary_reader_test2)
+{
+	if (private_test.empty ()) {
+		return;
+	}
+
+	using boost::filesystem::path;
+
+	path stl = private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.stl";
+	FILE* in = fopen (stl.string().c_str(), "rb");
+	BOOST_REQUIRE (in);
+	shared_ptr<sub::STLBinaryReader> r (new sub::STLBinaryReader(in));
+	fclose (in);
+	path dump = path("build") / path("test") / path("Vampire_Academy_24fps_Reel_6_DE_FR.dump");
+	ofstream dump_stream (dump.string().c_str());
+	sub::dump (r, dump_stream);
+	dump_stream.close ();
 }
