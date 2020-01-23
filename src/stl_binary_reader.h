@@ -26,13 +26,16 @@
 
 namespace sub {
 
+class InputReader;
+
 /** @class STLBinaryReader
  *  @brief A class to read binary STL files.
  */
 class STLBinaryReader : public Reader
 {
 public:
-	STLBinaryReader (std::istream &);
+	explicit STLBinaryReader (std::istream& in);
+	explicit STLBinaryReader (FILE* in);
 
 	std::map<std::string, std::string> metadata () const;
 
@@ -67,6 +70,8 @@ public:
 	std::string editor_contact_details;
 
 private:
+	void read (boost::shared_ptr<InputReader> reader);
+
 	STLBinaryTables _tables;
 };
 
