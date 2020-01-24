@@ -22,6 +22,7 @@
  */
 
 #include <boost/optional.hpp>
+#include <boost/shared_ptr.hpp>
 #include <string>
 
 class locked_stringstream;
