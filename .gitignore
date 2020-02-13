@@ -7,3 +7,4 @@ src/version.cc
 UnicodeData.txt
 doc/html
 doc/latex
+waf-tools/*.pyc
