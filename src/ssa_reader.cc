@@ -199,6 +199,47 @@ SSAReader::parse_time (string t) const
 		);
 }
 
+void
+SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play_res_y)
+{
+	if (style == "\\i1") {
+		sub.italic = true;
+	} else if (style == "\\i0" || style == "\\i") {
+		sub.italic = false;
+	} else if (style == "\\b1") {
+		sub.bold = true;
+	} else if (style == "\\b0") {
+		sub.bold = false;
+	} else if (style == "\\u1") {
+		sub.underline = true;
+	} else if (style == "\\u0") {
+		sub.underline = false;
+	} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
+		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+	} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
+		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+	} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
+		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+	} else if (boost::starts_with(style, "\\pos")) {
+		vector<string> bits;
+		boost::algorithm::split (bits, style, boost::is_any_of("(,"));
+		SUB_ASSERT (bits.size() == 3);
+		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
+		sub.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
+		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+		sub.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
+	} else if (boost::starts_with(style, "\\fs")) {
+		SUB_ASSERT (style.length() > 3);
+		sub.font_size.set_points (raw_convert<int>(style.substr(3)));
+	} else if (boost::starts_with(style, "\\c")) {
+		/* \c&Hbbggrr& */
+		if (style.length() <= 2) {
+			throw SSAError(String::compose("Badly formatted colour tag %1", style));
+		}
+		sub.colour = h_colour (style.substr(2, style.length() - 3));
+	}
+}
+
 /** @param base RawSubtitle filled in with any required common values.
  *  @param line SSA line string (i.e. just the subtitle, possibly with embedded stuff)
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
@@ -277,42 +318,7 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 					subs.push_back (current);
 					current.text = "";
 				}
-				if (style == "\\i1") {
-					current.italic = true;
-				} else if (style == "\\i0" || style == "\\i") {
-					current.italic = false;
-				} else if (style == "\\b1") {
-					current.bold = true;
-				} else if (style == "\\b0") {
-					current.bold = false;
-				} else if (style == "\\u1") {
-					current.underline = true;
-				} else if (style == "\\u0") {
-					current.underline = false;
-				} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
-					current.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
-				} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
-					current.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
-				} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
-					current.vertical_position.reference = sub::TOP_OF_SCREEN;
-				} else if (boost::starts_with(style, "\\pos")) {
-					vector<string> bits;
-					boost::algorithm::split (bits, style, boost::is_any_of("(,"));
-					SUB_ASSERT (bits.size() == 3);
-					current.horizontal_position.reference = sub::LEFT_OF_SCREEN;
-					current.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
-					current.vertical_position.reference = sub::TOP_OF_SCREEN;
-					current.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
-				} else if (boost::starts_with(style, "\\fs")) {
-					SUB_ASSERT (style.length() > 3);
-					current.font_size.set_points (raw_convert<int>(style.substr(3)));
-				} else if (boost::starts_with(style, "\\c")) {
-					/* \c&Hbbggrr& */
-					if (style.length() <= 2) {
-						throw SSAError(String::compose("Badly formatted colour tag %1", style));
-					}
-					current.colour = h_colour (style.substr(2, style.length() - 3));
-				}
+				parse_style (current, style, play_res_x, play_res_y);
 				style = "";
 			}
 
