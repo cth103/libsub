@@ -214,11 +214,32 @@ SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play
 		sub.underline = true;
 	} else if (style == "\\u0") {
 		sub.underline = false;
-	} else if (style == "\\an1" || style == "\\an2" || style == "\\an3") {
+	} else if (style == "\\an1") {
+		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
-	} else if (style == "\\an4" || style == "\\an5" || style == "\\an6") {
+	} else if (style == "\\an2") {
+		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
+		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+	} else if (style == "\\an3") {
+		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
+		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+	} else if (style == "\\an4") {
+		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
-	} else if (style == "\\an7" || style == "\\an8" || style == "\\an9") {
+	} else if (style == "\\an5") {
+		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
+		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+	} else if (style == "\\an6") {
+		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
+		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+	} else if (style == "\\an7") {
+		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
+		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+	} else if (style == "\\an8") {
+		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
+		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+	} else if (style == "\\an9") {
+		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
 	} else if (boost::starts_with(style, "\\pos")) {
 		vector<string> bits;
