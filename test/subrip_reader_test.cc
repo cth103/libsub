@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
+	BOOST_REQUIRE (j->vertical_position.line);
 	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), 0);
 	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 	++j;
@@ -75,6 +76,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (b.bold, false);
 	BOOST_CHECK_EQUAL (b.italic, false);
 	BOOST_CHECK_EQUAL (b.underline, false);
+	BOOST_REQUIRE (j->vertical_position.line);
 	BOOST_CHECK_EQUAL (j->vertical_position.line.get(), 1);
 	BOOST_CHECK_EQUAL (j->vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 	++i;
@@ -563,3 +565,59 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 2.0 / 255, 0.1);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 3.0 / 255, 0.1);
 }
+
+/** Test alignment */
+BOOST_AUTO_TEST_CASE (subrip_reader_test6)
+{
+	sub::RawSubtitle rs;
+	rs.vertical_position.line = 0;
+	rs.vertical_position.reference = sub::TOP_OF_SUBTITLE;
+	sub::SubripReader r;
+	r.convert_line ("Hello world", rs);
+	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_REQUIRE (r._subs.front().vertical_position.line);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
+	BOOST_REQUIRE (r._subs.front().vertical_position.reference);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle ();
+	rs.vertical_position.line = 0;
+	r.convert_line ("{\\an1}Hello", rs);
+	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello");
+	BOOST_REQUIRE (r._subs.front().vertical_position.line);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
+	BOOST_REQUIRE (r._subs.front().vertical_position.reference);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.proportional, 0);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.reference, sub::LEFT_OF_SCREEN);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle ();
+	rs.vertical_position.line = 0;
+	r.convert_line ("{\\an2}to", rs);
+	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "to");
+	BOOST_REQUIRE (r._subs.front().vertical_position.line);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
+	BOOST_REQUIRE (r._subs.front().vertical_position.reference);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.proportional, 0);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.reference, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle ();
+	rs.vertical_position.line = 0;
+	r.convert_line ("{\\an3}you", rs);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "you");
+	BOOST_REQUIRE (r._subs.front().vertical_position.line);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
+	BOOST_REQUIRE (r._subs.front().vertical_position.reference);
+	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.reference.get(), sub::BOTTOM_OF_SCREEN);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.proportional, 0);
+	BOOST_CHECK_EQUAL (r._subs.front().horizontal_position.reference, sub::RIGHT_OF_SCREEN);
+	r._subs.clear ();
+}
+

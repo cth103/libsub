@@ -227,7 +227,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	/* Alignments */
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 230), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("bottom left", "Arial", 20, false, false, false);
 	SUB_END ();
 
@@ -237,12 +237,12 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 250), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("bottom right", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 260), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("middle left", "Arial", 20, false, false, false);
 	SUB_END ();
 
@@ -252,12 +252,12 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 280), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("middle right", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 290), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::TOP_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("top left", "Arial", 20, false, false, false);
 	SUB_END ();
 
@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 310), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (0, sub::TOP_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("top right", "Arial", 20, false, false, false);
 	SUB_END ();
 

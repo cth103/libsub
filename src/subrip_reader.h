@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2019 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 struct subrip_reader_convert_line_test;
 struct subrip_reader_convert_time_test;
 struct subrip_reader_test5;
+struct subrip_reader_test6;
 
 namespace sub {
 
@@ -44,6 +45,7 @@ private:
 	friend struct ::subrip_reader_convert_line_test;
 	friend struct ::subrip_reader_convert_time_test;
 	friend struct ::subrip_reader_test5;
+	friend struct ::subrip_reader_test6;
 	SubripReader () {}
 
 	Time convert_time (std::string t);

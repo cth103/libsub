@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2019 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include "util.h"
 #include "sub_assert.h"
 #include "raw_convert.h"
+#include "ssa_reader.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -69,9 +70,6 @@ SubripReader::read (function<optional<string> ()> get_line)
 
 	RawSubtitle rs;
 
-	/* This reader extracts no information about where the subtitle
-	   should be on screen, so its reference is TOP_OF_SUBTITLE.
-	*/
 	rs.vertical_position.line = 0;
 	rs.vertical_position.reference = TOP_OF_SUBTITLE;
 
@@ -105,6 +103,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 			rs.italic = false;
 			rs.underline = false;
 			rs.vertical_position.line = 0;
+			rs.vertical_position.reference = TOP_OF_SUBTITLE;
 		}
 		break;
 		case METADATA:
@@ -266,6 +265,8 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					SUB_ASSERT (!colours.empty());
 					colours.pop_back ();
 					p.colour = colours.back ();
+				} else if (tag.size() > 0 && tag[0] == '\\') {
+					SSAReader::parse_style (p, tag, 288, 288);
 				}
 				tag.clear ();
 				state = TEXT;
