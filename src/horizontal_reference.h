@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2017 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2017-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,11 +26,11 @@ namespace sub {
 
 enum HorizontalReference
 {
-	/** distance is from the left of the screen, positive moves right */
+	/** distance is from the left of the screen to the left of the subtitle, positive moves right */
 	LEFT_OF_SCREEN,
-	/** distance is from the centre of the screen, positive moves right */
+	/** distance is from the centre of the screen to the centre of the subtitle, positive moves right */
 	HORIZONTAL_CENTRE_OF_SCREEN,
-	/** distance is from the right of the screen, positive moves left */
+	/** distance is from the right of the screen to the right of the subtitle, positive moves left */
 	RIGHT_OF_SCREEN
 };
 
