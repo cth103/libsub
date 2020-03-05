@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2012-2019 Carl Hetherington <cth@carlh.net>
+#    Copyright (C) 2012-2020 Carl Hetherington <cth@carlh.net>
 #
 #    This file is part of libsub.
 #
@@ -19,8 +19,9 @@
 
 import os
 
-def dependencies(target):
-    return (('asdcplib', 'carl'), ('libcxml', '0d18df4'), ('libdcp', None))
+def dependencies(target, options):
+    libdcp_options = { 'force-cpp11': True} if options['force-cpp11'] else {}
+    return (('asdcplib', 'carl'), ('libcxml', '0d18df4'), ('libdcp', None, libdcp_options))
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
