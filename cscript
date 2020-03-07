@@ -20,7 +20,7 @@
 import os
 
 def dependencies(target, options):
-    libdcp_options = { 'force-cpp11': True} if options['force-cpp11'] else {}
+    libdcp_options = { 'force-cpp11': options['force-cpp11'] } if 'force-cpp11' in options else {}
     return (('asdcplib', 'carl'), ('libcxml', '0d18df4'), ('libdcp', None, libdcp_options))
 
 def build(target, options):
