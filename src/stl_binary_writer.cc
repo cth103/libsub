@@ -170,10 +170,9 @@ sub::write_stl_binary (
 	ofstream output (file_name.string().c_str ());
 	STLBinaryTables tables;
 
-	/* Find the longest subtitle in characters */
-
+	/* Find the longest subtitle in characters and count the number of lines we have */
 	int longest = 0;
-
+	int lines = 0;
 	BOOST_FOREACH (Subtitle const& i, subtitles) {
 		BOOST_FOREACH (Line const& j, i.lines) {
 			int t = 0;
@@ -181,6 +180,7 @@ sub::write_stl_binary (
 				t += k.text.size ();
 			}
 			longest = std::max (longest, t);
+			++lines;
 		}
 	}
 
@@ -205,7 +205,7 @@ sub::write_stl_binary (
 	put_string (buffer + 230, revision_date);
 	put_int_as_string (buffer + 236, revision_number, 2);
 	/* TTI blocks */
-	put_int_as_string (buffer + 238, subtitles.size(), 5);
+	put_int_as_string (buffer + 238, lines, 5);
 	/* Total number of subtitles */
 	put_int_as_string (buffer + 243, subtitles.size(), 5);
 	/* Total number of subtitle groups */
@@ -233,76 +233,53 @@ sub::write_stl_binary (
 
 	BOOST_FOREACH (Subtitle const& i, subtitles) {
 
-		/* Find the top vertical position of this subtitle */
-		optional<int> top;
-		BOOST_FOREACH (Line const& j, i.lines) {
-			int const vp = vertical_position (j);
-			if (!top || vp < top.get ()) {
-				top = vp;
-			}
-		}
-
-		memset (buffer, 0, 128);
-
-		/* XXX: these should increment, surely! */
-		/* Subtitle group number */
-		put_int_as_int (buffer + 0, 1, 1);
-		/* Subtitle number */
-		put_int_as_int (buffer + 1, 0, 2);
-		/* Extension block number.  Use 0xff here to indicate that it is the last TTI
-		   block in this subtitle "set", as we only ever use one.
-		*/
-		put_int_as_int (buffer + 3, 255, 1);
-		/* Cumulative status */
-		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
-		/* Time code in */
-		put_int_as_int (buffer + 5, i.from.hours(), 1);
-		put_int_as_int (buffer + 6, i.from.minutes(), 1);
-		put_int_as_int (buffer + 7, i.from.seconds(), 1);
-		put_int_as_int (buffer + 8, i.from.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
-		/* Time code out */
-		put_int_as_int (buffer + 9, i.to.hours(), 1);
-		put_int_as_int (buffer + 10, i.to.minutes(), 1);
-		put_int_as_int (buffer + 11, i.to.seconds(), 1);
-		put_int_as_int (buffer + 12, i.to.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
-		/* Vertical position */
-		put_int_as_int (buffer + 13, top.get(), 1);
-
-		/* Justification code */
-		/* XXX: this assumes the first line has the right value */
-		switch (i.lines.front().horizontal_position.reference) {
-		case LEFT_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
-			break;
-		case HORIZONTAL_CENTRE_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
-			break;
-		case RIGHT_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
-			break;
-		}
-
-		/* Comment flag */
-		put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
-
-		/* Text */
-		string text;
-		bool italic = false;
-		bool underline = false;
-		optional<int> last_vp;
-
+		size_t line = 0;
 		BOOST_FOREACH (Line const& j, i.lines) {
 
-			/* CR/LF down to this line */
-			int const vp = vertical_position (j);
+			memset (buffer, 0, 128);
 
-			if (last_vp) {
-				for (int k = last_vp.get(); k < vp; ++k) {
-					text += "\x8A";
-				}
+			/* XXX: these should increment, surely! */
+			/* Subtitle group number */
+			put_int_as_int (buffer + 0, 1, 1);
+			/* Subtitle number */
+			put_int_as_int (buffer + 1, 0, 2);
+			/* Extension block number.  These are indexed from zero except the last one is 255 */
+			put_int_as_int (buffer + 3, line == (i.lines.size() - 1) ? 255 : line, 1);
+			/* Cumulative status */
+			put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
+			/* Time code in */
+			put_int_as_int (buffer + 5, i.from.hours(), 1);
+			put_int_as_int (buffer + 6, i.from.minutes(), 1);
+			put_int_as_int (buffer + 7, i.from.seconds(), 1);
+			put_int_as_int (buffer + 8, i.from.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
+			/* Time code out */
+			put_int_as_int (buffer + 9, i.to.hours(), 1);
+			put_int_as_int (buffer + 10, i.to.minutes(), 1);
+			put_int_as_int (buffer + 11, i.to.seconds(), 1);
+			put_int_as_int (buffer + 12, i.to.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
+			/* Vertical position */
+			put_int_as_int (buffer + 13, vertical_position(j), 1);
+
+			/* Justification code */
+			switch (j.horizontal_position.reference) {
+			case LEFT_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
+				break;
+			case HORIZONTAL_CENTRE_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
+				break;
+			case RIGHT_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
+				break;
 			}
 
-			last_vp = vp;
+			/* Comment flag */
+			put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
+
+			/* Text */
+			string text;
+			bool italic = false;
+			bool underline = false;
 
 			BOOST_FOREACH (Block const& k, j.blocks) {
 				if (k.underline && !underline) {
@@ -322,28 +299,29 @@ sub::write_stl_binary (
 
 				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k.text));
 			}
+
+			/* Turn italic/underline off before the end of this subtitle */
+
+			if (underline) {
+				text += "\x83";
+			}
+
+			if (italic) {
+				text += "\x81";
+			}
+
+			if (text.length() > 111) {
+				text = text.substr (111);
+			}
+
+			while (text.length() < 112) {
+				text += "\x8F";
+			}
+
+			put_string (buffer + 16, text);
+			output.write (buffer, 128);
+			++line;
 		}
-
-		/* Turn italic/underline off before the end of this subtitle */
-
-		if (underline) {
-			text += "\x83";
-		}
-
-		if (italic) {
-			text += "\x81";
-		}
-
-		if (text.length() > 111) {
-			text = text.substr (111);
-		}
-
-		while (text.length() < 112) {
-			text += "\x8F";
-		}
-
-		put_string (buffer + 16, text);
-		output.write (buffer, 128);
 	}
 
 	delete[] buffer;
