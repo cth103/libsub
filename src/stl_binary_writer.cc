@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2020 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include "sub_assert.h"
 #include <boost/locale.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
 #include <list>
 #include <cmath>
 #include <fstream>
@@ -190,11 +191,11 @@ sub::write_stl_binary (
 
 	int longest = 0;
 
-	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
-		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+	BOOST_FOREACH (Subtitle const& i, subtitles) {
+		BOOST_FOREACH (Line const& j, i.lines) {
 			int t = 0;
-			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
-				t += k->text.size ();
+			BOOST_FOREACH (Block const& k, j.blocks) {
+				t += k.text.size ();
 			}
 			longest = std::max (longest, t);
 		}
@@ -247,12 +248,12 @@ sub::write_stl_binary (
 
 	output.write (buffer, 1024);
 
-	for (list<Subtitle>::const_iterator i = subtitles.begin(); i != subtitles.end(); ++i) {
+	BOOST_FOREACH (Subtitle const& i, subtitles) {
 
 		/* Find the top vertical position of this subtitle */
 		optional<int> top;
-		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
-			int const vp = vertical_position (*j);
+		BOOST_FOREACH (Line const& j, i.lines) {
+			int const vp = vertical_position (j);
 			if (!top || vp < top.get ()) {
 				top = vp;
 			}
@@ -272,21 +273,21 @@ sub::write_stl_binary (
 		/* Cumulative status */
 		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
 		/* Time code in */
-		put_int_as_int (buffer + 5, i->from.hours(), 1);
-		put_int_as_int (buffer + 6, i->from.minutes(), 1);
-		put_int_as_int (buffer + 7, i->from.seconds(), 1);
-		put_int_as_int (buffer + 8, i->from.frames_at(sub::Rational (frames_per_second * 1000, 1000)), 1);
+		put_int_as_int (buffer + 5, i.from.hours(), 1);
+		put_int_as_int (buffer + 6, i.from.minutes(), 1);
+		put_int_as_int (buffer + 7, i.from.seconds(), 1);
+		put_int_as_int (buffer + 8, i.from.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
 		/* Time code out */
-		put_int_as_int (buffer + 9, i->to.hours(), 1);
-		put_int_as_int (buffer + 10, i->to.minutes(), 1);
-		put_int_as_int (buffer + 11, i->to.seconds(), 1);
-		put_int_as_int (buffer + 12, i->to.frames_at(sub::Rational (frames_per_second * 1000, 1000)), 1);
+		put_int_as_int (buffer + 9, i.to.hours(), 1);
+		put_int_as_int (buffer + 10, i.to.minutes(), 1);
+		put_int_as_int (buffer + 11, i.to.seconds(), 1);
+		put_int_as_int (buffer + 12, i.to.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
 		/* Vertical position */
 		put_int_as_int (buffer + 13, top.get(), 1);
 
 		/* Justification code */
 		/* XXX: this assumes the first line has the right value */
-		switch (i->lines.front().horizontal_position.reference) {
+		switch (i.lines.front().horizontal_position.reference) {
 		case LEFT_OF_SCREEN:
 			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
 			break;
@@ -307,36 +308,36 @@ sub::write_stl_binary (
 		bool underline = false;
 		optional<int> last_vp;
 
-		for (list<Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+		BOOST_FOREACH (Line const& j, i.lines) {
 
 			/* CR/LF down to this line */
-			int const vp = vertical_position (*j);
+			int const vp = vertical_position (j);
 
 			if (last_vp) {
-				for (int i = last_vp.get(); i < vp; ++i) {
+				for (int k = last_vp.get(); k < vp; ++k) {
 					text += "\x8A";
 				}
 			}
 
 			last_vp = vp;
 
-			for (list<Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
-				if (k->underline && !underline) {
+			BOOST_FOREACH (Block const& k, j.blocks) {
+				if (k.underline && !underline) {
 					text += "\x82";
 					underline = true;
-				} else if (underline && !k->underline) {
+				} else if (underline && !k.underline) {
 					text += "\x83";
 					underline = false;
 				}
-				if (k->italic && !italic) {
+				if (k.italic && !italic) {
 					text += "\x80";
 					italic = true;
-				} else if (italic && !k->italic) {
+				} else if (italic && !k.italic) {
 					text += "\x81";
 					italic = false;
 				}
 
-				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k->text));
+				text += utf16_to_iso6937 (utf_to_utf<wchar_t> (k.text));
 			}
 		}
 
