@@ -258,7 +258,7 @@ sub::write_stl_binary (
 			}
 		}
 
-		memset (buffer, 0, 1024);
+		memset (buffer, 0, 128);
 
 		/* Subtitle group number */
 		put_int_as_int (buffer + 0, 1, 1);
