@@ -201,3 +201,26 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test7)
 		"build/test/test3.stl"
 		);
 }
+
+BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test8)
+{
+	boost::filesystem::path p = private_test / "91a30f25-b415-4ffe-9623-bdae43a381d3_sub.xml";
+	sub::write_stl_binary (
+		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles()),
+		24,
+		sub::LANGUAGE_GERMAN,
+		"", "",
+		"", "",
+		"", "",
+		"300514", "300514", 0,
+		"GBR",
+		"",
+		"", "",
+		"build/test/test3.stl"
+		);
+
+	check_file (
+		private_test / "91a30f25-b415-4ffe-9623-bdae43a381d3_sub.stl",
+		"build/test/91a30f25-b415-4ffe-9623-bdae43a381d3_sub.stl"
+		);
+}
