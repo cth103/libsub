@@ -33,6 +33,7 @@
 #include <list>
 #include <cmath>
 #include <fstream>
+#include <vector>
 #include <iomanip>
 #include <set>
 
@@ -44,6 +45,7 @@ using std::setw;
 using std::setfill;
 using std::max;
 using std::cout;
+using std::vector;
 using boost::locale::conv::utf_to_utf;
 using boost::optional;
 using namespace sub;
@@ -146,107 +148,14 @@ vertical_position (sub::Line const & line)
 	return vp;
 }
 
-/** @param language ISO 3-character country code for the language of the subtitles */
-void
-sub::write_stl_binary (
-	list<Subtitle> subtitles,
-	float frames_per_second,
-	Language language,
-	string original_programme_title,
-	string original_episode_title,
-	string translated_programme_title,
-	string translated_episode_title,
-	string translator_name,
-	string translator_contact_details,
-	string creation_date,
-	string revision_date,
-	int revision_number,
-	string country_of_origin,
-	string publisher,
-	string editor_name,
-	string editor_contact_details,
-	boost::filesystem::path file_name
-	)
+vector<char*>
+make_tti_blocks (list<Subtitle> const& subtitles, STLBinaryTables const& tables, float frames_per_second)
 {
-	SUB_ASSERT (original_programme_title.size() <= 32);
-	SUB_ASSERT (original_episode_title.size() <= 32);
-	SUB_ASSERT (translated_programme_title.size() <= 32);
-	SUB_ASSERT (translated_episode_title.size() <= 32);
-	SUB_ASSERT (translator_name.size() <= 32);
-	SUB_ASSERT (translator_contact_details.size() <= 32);
-	SUB_ASSERT (creation_date.size() == 6);
-	SUB_ASSERT (revision_date.size() == 6);
-	SUB_ASSERT (revision_number <= 99);
-	SUB_ASSERT (country_of_origin.size() == 3);
-	SUB_ASSERT (publisher.size() <= 32);
-	SUB_ASSERT (editor_name.size() <= 32);
-	SUB_ASSERT (editor_contact_details.size() <= 32);
+	static int const tti_size = 128;
+	vector<char*> tti;
 
-	char* buffer = new char[1024];
-	memset (buffer, 0, 1024);
-	ofstream output (file_name.string().c_str ());
-	STLBinaryTables tables;
-
-	/* Find the longest subtitle in characters */
-
-	int longest = 0;
-
-	BOOST_FOREACH (Subtitle const& i, subtitles) {
-		BOOST_FOREACH (Line const& j, i.lines) {
-			int t = 0;
-			BOOST_FOREACH (Block const& k, j.blocks) {
-				t += k.text.size ();
-			}
-			longest = std::max (longest, t);
-		}
-	}
-
-	/* Code page: 850 */
-	put_string (buffer + 0, "850");
-	/* Disk format code */
-	put_string (buffer + 3, stl_frame_rate_to_dfc (frames_per_second));
-	/* Display standard code: open subtitling */
-	put_string (buffer + 11, "0");
-	/* Character code table: Latin (ISO 6937) */
-	put_string (buffer + 12, "00");
-	put_string (buffer + 14, tables.language_enum_to_file (language));
-	put_string (buffer + 16, 32, original_programme_title);
-	put_string (buffer + 48, 32, original_episode_title);
-	put_string (buffer + 80, 32, translated_programme_title);
-	put_string (buffer + 112, 32, translated_episode_title);
-	put_string (buffer + 144, 32, translator_name);
-	put_string (buffer + 176, 32, translator_contact_details);
-	/* Subtitle list reference code */
-	put_string (buffer + 208, "0000000000000000");
-	put_string (buffer + 224, creation_date);
-	put_string (buffer + 230, revision_date);
-	put_int_as_string (buffer + 236, revision_number, 2);
-	/* TTI blocks */
-	put_int_as_string (buffer + 238, subtitles.size(), 5);
-	/* Total number of subtitles */
-	put_int_as_string (buffer + 243, subtitles.size(), 5);
-	/* Total number of subtitle groups */
-	put_string (buffer + 248, "001");
-	/* Maximum number of displayable characters in any text row */
-	put_int_as_string (buffer + 251, longest, 2);
-	/* Maximum number of displayable rows */
-	put_int_as_string (buffer + 253, ROWS, 2);
-	/* Time code status */
-	put_string (buffer + 255, "1");
-	/* Start-of-programme time code */
-	put_string (buffer + 256, "00000000");
-	/* First-in-cue time code */
-	put_string (buffer + 264, "00000000");
-	/* Total number of disks */
-	put_string (buffer + 272, "1");
-	/* Disk sequence number */
-	put_string (buffer + 273, "1");
-	put_string (buffer + 274, 3, country_of_origin);
-	put_string (buffer + 277, 32, publisher);
-	put_string (buffer + 309, 32, editor_name);
-	put_string (buffer + 341, 32, editor_contact_details);
-
-	output.write (buffer, 1024);
+	/* Buffer to build the TTI blocks in */
+	char buffer[tti_size];
 
 	BOOST_FOREACH (Subtitle const& i, subtitles) {
 
@@ -259,50 +168,7 @@ sub::write_stl_binary (
 			}
 		}
 
-		memset (buffer, 0, 128);
-
-		/* XXX: these should increment, surely! */
-		/* Subtitle group number */
-		put_int_as_int (buffer + 0, 1, 1);
-		/* Subtitle number */
-		put_int_as_int (buffer + 1, 0, 2);
-		/* Extension block number.  Use 0xff here to indicate that it is the last TTI
-		   block in this subtitle "set", as we only ever use one.
-		*/
-		put_int_as_int (buffer + 3, 255, 1);
-		/* Cumulative status */
-		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
-		/* Time code in */
-		put_int_as_int (buffer + 5, i.from.hours(), 1);
-		put_int_as_int (buffer + 6, i.from.minutes(), 1);
-		put_int_as_int (buffer + 7, i.from.seconds(), 1);
-		put_int_as_int (buffer + 8, i.from.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
-		/* Time code out */
-		put_int_as_int (buffer + 9, i.to.hours(), 1);
-		put_int_as_int (buffer + 10, i.to.minutes(), 1);
-		put_int_as_int (buffer + 11, i.to.seconds(), 1);
-		put_int_as_int (buffer + 12, i.to.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
-		/* Vertical position */
-		put_int_as_int (buffer + 13, top.get(), 1);
-
-		/* Justification code */
-		/* XXX: this assumes the first line has the right value */
-		switch (i.lines.front().horizontal_position.reference) {
-		case LEFT_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
-			break;
-		case HORIZONTAL_CENTRE_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
-			break;
-		case RIGHT_OF_SCREEN:
-			put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
-			break;
-		}
-
-		/* Comment flag */
-		put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
-
-		/* Text */
+		/* Work out the text */
 		string text;
 		bool italic = false;
 		bool underline = false;
@@ -342,26 +208,189 @@ sub::write_stl_binary (
 		}
 
 		/* Turn italic/underline off before the end of this subtitle */
-
 		if (underline) {
 			text += "\x83";
 		}
-
 		if (italic) {
 			text += "\x81";
 		}
 
-		if (text.length() > 111) {
-			text = text.substr (111);
+		/* Make sure there's at least one end-of-line */
+		text += "\x8F";
+
+		/* Now write this text in 112 byte chunks (TTI blocks).  Only the first TTI
+		   block's cumulative status, timecodes, vertical position, justification code
+		   and comment flag are taken into account by the reader.
+		   */
+
+		/* Set up the first part of the block */
+
+		/* XXX: these should increment, surely! */
+		/* Subtitle group number */
+		put_int_as_int (buffer + 0, 1, 1);
+		/* Subtitle number */
+		put_int_as_int (buffer + 1, 0, 2);
+		/* Cumulative status */
+		put_int_as_int (buffer + 4, tables.cumulative_status_enum_to_file (CUMULATIVE_STATUS_NOT_CUMULATIVE), 1);
+		/* Time code in */
+		put_int_as_int (buffer + 5, i.from.hours(), 1);
+		put_int_as_int (buffer + 6, i.from.minutes(), 1);
+		put_int_as_int (buffer + 7, i.from.seconds(), 1);
+		put_int_as_int (buffer + 8, i.from.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
+		/* Time code out */
+		put_int_as_int (buffer + 9, i.to.hours(), 1);
+		put_int_as_int (buffer + 10, i.to.minutes(), 1);
+		put_int_as_int (buffer + 11, i.to.seconds(), 1);
+		put_int_as_int (buffer + 12, i.to.frames_at(sub::Rational(frames_per_second * 1000, 1000)), 1);
+		/* Vertical position */
+		put_int_as_int (buffer + 13, top.get(), 1);
+
+		/* Justification code */
+		/* XXX: this assumes the first line has the right value */
+		switch (i.lines.front().horizontal_position.reference) {
+			case LEFT_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_LEFT), 1);
+				break;
+			case HORIZONTAL_CENTRE_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_CENTRE), 1);
+				break;
+			case RIGHT_OF_SCREEN:
+				put_int_as_int (buffer + 14, tables.justification_enum_to_file (JUSTIFICATION_RIGHT), 1);
+				break;
 		}
 
-		while (text.length() < 112) {
-			text += "\x8F";
-		}
+		/* Comment flag */
+		put_int_as_int (buffer + 15, tables.comment_enum_to_file (COMMENT_NO), 1);
 
-		put_string (buffer + 16, text);
-		output.write (buffer, 128);
+		/* Now make as many blocks as are needed to add all the text */
+		size_t const block_size = 112;
+		size_t offset = 0;
+		int block_number = 0;
+		while (offset < text.length()) {
+			size_t this_time = std::min(block_size, text.length() - offset);
+			put_string (buffer + 16, text.substr(offset, this_time) + string(block_size - this_time, '\x8f'));
+			offset += this_time;
+
+			/* Extension block number.  Count up from 0 but use 0xff for the last one */
+			put_int_as_int (buffer + 3, this_time < block_size ? 0xff : block_number, 1);
+			++block_number;
+
+			char* finished = new char[tti_size];
+			memcpy (finished, buffer, tti_size);
+			tti.push_back (finished);
+		}
 	}
 
-	delete[] buffer;
+	return tti;
+}
+
+
+
+/** @param language ISO 3-character country code for the language of the subtitles */
+	void
+sub::write_stl_binary (
+		list<Subtitle> subtitles,
+		float frames_per_second,
+		Language language,
+		string original_programme_title,
+		string original_episode_title,
+		string translated_programme_title,
+		string translated_episode_title,
+		string translator_name,
+		string translator_contact_details,
+		string creation_date,
+		string revision_date,
+		int revision_number,
+		string country_of_origin,
+		string publisher,
+		string editor_name,
+		string editor_contact_details,
+		boost::filesystem::path file_name
+		)
+{
+	SUB_ASSERT (original_programme_title.size() <= 32);
+	SUB_ASSERT (original_episode_title.size() <= 32);
+	SUB_ASSERT (translated_programme_title.size() <= 32);
+	SUB_ASSERT (translated_episode_title.size() <= 32);
+	SUB_ASSERT (translator_name.size() <= 32);
+	SUB_ASSERT (translator_contact_details.size() <= 32);
+	SUB_ASSERT (creation_date.size() == 6);
+	SUB_ASSERT (revision_date.size() == 6);
+	SUB_ASSERT (revision_number <= 99);
+	SUB_ASSERT (country_of_origin.size() == 3);
+	SUB_ASSERT (publisher.size() <= 32);
+	SUB_ASSERT (editor_name.size() <= 32);
+	SUB_ASSERT (editor_contact_details.size() <= 32);
+
+	char buffer[1024];
+	memset (buffer, 0, 1024);
+	STLBinaryTables tables;
+
+	/* Find the longest subtitle in characters */
+
+	int longest = 0;
+
+	BOOST_FOREACH (Subtitle const& i, subtitles) {
+		BOOST_FOREACH (Line const& j, i.lines) {
+			int t = 0;
+			BOOST_FOREACH (Block const& k, j.blocks) {
+				t += k.text.size ();
+			}
+			longest = std::max (longest, t);
+		}
+	}
+
+	vector<char*> tti_blocks = make_tti_blocks (subtitles, tables, frames_per_second);
+
+	/* Code page: 850 */
+	put_string (buffer + 0, "850");
+	/* Disk format code */
+	put_string (buffer + 3, stl_frame_rate_to_dfc (frames_per_second));
+	/* Display standard code: open subtitling */
+	put_string (buffer + 11, "0");
+	/* Character code table: Latin (ISO 6937) */
+	put_string (buffer + 12, "00");
+	put_string (buffer + 14, tables.language_enum_to_file (language));
+	put_string (buffer + 16, 32, original_programme_title);
+	put_string (buffer + 48, 32, original_episode_title);
+	put_string (buffer + 80, 32, translated_programme_title);
+	put_string (buffer + 112, 32, translated_episode_title);
+	put_string (buffer + 144, 32, translator_name);
+	put_string (buffer + 176, 32, translator_contact_details);
+	/* Subtitle list reference code */
+	put_string (buffer + 208, "0000000000000000");
+	put_string (buffer + 224, creation_date);
+	put_string (buffer + 230, revision_date);
+	put_int_as_string (buffer + 236, revision_number, 2);
+	/* TTI blocks */
+	put_int_as_string (buffer + 238, tti_blocks.size(), 5);
+	/* Total number of subtitles */
+	put_int_as_string (buffer + 243, subtitles.size(), 5);
+	/* Total number of subtitle groups */
+	put_string (buffer + 248, "001");
+	/* Maximum number of displayable characters in any text row */
+	put_int_as_string (buffer + 251, longest, 2);
+	/* Maximum number of displayable rows */
+	put_int_as_string (buffer + 253, ROWS, 2);
+	/* Time code status */
+	put_string (buffer + 255, "1");
+	/* Start-of-programme time code */
+	put_string (buffer + 256, "00000000");
+	/* First-in-cue time code */
+	put_string (buffer + 264, "00000000");
+	/* Total number of disks */
+	put_string (buffer + 272, "1");
+	/* Disk sequence number */
+	put_string (buffer + 273, "1");
+	put_string (buffer + 274, 3, country_of_origin);
+	put_string (buffer + 277, 32, publisher);
+	put_string (buffer + 309, 32, editor_name);
+	put_string (buffer + 341, 32, editor_contact_details);
+
+	ofstream output (file_name.string().c_str());
+	output.write (buffer, 1024);
+	BOOST_FOREACH (char* i, tti_blocks) {
+		output.write (i, 128);
+		delete[] i;
+	}
 }
