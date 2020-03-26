@@ -211,6 +211,9 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 			RawSubtitle sub;
 			sub.from = reader->get_timecode(5, frame_rate);
 			sub.to = reader->get_timecode(9, frame_rate);
+                        /* XXX: only the verticial position of the first TTI block should be used (says the spec),
+                           so using reader->get_int(13, 1) here is wrong if i > 0
+                         */
 			sub.vertical_position.line = reader->get_int(13, 1) + i;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
