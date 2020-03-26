@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test8)
 		"GBR",
 		"",
 		"", "",
-		"build/test/test3.stl"
+		"build/test/91a30f25-b415-4ffe-9623-bdae43a381d3_sub.stl"
 		);
 
 	check_file (
