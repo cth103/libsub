@@ -272,7 +272,7 @@ make_tti_blocks (list<Subtitle> const& subtitles, STLBinaryTables const& tables,
 			offset += this_time;
 
 			/* Extension block number.  Count up from 0 but use 0xff for the last one */
-			put_int_as_int (buffer + 3, this_time < block_size ? 0xff : block_number, 1);
+			put_int_as_int (buffer + 3, offset == text.length() ? 0xff : block_number, 1);
 			++block_number;
 
 			char* finished = new char[tti_size];
