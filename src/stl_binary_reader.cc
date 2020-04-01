@@ -207,14 +207,14 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 		bool italic = false;
 		bool underline = false;
 
-		for (size_t i = 0; i < lines.size(); ++i) {
+		for (size_t j = 0; j < lines.size(); ++j) {
 			RawSubtitle sub;
 			sub.from = reader->get_timecode(5, frame_rate);
 			sub.to = reader->get_timecode(9, frame_rate);
-                        /* XXX: only the verticial position of the first TTI block should be used (says the spec),
+                        /* XXX: only the vertical position of the first TTI block should be used (says the spec),
                            so using reader->get_int(13, 1) here is wrong if i > 0
                          */
-			sub.vertical_position.line = reader->get_int(13, 1) + i;
+			sub.vertical_position.line = reader->get_int(13, 1) + j;
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 			sub.italic = italic;
@@ -237,9 +237,9 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 
 			/* Loop over characters */
 			string text;
-			for (size_t j = 0; j < lines[i].size(); ++j) {
+			for (size_t k = 0; k < lines[j].size(); ++k) {
 
-				unsigned char const c = static_cast<unsigned char> (lines[i][j]);
+				unsigned char const c = static_cast<unsigned char> (lines[j][k]);
 
 				if (c == 0x8f) {
 					/* Unused space i.e. end of line */
@@ -267,7 +267,7 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 					underline = false;
 					break;
 				default:
-					text += lines[i][j];
+					text += lines[j][k];
 					break;
 				}
 
