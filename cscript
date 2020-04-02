@@ -19,9 +19,12 @@
 
 import os
 
+option_defaults = { 'force-cpp11': False }
+
 def dependencies(target, options):
-    libdcp_options = { 'force-cpp11': options['force-cpp11'] } if 'force-cpp11' in options else {}
-    return (('asdcplib', 'carl'), ('libcxml', '0d18df4'), ('libdcp', None, libdcp_options))
+    libdcp =  ('libdcp',       None, { 'force-cpp11': options['force-cpp11'] })
+    libcxml = ('libcxml', '0d18df4', { 'force-cpp11': options['force-cpp11'] })
+    return (('asdcplib', 'carl'), libcxml, libdcp)
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
@@ -29,21 +32,23 @@ def build(target, options):
         cmd += ' --static'
         if target.distro == 'centos':
             cmd += ' --disable-tests'
-            if target.version == '7':
-                # Centos 7 ships with glibmm 2.50.0 which requires C++11
-                # but its compiler (gcc 4.8.5) defaults to C++97.  Go figure.
-                # I worry that this will cause ABI problems but I don't have
-                # a better solution.
-                cmd += ' --force-cpp11'
-        if target.distro == 'mageia' and target.version == '6':
-            # Mageia 6 pulls the same stunt except it's libxml++ that requires C++11
-            cmd += ' --force-cpp11'
     if target.debug:
         cmd += ' --enable-debug'
     if target.platform == 'windows':
         cmd += ' --target-windows --disable-tests'
 
-    if options is not None and 'force-cpp11' in options and options['force-cpp11']:
+    # Centos 7 ships with glibmm 2.50.0 which requires C++11
+    # but its compiler (gcc 4.8.5) defaults to C++97.  Go figure.
+    # I worry that this will cause ABI problems but I don't have
+    # a better solution.  Mageia 6 pulls the same stunt except it's
+    # libxml++ that requires C++11
+    force_cpp11 = False
+    if target.platform == 'linux':
+        if target.distro == 'centos' and target.version == '7':
+            force_cpp11 = True
+        if target.distro == 'mageia' and target.version == '6':
+            force_cpp11 = True
+    if force_cpp11 or options['force-cpp11']:
         cmd += ' --force-cpp11'
 
     target.command(cmd)
