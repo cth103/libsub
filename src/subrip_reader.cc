@@ -237,7 +237,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					p.underline = false;
 				} else if (boost::starts_with (tag, "font")) {
 					maybe_content (p);
-					boost::regex re (".*color=\"#([[:xdigit:]]+)\"");
+					boost::regex re (".*color=\"?#([[:xdigit:]]+)\"?");
 					boost::smatch match;
 					if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
 						p.colour = Colour::from_rgb_hex (match[1]);
