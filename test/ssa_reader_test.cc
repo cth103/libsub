@@ -152,7 +152,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 	test ("DKH_UT_EN20160601def.ssa");
 	test ("dcpsubtest-en.ssa");
 	test ("dcpsubtest-en.ssa");
-	test ("Widdershins_GERMAN_SUBS_grey.ass");
+	test ("W_GERMAN_SUBS_grey.ass");
 }
 
 #define SUB_START(f, t) \

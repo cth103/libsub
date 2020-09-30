@@ -38,15 +38,15 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)
 
 	using boost::filesystem::path;
 
-	path stl = private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.stl";
+	path stl = private_test / "VA_24fps_Reel_6_DE_FR.stl";
 	ifstream in (stl.string().c_str());
 	shared_ptr<sub::STLBinaryReader> r (new sub::STLBinaryReader(in));
-	path dump = path("build") / path("test") / path("Vampire_Academy_24fps_Reel_6_DE_FR.dump");
+	path dump = path("build") / path("test") / path("VA_24fps_Reel_6_DE_FR.dump");
 	ofstream dump_stream (dump.string().c_str());
 	sub::dump (r, dump_stream);
 	dump_stream.close ();
 
-	check_file (private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.dump", dump);
+	check_file (private_test / "VA_24fps_Reel_6_DE_FR.dump", dump);
 }
 
 /* Test reading the same file but with the FILE* interface */
@@ -58,12 +58,12 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test2)
 
 	using boost::filesystem::path;
 
-	path stl = private_test / "Vampire_Academy_24fps_Reel_6_DE_FR.stl";
+	path stl = private_test / "VA_24fps_Reel_6_DE_FR.stl";
 	FILE* in = fopen (stl.string().c_str(), "rb");
 	BOOST_REQUIRE (in);
 	shared_ptr<sub::STLBinaryReader> r (new sub::STLBinaryReader(in));
 	fclose (in);
-	path dump = path("build") / path("test") / path("Vampire_Academy_24fps_Reel_6_DE_FR.dump");
+	path dump = path("build") / path("test") / path("VA_24fps_Reel_6_DE_FR.dump");
 	ofstream dump_stream (dump.string().c_str());
 	sub::dump (r, dump_stream);
 	dump_stream.close ();

@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test3)
 		return;
 	}
 
-	boost::filesystem::path p = private_test / "Paddington_FTR_Subs_DE-FR_24fps_R1.xml";
+	boost::filesystem::path p = private_test / "P_FTR_Subs_DE-FR_24fps_R1.xml";
 	sub::write_stl_binary (
 		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		25,
@@ -99,12 +99,12 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test3)
 		"GBR",
 		"",
 		"", "",
-		"build/test/Paddington_FTR_Subs_DE-FR_24fps_R1.stl"
+		"build/test/P_FTR_Subs_DE-FR_24fps_R1.stl"
 		);
 
 	check_file (
-		private_test / "Paddington_FTR_Subs_DE-FR_24fps_R1.stl",
-		"build/test/Paddington_FTR_Subs_DE-FR_24fps_R1.stl"
+		private_test / "P_FTR_Subs_DE-FR_24fps_R1.stl",
+		"build/test/P_FTR_Subs_DE-FR_24fps_R1.stl"
 		);
 }
 
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
 		return;
 	}
 
-	boost::filesystem::path p = private_test / "Paddington_FTR_FullSubs_DE_24fps.xml";
+	boost::filesystem::path p = private_test / "P_FTR_FullSubs_DE_24fps.xml";
 	sub::write_stl_binary (
 		sub::collect<list<sub::Subtitle> > (sub::DCPReader(p).subtitles ()),
 		24,
@@ -170,12 +170,12 @@ BOOST_AUTO_TEST_CASE (dcp_to_stl_binary_test6)
 		"GBR",
 		"",
 		"", "",
-		"build/test/Paddington_FTR_FullSubs_DE_24fps.stl"
+		"build/test/P_FTR_FullSubs_DE_24fps.stl"
 		);
 
 	check_file (
-		private_test / "Paddington_FTR_FullSubs_DE_24fps.stl",
-		"build/test/Paddington_FTR_FullSubs_DE_24fps.stl"
+		private_test / "P_FTR_FullSubs_DE_24fps.stl",
+		"build/test/P_FTR_FullSubs_DE_24fps.stl"
 		);
 }
 

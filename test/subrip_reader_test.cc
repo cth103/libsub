@@ -421,10 +421,10 @@ BOOST_AUTO_TEST_CASE (subrip_read_test)
 {
 	test ("sintel_en.srt");
 	test ("sintel_fr.srt");
-	test ("Fight.Club.1999.720p.BRRip.x264-x0r.srt");
+	test ("FC.srt");
 	test ("EU13.srt");
-	test ("Subtitulos_HURTO_eng.srt");
-	test ("SWING_PARA_SORDOS_CASTELLANO_24.srt");
+	test ("Subtitulos_H_eng.srt");
+	test ("SWING.srt");
 	test_throw ("subtitulo1.srt");
 }
 
