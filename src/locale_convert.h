@@ -17,6 +17,7 @@
 
 */
 
+#include "util.h"
 #include <boost/static_assert.hpp>
 #include <string>
 
@@ -24,12 +25,14 @@ namespace sub {
 
 template <typename P, typename Q>
 P
-locale_convert (Q x, int precision = 16, bool fixed = false)
+locale_convert (Q, int precision = 16, bool fixed = false)
 {
 	/* We can't write a generic version of locale_convert; all required
 	   versions must be specialised.
 	*/
 	BOOST_STATIC_ASSERT (sizeof (Q) == 0);
+	LIBSUB_UNUSED(precision);
+	LIBSUB_UNUSED(fixed);
 }
 
 template <>

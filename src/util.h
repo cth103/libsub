@@ -25,6 +25,8 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 
+#define LIBSUB_UNUSED(x) (void)(x)
+
 namespace sub {
 
 class Reader;
