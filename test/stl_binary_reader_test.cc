@@ -27,7 +27,7 @@
 using std::list;
 using std::ifstream;
 using std::ofstream;
-using boost::shared_ptr;
+using std::shared_ptr;
 
 /* Test reading of a binary STL file */
 BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)

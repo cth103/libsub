@@ -21,7 +21,7 @@
 #include "reader.h"
 #include "subtitle.h"
 #include "collect.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ using std::ostream;
 using std::map;
 using std::list;
 using boost::optional;
-using boost::shared_ptr;
+using std::shared_ptr;
 using namespace sub;
 
 /** @param s A string.

@@ -70,7 +70,7 @@ public:
 	std::string editor_contact_details;
 
 private:
-	void read (boost::shared_ptr<InputReader> reader);
+	void read (std::shared_ptr<InputReader> reader);
 
 	STLBinaryTables _tables;
 };

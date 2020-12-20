@@ -31,7 +31,7 @@ using std::cerr;
 using std::cout;
 using std::map;
 using std::list;
-using boost::shared_ptr;
+using std::shared_ptr;
 using namespace sub;
 
 static void

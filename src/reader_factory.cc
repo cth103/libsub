@@ -30,7 +30,7 @@
 using std::string;
 using std::ifstream;
 using boost::algorithm::ends_with;
-using boost::shared_ptr;
+using std::shared_ptr;
 using namespace sub;
 
 shared_ptr<Reader>

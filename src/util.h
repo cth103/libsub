@@ -22,7 +22,7 @@
  */
 
 #include <boost/optional.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 #define LIBSUB_UNUSED(x) (void)(x)
@@ -35,6 +35,6 @@ extern bool empty_or_white_space (std::string s);
 extern void remove_unicode_bom (boost::optional<std::string>& line);
 extern boost::optional<std::string> get_line_file (FILE* f);
 extern boost::optional<std::string> get_line_string (std::string* s);
-extern void dump (boost::shared_ptr<const Reader> read, std::ostream& os);
+extern void dump (std::shared_ptr<const Reader> read, std::ostream& os);
 
 }

@@ -36,7 +36,7 @@ using boost::lexical_cast;
 using boost::algorithm::replace_all;
 using boost::is_any_of;
 using boost::locale::conv::utf_to_utf;
-using boost::shared_ptr;
+using std::shared_ptr;
 using namespace sub;
 
 namespace sub {

@@ -17,14 +17,14 @@
 
 */
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/filesystem.hpp>
 
 namespace sub {
 
 class Reader;
 
-extern boost::shared_ptr<Reader>
+extern std::shared_ptr<Reader>
 reader_factory (boost::filesystem::path);
 
 }
