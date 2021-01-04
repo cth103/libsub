@@ -22,7 +22,7 @@ import os
 option_defaults = { 'force-cpp11': False }
 
 def dependencies(target, options):
-    libdcp =  ('libdcp', '0f1034f')
+    libdcp =  ('libdcp', 'd39880e')
     libcxml = ('libcxml', 'c336f86')
     return (('asdcplib', 'carl'), libcxml, libdcp)
 
