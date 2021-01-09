@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2018 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include <dcp/subtitle_string.h>
 #include <dcp/interop_subtitle_asset.h>
 #include <dcp/smpte_subtitle_asset.h>
-#include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 
 using std::list;
@@ -72,10 +71,10 @@ DCPReader::DCPReader (boost::filesystem::path file)
 	}
 
 
-	BOOST_FOREACH (shared_ptr<dcp::Subtitle> i, sc->subtitles ()) {
+	for (auto i: sc->subtitles()) {
 
 		/* We don't deal with image subs */
-		shared_ptr<dcp::SubtitleString> is = dynamic_pointer_cast<dcp::SubtitleString>(i);
+		auto is = dynamic_pointer_cast<dcp::SubtitleString>(i);
 		if (!is) {
 			continue;
 		}
