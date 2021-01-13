@@ -29,7 +29,7 @@
 #include "horizontal_position.h"
 #include <boost/optional.hpp>
 #include <string>
-#include <list>
+#include <vector>
 
 namespace sub {
 

@@ -33,7 +33,7 @@ namespace sub {
 class Subtitle;
 
 extern void write_stl_binary (
-	std::list<Subtitle> subtitles,
+	std::vector<Subtitle> subtitles,
 	float frames_per_second,
 	Language language,
 	std::string original_programme_title,

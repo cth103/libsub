@@ -28,7 +28,6 @@
 #include <iostream>
 #include <cstdio>
 
-using std::list;
 using std::cerr;
 using std::vector;
 using std::fabs;
@@ -39,9 +38,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	FILE* f = fopen ("test/data/test.srt", "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<std::vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
+	auto i = subs.begin ();
 
 
 	/* First subtitle */
@@ -50,10 +49,10 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 41, 90));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 42, 210));
 
-	list<sub::Line>::iterator j = i->lines.begin ();
+	auto j = i->lines.begin();
 	BOOST_CHECK (j != i->lines.end ());
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
-	sub::Block b = j->blocks.front ();
+	auto b = j->blocks.front();
 	BOOST_CHECK_EQUAL (b.text, "This is a subtitle");
 	/* No font is specified by subrip, so none should be seen here */
 	BOOST_CHECK (!b.font);
@@ -94,7 +93,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (l.vertical_position.line.get(), 0);
 	BOOST_CHECK_EQUAL (l.vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 
-	list<sub::Block>::iterator k = l.blocks.begin ();
+	auto k = l.blocks.begin();
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, "This is some ");
@@ -175,9 +174,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	FILE* f = fopen ("test/data/test2.srt", "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::const_iterator i = subs.begin();
+	auto i = subs.begin();
 
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 49, 200));
@@ -293,7 +292,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	rs = sub::RawSubtitle();
 	r.convert_line ("<b>This is <i>nesting</i> of subtitles</b>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 3);
-	list<sub::RawSubtitle>::iterator i = r._subs.begin ();
+	auto i = r._subs.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
 	BOOST_CHECK_EQUAL (i->bold, true);
 	BOOST_CHECK_EQUAL (i->italic, false);
@@ -461,11 +460,11 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test3)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<std::vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin ();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	BOOST_REQUIRE (i != subs.end ());
 
@@ -538,9 +537,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test4)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SubripReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> >(reader.subtitles());
+	auto subs = sub::collect<std::vector<sub::Subtitle>>(reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
+	auto i = subs.begin();
 	std::cout << i->lines.front().blocks.front().text << "\n";
 
 	std::string const t = i->lines.front().blocks.front().text;

@@ -29,7 +29,7 @@
 #include "raw_subtitle.h"
 #include <boost/optional.hpp>
 #include <string>
-#include <list>
+#include <vector>
 
 namespace sub {
 
@@ -90,7 +90,7 @@ public:
 	/** vertical position of the baseline of the text */
 	VerticalPosition vertical_position;
 
-	std::list<Block> blocks;
+	std::vector<Block> blocks;
 
 	bool same_metadata (RawSubtitle) const;
 };
@@ -120,7 +120,7 @@ public:
 	boost::optional<Time> fade_up;
 	boost::optional<Time> fade_down;
 
-	std::list<Line> lines;
+	std::vector<Line> lines;
 
 	bool same_metadata (RawSubtitle) const;
 };

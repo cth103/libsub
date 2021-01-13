@@ -22,24 +22,24 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/optional/optional_io.hpp>
 
-using std::list;
 using std::shared_ptr;
+using std::vector;
 
 /* Test reading of a DCP XML file */
 BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 {
 	sub::DCPReader reader ("test/data/test1.xml");
-	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	BOOST_REQUIRE (i != subs.end ());
+	auto i = subs.begin();
+	BOOST_REQUIRE (i != subs.end());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 5, 198 * 4));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 7, 115 * 4));
 	BOOST_CHECK_EQUAL (i->fade_up.get(), sub::Time::from_hms (0, 0, 0, 4));
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 4));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
 		sub::Block b = j->blocks.front ();
@@ -65,10 +65,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 4));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front ();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -105,10 +105,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 4));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -131,10 +131,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 4));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFontId");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -154,9 +154,9 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test1)
 BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 {
 	sub::DCPReader reader ("test/data/test2.xml");
-	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles ());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
+	auto i = subs.begin ();
 	BOOST_REQUIRE (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 0, 41, 62 * 4));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 0, 43, 52 * 4));
@@ -164,10 +164,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front ();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -204,10 +204,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin ();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front ();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -244,10 +244,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -288,10 +288,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -328,10 +328,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -368,10 +368,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -408,10 +408,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -448,10 +448,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -488,10 +488,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -528,10 +528,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, false);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));
@@ -568,10 +568,10 @@ BOOST_AUTO_TEST_CASE (dcp_reader_test2)
 	BOOST_CHECK_EQUAL (i->fade_down.get(), sub::Time::from_hms (0, 0, 0, 0));
 
 	{
-		list<sub::Line>::iterator j = i->lines.begin ();
+		auto j = i->lines.begin();
 		BOOST_REQUIRE (j != i->lines.end ());
 		BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
-		sub::Block b = j->blocks.front ();
+		auto b = j->blocks.front();
 		BOOST_CHECK_EQUAL (b.font.get(), "theFont");
 		BOOST_CHECK_EQUAL (b.italic, true);
 		BOOST_CHECK (b.colour == sub::Colour (1, 1, 1));

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2016 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 #include "exceptions.h"
 #include <boost/foreach.hpp>
 
-using std::string;
 using std::list;
+using std::string;
 using namespace sub;
 
 ProgrammingError::ProgrammingError (string file, int line)

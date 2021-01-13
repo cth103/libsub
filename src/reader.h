@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 #define LIBSUB_READER_H
 
 #include "raw_subtitle.h"
-#include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 struct subrip_reader_convert_line_test;
 
@@ -37,7 +37,7 @@ class Reader
 public:
 	virtual ~Reader () {}
 
-	std::list<RawSubtitle> subtitles () const {
+	std::vector<RawSubtitle> subtitles () const {
 		return _subs;
 	}
 
@@ -50,7 +50,7 @@ protected:
 
 	void warn (std::string) const;
 
-	std::list<RawSubtitle> _subs;
+	std::vector<RawSubtitle> _subs;
 };
 
 }

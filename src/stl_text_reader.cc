@@ -24,7 +24,6 @@
 #include <vector>
 #include <iostream>
 
-using std::list;
 using std::ostream;
 using std::istream;
 using std::string;

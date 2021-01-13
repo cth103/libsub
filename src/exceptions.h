@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014-2016 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,9 +20,10 @@
 #ifndef LIBSUB_EXCEPTIONS_H
 #define LIBSUB_EXCEPTIONS_H
 
+#include <list>
 #include <stdexcept>
 #include <string>
-#include <list>
+#include <vector>
 
 namespace sub {
 

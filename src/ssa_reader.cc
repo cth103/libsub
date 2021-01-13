@@ -33,7 +33,6 @@ using std::string;
 using std::vector;
 using std::map;
 using std::cout;
-using std::list;
 using boost::optional;
 using boost::function;
 using namespace boost::algorithm;
@@ -265,7 +264,7 @@ SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play
  *  @param line SSA line string (i.e. just the subtitle, possibly with embedded stuff)
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
  */
-list<RawSubtitle>
+vector<RawSubtitle>
 SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_res_y)
 {
 	enum {
@@ -274,7 +273,7 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 		BACKSLASH
 	} state = TEXT;
 
-	list<RawSubtitle> subs;
+	vector<RawSubtitle> subs;
 	RawSubtitle current = base;
 	string style;
 

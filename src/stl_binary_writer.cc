@@ -30,14 +30,12 @@
 #include <boost/locale.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
-#include <list>
 #include <cmath>
 #include <fstream>
-#include <vector>
 #include <iomanip>
 #include <set>
+#include <vector>
 
-using std::list;
 using std::set;
 using std::ofstream;
 using std::string;
@@ -149,7 +147,7 @@ vertical_position (sub::Line const & line)
 }
 
 vector<char*>
-make_tti_blocks (list<Subtitle> const& subtitles, STLBinaryTables const& tables, float frames_per_second)
+make_tti_blocks (vector<Subtitle> const& subtitles, STLBinaryTables const& tables, float frames_per_second)
 {
 	static int const tti_size = 128;
 	vector<char*> tti;
@@ -287,9 +285,9 @@ make_tti_blocks (list<Subtitle> const& subtitles, STLBinaryTables const& tables,
 
 
 /** @param language ISO 3-character country code for the language of the subtitles */
-	void
+void
 sub::write_stl_binary (
-		list<Subtitle> subtitles,
+		vector<Subtitle> subtitles,
 		float frames_per_second,
 		Language language,
 		string original_programme_title,

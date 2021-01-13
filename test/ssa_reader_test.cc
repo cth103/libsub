@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2016-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@
 #include <cmath>
 #include <iostream>
 
-using std::list;
 using std::fabs;
+using std::vector;
 
 BOOST_AUTO_TEST_CASE (ssa_reader_test)
 {
@@ -38,14 +38,14 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
+	auto i = subs.begin ();
 
 	BOOST_REQUIRE (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 2, 40, 650));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 2, 41, 790));
-	list<sub::Line>::iterator j = i->lines.begin();
+	auto j = i->lines.begin();
 	BOOST_REQUIRE (j != i->lines.end ());
 	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
 	sub::Block b = j->blocks.front ();
@@ -78,13 +78,13 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test)
 BOOST_AUTO_TEST_CASE (ssa_reader_line_test1)
 {
 	sub::RawSubtitle base;
-	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+	auto r = sub::SSAReader::parse_line (
 		base,
 		"This is a line with some {\\i1}italics{\\i0} and then\\nthere is a new line.",
 		1920, 1080
 		);
 
-	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	auto i = r.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is a line with some ");
 	BOOST_CHECK_EQUAL (i->italic, false);
 	++i;
@@ -108,13 +108,13 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test1)
 BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 {
 	sub::RawSubtitle base;
-	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+	auto r = sub::SSAReader::parse_line (
 		base,
 		"{\\i1}It's all just italics{\\i0}",
 		1920, 1080
 		);
 
-	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	auto i = r.begin ();
 	BOOST_CHECK_EQUAL (i->text, "It's all just italics");
 	BOOST_CHECK_EQUAL (i->italic, true);
 	++i;
@@ -192,11 +192,11 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	/* Hello world */
 	SUB_START (sub::Time::from_hms (0, 0, 1, 230), sub::Time::from_hms (0, 0, 4, 550));
@@ -281,11 +281,11 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test4)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	BOOST_REQUIRE (i != subs.end ());
 
@@ -329,11 +329,11 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test5)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin ();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	BOOST_REQUIRE (i != subs.end ());
 
@@ -378,11 +378,11 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 	BOOST_REQUIRE (f);
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin ();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	BOOST_REQUIRE (i != subs.end ());
 
@@ -459,11 +459,11 @@ BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 	FILE* f = fopen (p.string().c_str(), "r");
 	sub::SSAReader reader (f);
 	fclose (f);
-	list<sub::Subtitle> subs = sub::collect<std::list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
-	list<sub::Line>::iterator j;
-	list<sub::Block>::iterator k;
+	auto i = subs.begin ();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
 
 	/* Hello world */
 	SUB_START (sub::Time::from_hms (0, 0, 1, 230), sub::Time::from_hms (0, 0, 4, 550));
@@ -478,13 +478,13 @@ BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 BOOST_AUTO_TEST_CASE (ssa_reader_fs)
 {
 	sub::RawSubtitle base;
-	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+	auto r = sub::SSAReader::parse_line (
 		base,
 		"This is a line with some {\\fs64}font sizing.",
 		1920, 1080
 		);
 
-	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	auto i = r.begin ();
 	BOOST_CHECK_EQUAL (i->text, "This is a line with some ");
 	++i;
 	BOOST_REQUIRE (i != r.end ());
@@ -500,13 +500,13 @@ BOOST_AUTO_TEST_CASE (ssa_reader_fs)
 BOOST_AUTO_TEST_CASE (ssa_reader_c)
 {
 	sub::RawSubtitle base;
-	list<sub::RawSubtitle> r = sub::SSAReader::parse_line (
+	auto r = sub::SSAReader::parse_line (
 		base,
 		"{\\c&H00FFFF&}Dieser Untertitel ist gelb",
 		1920, 1080
 		);
 
-	list<sub::RawSubtitle>::const_iterator i = r.begin ();
+	auto i = r.begin ();
 	BOOST_CHECK_EQUAL (i->text, "Dieser Untertitel ist gelb");
 	BOOST_CHECK (i->colour == sub::Colour::from_rgb_hex("ffff00"));
 	++i;

@@ -25,7 +25,6 @@
 #include <dcp/smpte_subtitle_asset.h>
 #include <boost/filesystem.hpp>
 
-using std::list;
 using std::cout;
 using std::string;
 using std::exception;

@@ -23,7 +23,6 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 
-using std::list;
 using std::ifstream;
 using std::vector;
 
@@ -32,9 +31,9 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 {
 	ifstream file ("test/data/test_text.stl");
 	sub::STLTextReader reader (file);
-	list<sub::Subtitle> subs = sub::collect<list<sub::Subtitle> > (reader.subtitles ());
+	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
 
-	list<sub::Subtitle>::iterator i = subs.begin ();
+	auto i = subs.begin ();
 
 
 	/* First subtitle */
@@ -43,10 +42,10 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hmsf (0, 0, 41, 9));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hmsf (0, 0, 42, 21));
 
-	list<sub::Line>::iterator j = i->lines.begin ();
+	auto j = i->lines.begin ();
 	BOOST_CHECK (j != i->lines.end ());
 	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
-	sub::Block b = j->blocks.front ();
+	auto b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, " This is a subtitle ");
 	BOOST_CHECK_EQUAL (b.font.get(), "Arial");
 	BOOST_CHECK_EQUAL (b.font_size.points().get(), 42);
@@ -80,7 +79,7 @@ BOOST_AUTO_TEST_CASE (stl_text_reader_test)
 	BOOST_CHECK_EQUAL (l.blocks.size(), 7);
 	BOOST_CHECK_EQUAL (l.vertical_position.line.get(), 0);
 
-	list<sub::Block>::iterator k = l.blocks.begin ();
+	auto k = l.blocks.begin ();
 
 	BOOST_CHECK (k != l.blocks.end ());
 	BOOST_CHECK_EQUAL (k->text, " This is some ");

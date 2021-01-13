@@ -30,29 +30,29 @@ namespace sub {
  */
 template <class T>
 T
-collect (std::list<RawSubtitle> raw)
+collect (std::vector<RawSubtitle> raw)
 {
-	raw.sort ();
+	std::stable_sort (raw.begin(), raw.end());
 
 	T out;
 
 	boost::optional<Subtitle> current;
-	for (std::list<RawSubtitle>::const_iterator i = raw.begin (); i != raw.end(); ++i) {
-		if (current && current->same_metadata (*i)) {
+	for (auto const& i: raw) {
+		if (current && current->same_metadata(i)) {
 			/* This RawSubtitle can be added to current... */
-			if (!current->lines.empty() && current->lines.back().same_metadata (*i)) {
+			if (!current->lines.empty() && current->lines.back().same_metadata(i)) {
 				/* ... and indeed to its last line */
-				current->lines.back().blocks.push_back (Block (*i));
+				current->lines.back().blocks.push_back(Block(i));
 			} else {
 				/* ... as a new line */
-				current->lines.push_back (Line (*i));
+				current->lines.push_back(Line(i));
 			}
 		} else {
 			/* We must start a new Subtitle */
 			if (current) {
 				out.push_back (current.get ());
 			}
-			current = Subtitle (*i);
+			current = Subtitle (i);
 		}
 	}
 

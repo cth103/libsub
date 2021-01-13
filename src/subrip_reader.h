@@ -26,6 +26,7 @@
 
 #include "reader.h"
 #include <boost/function.hpp>
+#include <list>
 
 struct subrip_reader_convert_line_test;
 struct subrip_reader_convert_time_test;

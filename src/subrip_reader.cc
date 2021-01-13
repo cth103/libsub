@@ -37,7 +37,6 @@
 
 using std::string;
 using std::vector;
-using std::list;
 using std::cout;
 using std::hex;
 using boost::lexical_cast;
@@ -198,7 +197,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 
 	string tag;
 
-	list<Colour> colours;
+	vector<Colour> colours;
 	colours.push_back (Colour (1, 1, 1));
 
 	/* XXX: missing <font> support */

@@ -32,8 +32,9 @@ using std::getline;
 using std::ostream;
 using std::map;
 using std::list;
-using boost::optional;
 using std::shared_ptr;
+using std::vector;
+using boost::optional;
 using namespace sub;
 
 /** @param s A string.
@@ -100,27 +101,27 @@ sub::remove_unicode_bom (optional<string>& line)
 void
 sub::dump (shared_ptr<const Reader> reader, ostream& os)
 {
-	map<string, string> metadata = reader->metadata ();
-	for (map<string, string>::const_iterator i = metadata.begin(); i != metadata.end(); ++i) {
-		os << i->first << ": " << i->second << "\n";
+	auto metadata = reader->metadata ();
+	for (auto const& i: metadata) {
+		os << i.first << ": " << i.second << "\n";
 	}
 
-	list<sub::Subtitle> subs = collect<list<sub::Subtitle> > (reader->subtitles ());
+	auto subs = collect<vector<sub::Subtitle>> (reader->subtitles());
 	int n = 0;
-	for (list<sub::Subtitle>::const_iterator i = subs.begin(); i != subs.end(); ++i) {
-		os << "Subtitle " << n << " at " << i->from << " -> " << i->to << "\n";
-		for (list<sub::Line>::const_iterator j = i->lines.begin(); j != i->lines.end(); ++j) {
+	for (auto const& i: subs) {
+		os << "Subtitle " << n << " at " << i.from << " -> " << i.to << "\n";
+		for (auto const& j: i.lines) {
 
 			os << "\t";
 
-			if (j->vertical_position.proportional) {
-				os << j->vertical_position.proportional.get() << " of screen";
-			} else if (j->vertical_position.line && j->vertical_position.lines) {
-				os << j->vertical_position.line.get() << " lines of " << j->vertical_position.lines.get();
+			if (j.vertical_position.proportional) {
+				os << j.vertical_position.proportional.get() << " of screen";
+			} else if (j.vertical_position.line && j.vertical_position.lines) {
+				os << j.vertical_position.line.get() << " lines of " << j.vertical_position.lines.get();
 			}
-			if (j->vertical_position.reference) {
+			if (j.vertical_position.reference) {
 				os << " from ";
-				switch (j->vertical_position.reference.get()) {
+				switch (j.vertical_position.reference.get()) {
 				case TOP_OF_SCREEN:
 					os << "top";
 					break;
@@ -139,22 +140,22 @@ sub::dump (shared_ptr<const Reader> reader, ostream& os)
 			os << "\t";
 			bool italic = false;
 			bool underline = false;
-			for (list<sub::Block>::const_iterator k = j->blocks.begin(); k != j->blocks.end(); ++k) {
-				if (k->italic && !italic) {
+			for (auto const& k: j.blocks) {
+				if (k.italic && !italic) {
 					os << "<i>";
-				} else if (italic && !k->italic) {
+				} else if (italic && !k.italic) {
 					os << "</i>";
 				}
-				if (k->underline && !underline) {
+				if (k.underline && !underline) {
 					os << "<u>";
-				} else if (underline && !k->underline) {
+				} else if (underline && !k.underline) {
 					os << "</u>";
 				}
 
-				italic = k->italic;
-				underline = k->underline;
+				italic = k.italic;
+				underline = k.underline;
 
-				os << k->text;
+				os << k.text;
 			}
 
 			if (italic) {

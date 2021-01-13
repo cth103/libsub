@@ -24,7 +24,6 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 
-using std::list;
 using std::ifstream;
 using std::ofstream;
 using std::shared_ptr;

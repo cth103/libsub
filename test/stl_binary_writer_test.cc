@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2021 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,12 +21,12 @@
 #include "subtitle.h"
 #include <boost/test/unit_test.hpp>
 
-using std::list;
+using std::vector;
 
 /** Test writing of a binary STL file */
 BOOST_AUTO_TEST_CASE (stl_binary_writer_test)
 {
-	list<sub::Subtitle> subs;
+	vector<sub::Subtitle> subs;
 
 	{
 		sub::Subtitle s;
