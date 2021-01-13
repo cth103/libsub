@@ -24,7 +24,6 @@
 #include "exceptions.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <cstdio>
 #include <cmath>
 #include <iostream>

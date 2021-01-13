@@ -19,7 +19,6 @@
 
 #include "compose.hpp"
 #include "exceptions.h"
-#include <boost/foreach.hpp>
 
 using std::list;
 using std::string;

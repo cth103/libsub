@@ -29,7 +29,6 @@
 #include "sub_assert.h"
 #include <boost/locale.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/foreach.hpp>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
@@ -155,11 +154,11 @@ make_tti_blocks (vector<Subtitle> const& subtitles, STLBinaryTables const& table
 	/* Buffer to build the TTI blocks in */
 	char buffer[tti_size];
 
-	BOOST_FOREACH (Subtitle const& i, subtitles) {
+	for (auto const& i: subtitles) {
 
 		/* Find the top vertical position of this subtitle */
 		optional<int> top;
-		BOOST_FOREACH (Line const& j, i.lines) {
+		for (auto const& j: i.lines) {
 			int const vp = vertical_position (j);
 			if (!top || vp < top.get ()) {
 				top = vp;
@@ -172,7 +171,7 @@ make_tti_blocks (vector<Subtitle> const& subtitles, STLBinaryTables const& table
 		bool underline = false;
 		optional<int> last_vp;
 
-		BOOST_FOREACH (Line const& j, i.lines) {
+		for (auto const& j: i.lines) {
 
 			/* CR/LF down to this line */
 			int const vp = vertical_position (j);
@@ -185,7 +184,7 @@ make_tti_blocks (vector<Subtitle> const& subtitles, STLBinaryTables const& table
 
 			last_vp = vp;
 
-			BOOST_FOREACH (Block const& k, j.blocks) {
+			for (auto const& k: j.blocks) {
 				if (k.underline && !underline) {
 					text += "\x82";
 					underline = true;
@@ -328,10 +327,10 @@ sub::write_stl_binary (
 
 	int longest = 0;
 
-	BOOST_FOREACH (Subtitle const& i, subtitles) {
-		BOOST_FOREACH (Line const& j, i.lines) {
+	for (auto const& i: subtitles) {
+		for (auto const& j: i.lines) {
 			int t = 0;
-			BOOST_FOREACH (Block const& k, j.blocks) {
+			for (auto const& k: j.blocks) {
 				t += k.text.size ();
 			}
 			longest = std::max (longest, t);
@@ -387,7 +386,7 @@ sub::write_stl_binary (
 
 	ofstream output (file_name.string().c_str());
 	output.write (buffer, 1024);
-	BOOST_FOREACH (char* i, tti_blocks) {
+	for (auto i: tti_blocks) {
 		output.write (i, 128);
 		delete[] i;
 	}

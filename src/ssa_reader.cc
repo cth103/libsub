@@ -25,7 +25,6 @@
 #include "compose.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
-#include <boost/foreach.hpp>
 #include <iostream>
 #include <vector>
 
@@ -439,7 +438,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 		case EVENTS:
 			if (type == "Format") {
 				split (event_format, body, is_any_of (","));
-				BOOST_FOREACH (string& i, event_format) {
+				for (auto& i: event_format) {
 					trim (i);
 				}
 			} else if (type == "Dialogue") {
@@ -488,7 +487,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 					} else if (event_format[i] == "MarginV") {
 						sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 					} else if (event_format[i] == "Text") {
-						BOOST_FOREACH (sub::RawSubtitle j, parse_line (sub, event[i], play_res_x, play_res_y)) {
+						for (auto j: parse_line (sub, event[i], play_res_x, play_res_y)) {
 							_subs.push_back (j);
 						}
 					}
