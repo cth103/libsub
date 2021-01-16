@@ -113,7 +113,7 @@ def configure(conf):
         conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.2', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.HAVE_DCP = 1
         conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-carl', 'kumu-carl', 'openjp2', 'cxml']
-        conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1', 'glibmm-2.4', 'xml++-2.6']
+        conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1', 'glibmm-2.4', 'xml++-2.6', 'xml2']
     else:
         conf.check_cfg(package='libdcp-1.0', atleast_version='1.6.2', args='--cflags --libs', uselib_store='DCP', mandatory=True)
 
