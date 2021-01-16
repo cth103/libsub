@@ -101,6 +101,9 @@ def configure(conf):
     else:
         conf.env.append_value('CXXFLAGS', '-O3')
 
+    if not conf.env.TARGET_WINDOWS:
+        conf.env.append_value('LINKFLAGS', '-pthread')
+
     # Disable libxml++ deprecation warnings for now
     conf.env.append_value('CXXFLAGS', ['-Wno-deprecated-declarations'])
 
