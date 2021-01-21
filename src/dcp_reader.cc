@@ -73,7 +73,7 @@ DCPReader::DCPReader (boost::filesystem::path file)
 	for (auto i: sc->subtitles()) {
 
 		/* We don't deal with image subs */
-		auto is = dynamic_pointer_cast<dcp::SubtitleString>(i);
+		auto is = dynamic_pointer_cast<const dcp::SubtitleString>(i);
 		if (!is) {
 			continue;
 		}
