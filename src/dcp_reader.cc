@@ -84,10 +84,10 @@ DCPReader::DCPReader (boost::filesystem::path file)
 		rs.font_size = FontSize::from_proportional (is->size() / (72.0 * 11.0));
 
 		switch (is->effect ()) {
-		case dcp::BORDER:
+		case dcp::Effect::BORDER:
 			rs.effect = BORDER;
 			break;
-		case dcp::SHADOW:
+		case dcp::Effect::SHADOW:
 			rs.effect = SHADOW;
 			break;
 		default:
@@ -102,26 +102,26 @@ DCPReader::DCPReader (boost::filesystem::path file)
 		rs.underline = is->underline ();
 
 		switch (is->h_align()) {
-		case dcp::HALIGN_LEFT:
+		case dcp::HAlign::LEFT:
 			rs.horizontal_position.reference = LEFT_OF_SCREEN;
 			break;
-		case dcp::HALIGN_CENTER:
+		case dcp::HAlign::CENTER:
 			rs.horizontal_position.reference = HORIZONTAL_CENTRE_OF_SCREEN;
 			break;
-		case dcp::HALIGN_RIGHT:
+		case dcp::HAlign::RIGHT:
 			rs.horizontal_position.reference = RIGHT_OF_SCREEN;
 			break;
 		}
 
 		rs.vertical_position.proportional = is->v_position();
 		switch (is->v_align()) {
-		case dcp::VALIGN_TOP:
+		case dcp::VAlign::TOP:
 			rs.vertical_position.reference = TOP_OF_SCREEN;
 			break;
-		case dcp::VALIGN_CENTER:
+		case dcp::VAlign::CENTER:
 			rs.vertical_position.reference = VERTICAL_CENTRE_OF_SCREEN;
 			break;
-		case dcp::VALIGN_BOTTOM:
+		case dcp::VAlign::BOTTOM:
 			rs.vertical_position.reference = BOTTOM_OF_SCREEN;
 			break;
 		}
