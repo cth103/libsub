@@ -29,7 +29,7 @@ optional<Effect>
 sub::string_to_effect (string s)
 {
 	if (s == "none") {
-		return optional<Effect> ();
+		return {};
 	} else if (s == "border") {
 		return BORDER;
 	} else if (s == "shadow") {

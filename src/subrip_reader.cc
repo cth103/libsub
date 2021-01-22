@@ -73,7 +73,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 	rs.vertical_position.reference = TOP_OF_SUBTITLE;
 
 	while (true) {
-		optional<string> line = get_line ();
+		auto line = get_line ();
 		if (!line) {
 			break;
 		}

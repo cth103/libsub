@@ -25,12 +25,12 @@
 #include <dcp/smpte_subtitle_asset.h>
 #include <boost/filesystem.hpp>
 
-using std::cout;
-using std::string;
-using std::exception;
-using std::shared_ptr;
-using boost::optional;
 using std::dynamic_pointer_cast;
+using std::exception;
+using std::make_shared;
+using std::shared_ptr;
+using std::string;
+using boost::optional;
 using namespace sub;
 
 static Time
@@ -52,21 +52,21 @@ DCPReader::DCPReader (boost::filesystem::path file)
 	string smpte_error;
 
 	try {
-		sc.reset (new dcp::InteropSubtitleAsset (file));
+		sc = make_shared<dcp::InteropSubtitleAsset>(file);
 	} catch (exception& e) {
 		interop_error = e.what ();
 	}
 
 	if (!sc) {
 		try {
-			sc.reset (new dcp::SMPTESubtitleAsset (file));
+			sc = make_shared<dcp::SMPTESubtitleAsset>(file);
 		} catch (exception& e) {
 			smpte_error = e.what();
 		}
 	}
 
 	if (!sc) {
-		throw DCPError (String::compose ("Could not read subtitles (%1 / %2)", interop_error, smpte_error));
+		throw DCPError(String::compose("Could not read subtitles (%1 / %2)", interop_error, smpte_error));
 	}
 
 
