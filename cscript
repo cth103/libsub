@@ -22,7 +22,7 @@ import os
 option_defaults = { 'force-cpp11': False }
 
 def dependencies(target, options):
-    return (('asdcplib', 'bb09615'), ('libdcp', '8344c1c'))
+    return (('asdcplib', 'bb09615'), ('libdcp', '2c1faeb'))
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
