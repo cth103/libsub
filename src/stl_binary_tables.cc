@@ -211,6 +211,7 @@ STLBinaryTables::STLBinaryTables ()
 	code<LanguageGroup, string> (_language_group_map, "02", LANGUAGE_GROUP_LATIN_ARABIC, "Latin/Arabic");
 	code<LanguageGroup, string> (_language_group_map, "03", LANGUAGE_GROUP_LATIN_GREEK, "Latin/Greek");
 	code<LanguageGroup, string> (_language_group_map, "04", LANGUAGE_GROUP_LATIN_HEBREW, "Latin/Hebrew");
+	code<LanguageGroup, string> (_language_group_map, "U8", LANGUAGE_GROUP_LATIN_HEBREW, "UTF-8");
 
 	code<Language, string> (_language_map, "00", LANGUAGE_UNKNOWN, "Unknown");
 	code<Language, string> (_language_map, "01", LANGUAGE_ALBANIAN, "Albanian");

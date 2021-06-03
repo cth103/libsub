@@ -68,3 +68,17 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test2)
 	sub::dump (r, dump_stream);
 	dump_stream.close ();
 }
+
+
+/** Test reading a file which raised "Unknown language group code U8" */
+BOOST_AUTO_TEST_CASE (stl_binary_reader_test3)
+{
+	if (private_test.empty()) {
+		return;
+	}
+
+	auto path = private_test / "hsk.stl";
+	ifstream in (path.string().c_str());
+	auto reader = make_shared<sub::STLBinaryReader>(in);
+}
+
