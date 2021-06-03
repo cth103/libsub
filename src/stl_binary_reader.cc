@@ -187,6 +187,7 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 	editor_name = reader->get_string(309, 32);
 	editor_contact_details = reader->get_string(341, 32);
 
+	int highest_line = 0;
 	for (int i = 0; i < tti_blocks; ++i) {
 
 		reader->read (128, "TTI");
@@ -211,10 +212,11 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 			RawSubtitle sub;
 			sub.from = reader->get_timecode(5, frame_rate);
 			sub.to = reader->get_timecode(9, frame_rate);
-                        /* XXX: only the vertical position of the first TTI block should be used (says the spec),
-                           so using reader->get_int(13, 1) here is wrong if i > 0
-                         */
+			/* XXX: vertical position of TTI extension blocks should be ignored (spec page 10) so this
+			 * is wrong if the EBN of this TTI block is not 255 (I think).
+			 */
 			sub.vertical_position.line = reader->get_int(13, 1) + j;
+			highest_line = std::max(highest_line, *sub.vertical_position.line);
 			sub.vertical_position.lines = maximum_rows;
 			sub.vertical_position.reference = TOP_OF_SCREEN;
 			sub.italic = italic;
@@ -281,6 +283,14 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 			}
 
 			/* XXX: justification */
+		}
+	}
+
+	/* Fix line numbers so they don't go off the bottom of the screen */
+	if (highest_line > maximum_rows) {
+		int correction = highest_line - maximum_rows;
+		for (auto& i: _subs) {
+			*i.vertical_position.line -= correction;
 		}
 	}
 }

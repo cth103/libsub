@@ -70,15 +70,27 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test2)
 }
 
 
-/** Test reading a file which raised "Unknown language group code U8" */
+/** Test reading a file which raised "Unknown language group code U8" and which has
+ *  bizarre line numbering.
+ */
 BOOST_AUTO_TEST_CASE (stl_binary_reader_test3)
 {
 	if (private_test.empty()) {
 		return;
 	}
 
+	/* This file has a MNR value of 99, which (as per the spec recommendation)
+	 * we "fix" to 12.  But it also has line numbers which start at 99 and go up from there,
+	 * so if we don't also alter the line numbers they end up way off the bottom of the screen.
+	 * Check that the line numbers are brought into the range of our "fix".
+	 */
+
 	auto path = private_test / "hsk.stl";
 	ifstream in (path.string().c_str());
 	auto reader = make_shared<sub::STLBinaryReader>(in);
+	for (auto i: reader->subtitles()) {
+		BOOST_REQUIRE(*i.vertical_position.line >= 0);
+		BOOST_REQUIRE(*i.vertical_position.line <= 12);
+	}
 }
 
