@@ -27,6 +27,7 @@
 using std::ifstream;
 using std::ofstream;
 using std::shared_ptr;
+using std::make_shared;
 
 /* Test reading of a binary STL file */
 BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)
@@ -39,7 +40,7 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)
 
 	path stl = private_test / "VA_24fps_Reel_6_DE_FR.stl";
 	ifstream in (stl.string().c_str());
-	shared_ptr<sub::STLBinaryReader> r (new sub::STLBinaryReader(in));
+	auto r = make_shared<sub::STLBinaryReader>(in);
 	path dump = path("build") / path("test") / path("VA_24fps_Reel_6_DE_FR.dump");
 	ofstream dump_stream (dump.string().c_str());
 	sub::dump (r, dump_stream);
@@ -58,9 +59,9 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test2)
 	using boost::filesystem::path;
 
 	path stl = private_test / "VA_24fps_Reel_6_DE_FR.stl";
-	FILE* in = fopen (stl.string().c_str(), "rb");
+	auto in = fopen (stl.string().c_str(), "rb");
 	BOOST_REQUIRE (in);
-	shared_ptr<sub::STLBinaryReader> r (new sub::STLBinaryReader(in));
+	auto r = make_shared<sub::STLBinaryReader>(in);
 	fclose (in);
 	path dump = path("build") / path("test") / path("VA_24fps_Reel_6_DE_FR.dump");
 	ofstream dump_stream (dump.string().c_str());
