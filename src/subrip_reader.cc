@@ -200,11 +200,6 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 	vector<Colour> colours;
 	colours.push_back (Colour (1, 1, 1));
 
-	/* XXX: missing <font> support */
-	/* XXX: nesting of tags e.g. <b>foo<i>bar<b>baz</b>fred</i>jim</b> might
-	   not work, I think.
-	*/
-
 	for (size_t i = 0; i < t.size(); ++i) {
 		switch (state) {
 		case TEXT:
