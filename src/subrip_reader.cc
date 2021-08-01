@@ -190,84 +190,88 @@ SubripReader::convert_time (string t)
 void
 SubripReader::convert_line (string t, RawSubtitle& p)
 {
-	enum {
-		TEXT,
-		TAG
-	} state = TEXT;
-
-	string tag;
-
 	vector<Colour> colours;
 	colours.push_back (Colour (1, 1, 1));
 
-	for (size_t i = 0; i < t.size(); ++i) {
-		switch (state) {
-		case TEXT:
-			if (t[i] == '<' || t[i] == '{') {
-				state = TAG;
-			} else {
-				p.text += t[i];
+	auto has_next = [](string line, size_t& index, string s) {
+		boost::to_lower(s);
+		auto next = line.substr(index, s.size());
+		boost::to_lower(next);
+		if (next != s) {
+			return false;
+		}
+
+		index += s.size();
+		return true;
+	};
+
+	size_t i = 0;
+	while (i < t.size()) {
+		if (has_next(t, i, "<b>") || has_next(t, i, "{b}")) {
+			maybe_content (p);
+			p.bold = true;
+		} else if (has_next(t, i, "</b>") || has_next(t, i, "{/b}")) {
+			maybe_content (p);
+			p.bold = false;
+		} else if (has_next(t, i, "<i>") || has_next(t, i, "{i}")) {
+			maybe_content (p);
+			p.italic = true;
+		} else if (has_next(t, i, "</i>") || has_next(t, i, "{/i}")) {
+			maybe_content (p);
+			p.italic = false;
+		} else if (has_next(t, i, "<u>") || has_next(t, i, "{u}")) {
+			maybe_content (p);
+			p.underline = true;
+		} else if (has_next(t, i, "</u>") || has_next(t, i, "{/u}")) {
+			maybe_content (p);
+			p.underline = false;
+		} else if (has_next(t, i, "<font") || has_next(t, i, "<Font")) {
+			maybe_content (p);
+			boost::regex re (".*color=\"?#([[:xdigit:]]+)\"?");
+			boost::smatch match;
+			string tag;
+			while (i < t.size() && t[i] != '>') {
+				tag += t[i];
+				++i;
 			}
-			break;
-		case TAG:
-			if (t[i] == '>' || t[i] == '}') {
-				if (tag == "b") {
-					maybe_content (p);
-					p.bold = true;
-				} else if (tag == "/b") {
-					maybe_content (p);
-					p.bold = false;
-				} else if (tag == "i") {
-					maybe_content (p);
-					p.italic = true;
-				} else if (tag == "/i") {
-					maybe_content (p);
-					p.italic = false;
-				} else if (tag == "u") {
-					maybe_content (p);
-					p.underline = true;
-				} else if (tag == "/u") {
-					maybe_content (p);
-					p.underline = false;
-				} else if (boost::starts_with (tag, "font")) {
-					maybe_content (p);
-					boost::regex re (".*color=\"?#([[:xdigit:]]+)\"?");
-					boost::smatch match;
-					if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
-						p.colour = Colour::from_rgb_hex (match[1]);
-						colours.push_back (p.colour);
-					} else {
-						re = boost::regex (
-							".*color=\"rgba\\("
-							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
-							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
-							"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
-							"[[:space:]]*([[:digit:]]+)[[:space:]]*"
-							"\\)\""
-							);
-						if (boost::regex_search (tag, match, re) && match.size() == 5) {
-							p.colour.r = raw_convert<int>(string(match[1])) / 255.0;
-							p.colour.g = raw_convert<int>(string(match[2])) / 255.0;
-							p.colour.b = raw_convert<int>(string(match[3])) / 255.0;
-							colours.push_back (p.colour);
-						} else {
-							throw SubripError (tag, "a colour in the format #rrggbb or rgba(rr,gg,bb,aa)", _context);
-						}
-					}
-				} else if (tag == "/font") {
-					maybe_content (p);
-					SUB_ASSERT (!colours.empty());
-					colours.pop_back ();
-					p.colour = colours.back ();
-				} else if (tag.size() > 0 && tag[0] == '\\') {
-					SSAReader::parse_style (p, tag, 288, 288);
+			++i;
+			if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
+				p.colour = Colour::from_rgb_hex (match[1]);
+				colours.push_back (p.colour);
+			} else {
+				re = boost::regex (
+					".*color=\"rgba\\("
+					"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+					"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+					"[[:space:]]*([[:digit:]]+)[[:space:]]*,"
+					"[[:space:]]*([[:digit:]]+)[[:space:]]*"
+					"\\)\""
+					);
+				if (boost::regex_search (tag, match, re) && match.size() == 5) {
+					p.colour.r = raw_convert<int>(string(match[1])) / 255.0;
+					p.colour.g = raw_convert<int>(string(match[2])) / 255.0;
+					p.colour.b = raw_convert<int>(string(match[3])) / 255.0;
+					colours.push_back (p.colour);
+				} else {
+					throw SubripError (tag, "a colour in the format #rrggbb or rgba(rr,gg,bb,aa)", _context);
 				}
-				tag.clear ();
-				state = TEXT;
-			} else {
-				tag += tolower (t[i]);
 			}
-			break;
+		} else if (has_next(t, i, "</font>")) {
+			maybe_content (p);
+			SUB_ASSERT (!colours.empty());
+			colours.pop_back ();
+			p.colour = colours.back ();
+		} else if (has_next(t, i, "{\\")) {
+			string ssa = "\\";
+			while (i < t.size() && t[i] != '}') {
+				ssa += t[i];
+				++i;
+			}
+			++i;
+			SSAReader::parse_style (p, ssa, 288, 288);
+		} else {
+			p.text += t[i];
+			++i;
 		}
 	}
 
