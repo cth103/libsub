@@ -24,7 +24,7 @@
 #include "subtitle.h"
 #include "compose.hpp"
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <iostream>
 #include <vector>
 
@@ -35,6 +35,9 @@ using std::cout;
 using boost::optional;
 using boost::function;
 using namespace boost::algorithm;
+#if BOOST_VERSION >= 106100
+using namespace boost::placeholders;
+#endif
 using namespace sub;
 
 /** @param s Subtitle string encoded in UTF-8 */

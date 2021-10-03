@@ -308,6 +308,24 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
+	r.convert_line ("<B>This is <I>nesting</I> of subtitles</B>", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 3);
+	i = r._subs.begin();
+	BOOST_CHECK_EQUAL (i->text, "This is ");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, "nesting");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, true);
+	++i;
+	BOOST_CHECK_EQUAL (i->text, " of subtitles");
+	BOOST_CHECK_EQUAL (i->bold, true);
+	BOOST_CHECK_EQUAL (i->italic, false);
+	++i;
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#ff00ff\">simple color</font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color");
@@ -377,6 +395,13 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	BOOST_CHECK (fabs (i->colour.g) < 0.01);
 	BOOST_CHECK_CLOSE (i->colour.b, 1, 0.1);
 	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
+	r.convert_line ("<< angle brackets but no HTML >>", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	i = r._subs.begin ();
+	BOOST_CHECK_EQUAL (i->text, "<< angle brackets but no HTML >>");
+	r._subs.clear();
 }
 
 /** Test SubripReader::convert_time */
