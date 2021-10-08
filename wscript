@@ -33,6 +33,8 @@ else:
 
 API_VERSION = '-1.0'
 
+libdcp_version = '1.8.2'
+
 try:
     from subprocess import STDOUT, check_output, CalledProcessError
 except ImportError:
@@ -110,12 +112,12 @@ def configure(conf):
     conf.check_cfg(package='openssl', args='--cflags --libs', uselib_store='OPENSSL', mandatory=True)
 
     if conf.options.static:
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.8.1', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version=libdcp_version, args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.HAVE_DCP = 1
         conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-carl', 'kumu-carl', 'openjp2', 'cxml']
         conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1', 'glibmm-2.4', 'xml++-2.6', 'xml2', 'dl']
     else:
-        conf.check_cfg(package='libdcp-1.0', atleast_version='1.8.1', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp-1.0', atleast_version=libdcp_version, args='--cflags --libs', uselib_store='DCP', mandatory=True)
 
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
