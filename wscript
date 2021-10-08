@@ -22,6 +22,7 @@ import shlex
 from waflib import Context
 
 APPNAME = 'libsub'
+libdcp_version = '1.8.2'
 
 this_version = subprocess.Popen(shlex.split('git tag -l --points-at HEAD'), stdout=subprocess.PIPE).communicate()[0]
 last_version = subprocess.Popen(shlex.split('git describe --tags --abbrev=0'), stdout=subprocess.PIPE).communicate()[0]
@@ -32,8 +33,6 @@ else:
     VERSION = this_version[1:].strip()
 
 API_VERSION = '-1.0'
-
-libdcp_version = '1.8.2'
 
 try:
     from subprocess import STDOUT, check_output, CalledProcessError
