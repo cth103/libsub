@@ -1,7 +1,7 @@
 import os
 
 def dependencies(target):
-    return (('asdcplib-cth', 'd8490c6'), ('libcxml', 'v0.16.1'), ('libdcp', 'v1.6.18'))
+    return (('asdcplib-cth', 'd8490c6'), ('libcxml', 'v0.16.1'), ('libdcp', 'v1.6.19'))
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
