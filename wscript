@@ -77,7 +77,8 @@ def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--enable-debug', action='store_true', default=False, help='build with debugging information and without optimisation')
     opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to dcp')
-    opt.add_option('--target-windows', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package')
+    opt.add_option('--target-windows-64', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package 64-bit')
+    opt.add_option('--target-windows-32', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package 32-bit')
     opt.add_option('--disable-tests', action='store_true', default=False, help='disable building of tests')
 
 def configure(conf):
@@ -88,11 +89,12 @@ def configure(conf):
 
     conf.env.ENABLE_DEBUG = conf.options.enable_debug
     conf.env.STATIC = conf.options.static
-    conf.env.TARGET_WINDOWS = conf.options.target_windows
+    conf.env.TARGET_WINDOWS_64 = conf.options.target_windows_64
+    conf.env.TARGET_WINDOWS_32 = conf.options.target_windows_32
     conf.env.DISABLE_TESTS = conf.options.disable_tests
     conf.env.API_VERSION = API_VERSION
 
-    if conf.options.target_windows:
+    if conf.options.target_windows_64 or conf.options.target_windows_32:
         conf.env.append_value('CXXFLAGS', '-DLIBSUB_WINDOWS')
     else:
         conf.env.append_value('CXXFLAGS', '-DLIBSUB_POSIX')
@@ -102,7 +104,7 @@ def configure(conf):
     else:
         conf.env.append_value('CXXFLAGS', '-O3')
 
-    if not conf.env.TARGET_WINDOWS:
+    if not conf.env.TARGET_WINDOWS_64 and not conf.env.TARGET_WINDOWS_32:
         conf.env.append_value('LINKFLAGS', '-pthread')
 
     # Disable libxml++ deprecation warnings for now
@@ -121,8 +123,10 @@ def configure(conf):
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     boost_lib_suffix = ''
-    if conf.env.TARGET_WINDOWS:
-        boost_lib_suffix = '-mt'
+    if conf.env.TARGET_WINDOWS_64:
+        boost_lib_suffix = '-mt-x64'
+    elif conf.env.TARGET_WINDOWS_32:
+        boost_lib_suffix = '-mt-x32'
 
     conf.check_cxx(fragment="""
                             #include <boost/version.hpp>\n
@@ -179,8 +183,10 @@ def configure(conf):
 def build(bld):
     create_version_cc(bld, VERSION)
 
-    if bld.env.TARGET_WINDOWS:
-        boost_lib_suffix = '-mt'
+    if bld.env.TARGET_WINDOWS_64:
+        boost_lib_suffix = '-mt-x64'
+    elif bld.env.TARGET_WINDOWS_32:
+        boost_lib_suffix = '-mt-x32'
     else:
         boost_lib_suffix = ''
 

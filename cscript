@@ -22,7 +22,7 @@ import os
 option_defaults = { 'force-cpp11': False }
 
 def dependencies(target, options):
-    return (('asdcplib', 'bb09615'), ('libdcp', 'v1.8.7'))
+    return (('asdcplib', '97918d86caf4b5a2296a0d3092f1e2e69b9af9e5'), ('libdcp', 'v1.8.8'))
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
@@ -33,7 +33,7 @@ def build(target, options):
     if target.debug:
         cmd += ' --enable-debug'
     if target.platform == 'windows':
-        cmd += ' --target-windows --disable-tests'
+        cmd += f' --target-windows-{target.bits} --disable-tests'
 
     target.command(cmd)
     target.command('./waf build install')
