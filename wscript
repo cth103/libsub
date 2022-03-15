@@ -22,7 +22,7 @@ import shlex
 from waflib import Context
 
 APPNAME = 'libsub'
-libdcp_version = '1.8.10'
+libdcp_version = '1.8.12'
 
 this_version = subprocess.Popen(shlex.split('git tag -l --points-at HEAD'), stdout=subprocess.PIPE).communicate()[0]
 last_version = subprocess.Popen(shlex.split('git describe --tags --abbrev=0'), stdout=subprocess.PIPE).communicate()[0]
