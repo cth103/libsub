@@ -37,7 +37,7 @@ public:
 	explicit STLBinaryReader (std::istream& in);
 	explicit STLBinaryReader (FILE* in);
 
-	std::map<std::string, std::string> metadata () const;
+	std::map<std::string, std::string> metadata () const override;
 
 	int code_page_number;
 	int frame_rate;
