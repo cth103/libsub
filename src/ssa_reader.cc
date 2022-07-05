@@ -125,28 +125,19 @@ public:
 					effect = SHADOW;
 				}
 			} else if (keys[i] == "Alignment") {
-				/* These values from libass' source code */
-				switch ((raw_convert<int> (style[i]) - 1) % 3) {
-				case 0:
-					horizontal_reference = LEFT_OF_SCREEN;
-					break;
-				case 1:
-					horizontal_reference = HORIZONTAL_CENTRE_OF_SCREEN;
-					break;
-				case 2:
-					horizontal_reference = RIGHT_OF_SCREEN;
-					break;
-				}
-				switch (raw_convert<int> (style[i]) & 12) {
-				case 4:
+				if (style[i] == "7" || style[i] == "8" || style[i] == "9") {
 					vertical_reference = TOP_OF_SCREEN;
-					break;
-				case 8:
+				} else if (style[i] == "4" || style[i] == "5" || style[i] == "6") {
 					vertical_reference = VERTICAL_CENTRE_OF_SCREEN;
-					break;
-				case 0:
+				} else {
 					vertical_reference = BOTTOM_OF_SCREEN;
-					break;
+				}
+				if (style[i] == "1" || style[i] == "4" || style[i] == "7") {
+					horizontal_reference = LEFT_OF_SCREEN;
+				} else if (style[i] == "3" || style[i] == "6" || style[i] == "9") {
+					horizontal_reference = RIGHT_OF_SCREEN;
+				} else {
+					horizontal_reference = HORIZONTAL_CENTRE_OF_SCREEN;
 				}
 			} else if (keys[i] == "MarginV") {
 				vertical_margin = raw_convert<int> (style[i]);

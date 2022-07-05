@@ -451,6 +451,59 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 	SUB_END ();
 }
 
+
+BOOST_AUTO_TEST_CASE (ssa_reader_test7)
+{
+	auto p = boost::filesystem::path("test") / "data" / "test3.ssa";
+	auto f = fopen(p.string().c_str(), "r");
+	BOOST_REQUIRE(f);
+	sub::SSAReader reader(f);
+	fclose(f);
+	auto subs = sub::collect<vector<sub::Subtitle>>(reader.subtitles());
+
+	auto i = subs.begin();
+	vector<sub::Line>::iterator j;
+	vector<sub::Block>::iterator k;
+
+	BOOST_REQUIRE (i != subs.end());
+
+	SUB_START(sub::Time::from_hms(0, 0, 1, 0), sub::Time::from_hms(0, 0, 3, 0));
+	LINE((60.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Helvetica Neue 60pt - Default", "Helvetica Neue", 60, false, false, false);
+	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Bottom 100 pt off edge", "Helvetica Neue", 60, false, false, false);
+	SUB_END();
+
+	SUB_START(sub::Time::from_hms(0, 0, 4, 0), sub::Time::from_hms(0, 0, 6, 0));
+	LINE((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Helvetica Neue 30pt", "Helvetica Neue", 30, false, false, false);
+	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Bottom 100pt off edge", "Helvetica Neue", 30, false, false, false);
+	SUB_END();
+
+	SUB_START(sub::Time::from_hms(0, 0, 7, 0), sub::Time::from_hms(0, 0, 9, 0));
+	LINE((120.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Helvetica Neue 120pt", "Helvetica Neue", 120, false, false, false);
+	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Bottom 100pt off edge", "Helvetica Neue", 120, false, false, false);
+	SUB_END();
+
+	SUB_START(sub::Time::from_hms(0, 0, 10, 0), sub::Time::from_hms(0, 0, 12, 0));
+	LINE(0, sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Helvetica Neue 60pt", "Helvetica Neue", 60, false, false, false);
+	LINE((60.0 * 1.2 / 792), sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Top Alignment 100pt off edge", "Helvetica Neue", 60, false, false, false);
+	SUB_END();
+
+	SUB_START(sub::Time::from_hms(0, 0, 13, 0), sub::Time::from_hms(0, 0, 15, 0));
+	LINE((-60.0 * 1.2 / 792), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK("Helvetica Neue 60pt", "Helvetica Neue 60 Center", 60, false, false, false);
+	LINE(0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BLOCK(" Vertical Center Alignment", "Helvetica Neue 60 Center", 60, false, false, false);
+	SUB_END();
+}
+
+
 /** Test \pos */
 BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 {
