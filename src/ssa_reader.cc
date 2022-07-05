@@ -274,9 +274,12 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 		current.vertical_position.reference = BOTTOM_OF_SCREEN;
 	}
 
-	if (!current.vertical_position.proportional) {
-		current.vertical_position.proportional = 0;
-	}
+	/* Any vertical_position that is set in base (and therefore current) is a margin, which
+	 * we need to ignore if we end up vertically centering this subtitle.
+	 * Clear out vertical_position from current; we'll re-add it from base later
+	 * if required.
+	 */
+	current.vertical_position.proportional = 0;
 
 	/* We must have a font size, as there could be a margin specified
 	   in pixels and in that case we must know how big the subtitle
@@ -298,20 +301,6 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 
 	/* Imagine that the screen is 792 points (i.e. 11 inches) high (as with DCP) */
 	double const line_size = current.font_size.proportional(792) * 1.2;
-
-	/* Tweak vertical_position accordingly */
-	switch (current.vertical_position.reference.get()) {
-	case TOP_OF_SCREEN:
-	case TOP_OF_SUBTITLE:
-		/* Nothing to do */
-		break;
-	case VERTICAL_CENTRE_OF_SCREEN:
-		current.vertical_position.proportional = current.vertical_position.proportional.get() - ((line_breaks + 1) * line_size) / 2;
-		break;
-	case BOTTOM_OF_SCREEN:
-		current.vertical_position.proportional = current.vertical_position.proportional.get() + line_breaks * line_size;
-		break;
-	}
 
 	for (size_t i = 0; i < line.length(); ++i) {
 		char const c = line[i];
@@ -361,6 +350,28 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 
 	if (!current.text.empty ()) {
 		subs.push_back (current);
+	}
+
+	/* Now we definitely know the vertical position reference we can finish off the position */
+	for (auto& sub: subs) {
+		switch (sub.vertical_position.reference.get()) {
+		case TOP_OF_SCREEN:
+		case TOP_OF_SUBTITLE:
+			/* Just re-add any margins we came in with */
+			sub.vertical_position.proportional = sub.vertical_position.proportional.get() + base.vertical_position.proportional.get_value_or(0);
+			break;
+		case VERTICAL_CENTRE_OF_SCREEN:
+			/* Margins are ignored, but we need to centre */
+			sub.vertical_position.proportional = sub.vertical_position.proportional.get() - ((line_breaks + 1) * line_size) / 2;
+			break;
+		case BOTTOM_OF_SCREEN:
+			/* Re-add margins and account for each line */
+			sub.vertical_position.proportional =
+				sub.vertical_position.proportional.get()
+				+ base.vertical_position.proportional.get_value_or(0)
+				+ line_breaks * line_size;
+			break;
+		}
 	}
 
 	return subs;
@@ -477,9 +488,14 @@ SSAReader::read (function<optional<string> ()> get_line)
 						sub.effect = style.effect;
 						sub.horizontal_position.reference = style.horizontal_reference;
 						sub.vertical_position.reference = style.vertical_reference;
-						sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
+						if (sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
+							sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
+						}
 					} else if (event_format[i] == "MarginV") {
-						sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
+						if (event[i] != "0" && sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
+							/* Override the style if its non-zero */
+							sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
+						}
 					} else if (event_format[i] == "Text") {
 						for (auto j: parse_line (sub, event[i], play_res_x, play_res_y)) {
 							_subs.push_back (j);

@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 
 	/* Hello world */
 	SUB_START (sub::Time::from_hms (0, 0, 1, 230), sub::Time::from_hms (0, 0, 4, 550));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Hello world", "Arial", 20, false, false, false);
 	SUB_END();
 
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 
 	/* Some {\i1}italics{\i} are here. */
 	SUB_START (sub::Time::from_hms (0, 0, 7, 740), sub::Time::from_hms (0, 0, 9, 0));
-	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Some ", "Arial", 20, false, false, false);
 	BLOCK("italics", "Arial", 20, false, true, false);
 	BLOCK(" are here.", "Arial", 20, false, false, false);
@@ -226,47 +226,48 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	/* Alignments */
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 230), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("bottom left", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 240), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("bottom centre", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 250), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("bottom right", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 260), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	/* Position is half of a 20pt line (with line spacing) above vertical centre */
+	LINE (-(10.0 * 1.2 / 792), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("middle left", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 270), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (-(10.0 * 1.2 / 792), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("middle centre", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 280), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE (-(10.0 * 1.2 / 792), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("middle right", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 290), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::TOP_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
 	BLOCK("top left", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 300), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("top centre", "Arial", 20, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 310), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (0, sub::TOP_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
 	BLOCK("top right", "Arial", 20, false, false, false);
 	SUB_END ();
 
@@ -387,66 +388,67 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 
 	SUB_START (sub::Time::from_hms (0, 0, 0, 70), sub::Time::from_hms (0, 0, 1, 110));
 	/* The first line should be one line (30 points, 1.2 times
-	   spaced, as a proportion of the total screen height 729
-	   points) up.
+	   spaced, as a proportion of the total screen height 792
+	   points) up.  There's also a 10 pixel (with respect to a
+	   288-pixel-high screen) margin.
 	*/
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is normal", "Arial", 30, false, false, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is bold", "Arial", 30, true, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 1, 200), sub::Time::from_hms (0, 0, 2, 240));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is bold", "Arial", 30, true, false, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is normal", "Arial", 30, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 2, 300), sub::Time::from_hms (0, 0, 3, 380));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is bold", "Arial", 30, true, false, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is italic", "Arial", 30, false, true, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 3, 400), sub::Time::from_hms (0, 0, 4, 480));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is italic", "Arial", 30, false, true, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is bold", "Arial", 30, true, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 4, 510), sub::Time::from_hms (0, 0, 5, 600));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
 	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
 	BLOCK ("italic AND bold", "Arial", 30, true, true, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 5, 620), sub::Time::from_hms (0, 0, 6, 710));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
 	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("First three words", "Arial", 30, true, true, false);
 	BLOCK (" are italic AND bold", "Arial", 30, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 6, 730), sub::Time::from_hms (0, 0, 8, 30));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Last three words are ", "Arial", 30, false, false, false);
 	BLOCK ("bold AND italic", "Arial", 30, true, true, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("This line is normal", "Arial", 30, false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 8, 90), sub::Time::from_hms (0, 0, 9, 210));
-	LINE ((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE (((30.0 * 1.2 / 792) + (10.0 / 288.0)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 288.0), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Both lines are bold AND italic", "Arial", 30, true, true, false);
 	SUB_END ();
 }
@@ -468,30 +470,30 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test7)
 	BOOST_REQUIRE (i != subs.end());
 
 	SUB_START(sub::Time::from_hms(0, 0, 1, 0), sub::Time::from_hms(0, 0, 3, 0));
-	LINE((60.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE(((60.0 * 1.2 / 792) + (100.0 / 1080)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Helvetica Neue 60pt - Default", "Helvetica Neue", 60, false, false, false);
-	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((100.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Bottom 100 pt off edge", "Helvetica Neue", 60, false, false, false);
 	SUB_END();
 
 	SUB_START(sub::Time::from_hms(0, 0, 4, 0), sub::Time::from_hms(0, 0, 6, 0));
-	LINE((30.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((((30.0 * 1.2) / 792) + (100.0 / 1080)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Helvetica Neue 30pt", "Helvetica Neue", 30, false, false, false);
-	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((100.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Bottom 100pt off edge", "Helvetica Neue", 30, false, false, false);
 	SUB_END();
 
 	SUB_START(sub::Time::from_hms(0, 0, 7, 0), sub::Time::from_hms(0, 0, 9, 0));
-	LINE((120.0 * 1.2 / 792), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((((120.0 * 1.2) / 792) + (100.0 / 1080)), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Helvetica Neue 120pt", "Helvetica Neue", 120, false, false, false);
-	LINE(0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((100.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Bottom 100pt off edge", "Helvetica Neue", 120, false, false, false);
 	SUB_END();
 
 	SUB_START(sub::Time::from_hms(0, 0, 10, 0), sub::Time::from_hms(0, 0, 12, 0));
-	LINE(0, sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((100.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Helvetica Neue 60pt", "Helvetica Neue", 60, false, false, false);
-	LINE((60.0 * 1.2 / 792), sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE((((60.0) * 1.2 / 792) + (100.0 / 1080)), sub::TOP_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK("Top Alignment 100pt off edge", "Helvetica Neue", 60, false, false, false);
 	SUB_END();
 
@@ -519,9 +521,9 @@ BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 
 	/* Hello world */
 	SUB_START (sub::Time::from_hms (0, 0, 1, 230), sub::Time::from_hms (0, 0, 4, 550));
-	LINE (0, sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::HORIZONTAL_CENTRE_OF_SCREEN);
 	BLOCK ("Hello world this is ", "Arial", 20, false, false, false);
-	LINE (300.0 / 1080, sub::TOP_OF_SCREEN, 400.0 / 1920, sub::LEFT_OF_SCREEN);
+	LINE ((310.0 / 1080), sub::TOP_OF_SCREEN, 400.0 / 1920, sub::LEFT_OF_SCREEN);
 	BLOCK ("positioning.", "Arial", 20, false, false, false);
 	SUB_END();
 }
