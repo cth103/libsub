@@ -147,7 +147,7 @@ public:
 
 	string name;
 	optional<string> font_name;
-	int font_size;
+	int font_size; ///< points
 	Colour primary_colour;
 	/** outline colour */
 	optional<Colour> back_colour;
@@ -243,7 +243,7 @@ SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play
 		sub.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
 	} else if (boost::starts_with(style, "\\fs")) {
 		SUB_ASSERT (style.length() > 3);
-		sub.font_size.set_points (raw_convert<int>(style.substr(3)));
+		sub.font_size.set_proportional(raw_convert<float>(style.substr(3)) / play_res_y);
 	} else if (boost::starts_with(style, "\\c")) {
 		/* \c&Hbbggrr& */
 		if (style.length() <= 2) {
@@ -285,8 +285,8 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 	   in pixels and in that case we must know how big the subtitle
 	   lines are to work out the position on screen.
 	*/
-	if (!current.font_size.points()) {
-		current.font_size.set_points (72);
+	if (!current.font_size.proportional()) {
+		current.font_size.set_proportional(72.0 / play_res_y);
 	}
 
 	/* Count the number of line breaks */
@@ -299,8 +299,8 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 		}
 	}
 
-	/* Imagine that the screen is 792 points (i.e. 11 inches) high (as with DCP) */
-	double const line_size = current.font_size.proportional(792) * 1.2;
+	/* There are vague indications that with ASS 1 point should equal 1 pixel */
+	double const line_size = current.font_size.proportional(play_res_y) * 1.2;
 
 	for (size_t i = 0; i < line.length(); ++i) {
 		char const c = line[i];
@@ -479,7 +479,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 						SUB_ASSERT (styles.find(event[i]) != styles.end());
 						Style style = styles[event[i]];
 						sub.font = style.font_name;
-						sub.font_size = FontSize::from_points (style.font_size);
+						sub.font_size = FontSize::from_proportional(static_cast<float>(style.font_size) / play_res_y);
 						sub.colour = style.primary_colour;
 						sub.effect_colour = style.back_colour;
 						sub.bold = style.bold;
