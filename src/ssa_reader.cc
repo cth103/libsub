@@ -25,6 +25,7 @@
 #include "compose.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/bind/bind.hpp>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 
@@ -55,17 +56,24 @@ SSAReader::SSAReader (FILE* f)
 Colour
 h_colour (string s)
 {
-	/* There are both BGR and ABGR versions of these colours */
-	if ((s.length() != 8 && s.length() != 10) || s[0] != '&' || s[1] != 'H') {
+	if (s.empty() || s[0] != '&' || s[1] != 'H') {
 		throw SSAError(String::compose("Badly formatted colour tag %1", s));
 	}
-	int ir, ig, ib;
+
+	auto start = s.c_str();
+	auto const end = start + s.length();
+	while (start < end && (*start == '&' || *start == 'H')) {
+		++start;
+	}
+
+	auto const colour = strtoll(start, nullptr, 16);
+
 	/* XXX: ignoring alpha channel here; note that 00 is opaque and FF is transparent */
-	int const off = s.length() == 10 ? 4 : 2;
-	if (sscanf(s.c_str() + off, "%2x%2x%2x", &ib, &ig, &ir) < 3) {
-		throw SSAError(String::compose("Badly formatted colour tag %1", s));
-	}
-	return sub::Colour(ir / 255.0, ig / 255.0, ib / 255.0);
+	return sub::Colour(
+		((colour & 0x000000ff) >> 0) / 255.0,
+		((colour & 0x0000ff00) >> 8) / 255.0,
+		((colour & 0x00ff0000) >> 16) / 255.0
+		);
 }
 
 class Style

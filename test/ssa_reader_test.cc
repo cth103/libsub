@@ -650,21 +650,10 @@ BOOST_AUTO_TEST_CASE (ssa_reader_c)
 {
 	test_c("&H00FFFF&", "ffff00");
 	test_c("&H123456&", "563412");
+	test_c("&H0&", "000000");
+	test_c("&HFF&", "ff0000");
+	test_c("&HFF00&", "00ff00");
 	test_c("&HFF0000&", "0000ff");
 	test_c("&HFFFFFF&", "ffffff");
 }
 
-
-/** Test invalid \c */
-BOOST_AUTO_TEST_CASE (ssa_reader_c_bad)
-{
-	sub::RawSubtitle base;
-	BOOST_CHECK_THROW(
-		sub::SSAReader::parse_line(
-			base,
-			"{\\c&H0}Dieser Untertitel ist gelb",
-			1920, 1080
-			),
-		sub::SSAError
-		);
-}
