@@ -19,6 +19,7 @@
 
 
 #include "collect.h"
+#include "compose.hpp"
 #include "exceptions.h"
 #include "ssa_reader.h"
 #include "subtitle.h"
@@ -31,6 +32,7 @@
 
 
 using std::fabs;
+using std::string;
 using std::vector;
 
 
@@ -626,21 +628,27 @@ BOOST_AUTO_TEST_CASE (ssa_reader_fs)
 }
 
 
-/** Test a valid \c */
-BOOST_AUTO_TEST_CASE (ssa_reader_c)
+static void
+test_c(string command, string colour)
 {
 	sub::RawSubtitle base;
 	auto r = sub::SSAReader::parse_line (
 		base,
-		"{\\c&H00FFFF&}Dieser Untertitel ist gelb",
+		String::compose("{\\c%1}Hello world", command),
 		1920, 1080
 		);
 
 	auto i = r.begin ();
-	BOOST_CHECK_EQUAL (i->text, "Dieser Untertitel ist gelb");
-	BOOST_CHECK (i->colour == sub::Colour::from_rgb_hex("ffff00"));
-	++i;
-	BOOST_REQUIRE (i == r.end ());
+	BOOST_CHECK_EQUAL (i->text, "Hello world");
+	BOOST_CHECK (i->colour == sub::Colour::from_rgb_hex(colour));
+	BOOST_REQUIRE(std::next(i) == r.end());
+}
+
+
+/** Test a valid \c */
+BOOST_AUTO_TEST_CASE (ssa_reader_c)
+{
+	test_c("&H00FFFF&", "ffff00");
 }
 
 
