@@ -649,6 +649,9 @@ test_c(string command, string colour)
 BOOST_AUTO_TEST_CASE (ssa_reader_c)
 {
 	test_c("&H00FFFF&", "ffff00");
+	test_c("&H123456&", "563412");
+	test_c("&HFF0000&", "0000ff");
+	test_c("&HFFFFFF&", "ffffff");
 }
 
 
