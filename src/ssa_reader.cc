@@ -200,7 +200,7 @@ SSAReader::parse_time (string t) const
 }
 
 void
-SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play_res_y)
+SSAReader::parse_style(RawSubtitle& sub, string style, int play_res_x, int play_res_y, Colour primary_colour)
 {
 	if (style == "\\i1") {
 		sub.italic = true;
@@ -254,10 +254,13 @@ SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play
 		sub.font_size.set_proportional(raw_convert<float>(style.substr(3)) / play_res_y);
 	} else if (boost::starts_with(style, "\\c")) {
 		/* \c&Hbbggrr& */
-		if (style.length() <= 2) {
+		if (style.length() > 2) {
+			sub.colour = h_colour(style.substr(2, style.length() - 3));
+		} else if (style.length() == 2) {
+			sub.colour = primary_colour;
+		} else {
 			throw SSAError(String::compose("Badly formatted colour tag %1", style));
 		}
-		sub.colour = h_colour (style.substr(2, style.length() - 3));
 	}
 }
 
@@ -266,7 +269,7 @@ SSAReader::parse_style (RawSubtitle& sub, string style, int play_res_x, int play
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
  */
 vector<RawSubtitle>
-SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_res_y)
+SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_res_y, Colour primary_colour)
 {
 	enum {
 		TEXT,
@@ -328,7 +331,7 @@ SSAReader::parse_line (RawSubtitle base, string line, int play_res_x, int play_r
 					subs.push_back (current);
 					current.text = "";
 				}
-				parse_style (current, style, play_res_x, play_res_y);
+				parse_style(current, style, play_res_x, play_res_y, primary_colour);
 				style = "";
 			}
 
@@ -472,6 +475,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 				SUB_ASSERT (event_format.size() == event.size());
 
 				RawSubtitle sub;
+				optional<Style> style;
 
 				for (size_t i = 0; i < event.size(); ++i) {
 					trim (event[i]);
@@ -485,19 +489,19 @@ SSAReader::read (function<optional<string> ()> get_line)
 						*/
 						trim_left_if (event[i], boost::is_any_of ("*"));
 						SUB_ASSERT (styles.find(event[i]) != styles.end());
-						Style style = styles[event[i]];
-						sub.font = style.font_name;
-						sub.font_size = FontSize::from_proportional(static_cast<float>(style.font_size) / play_res_y);
-						sub.colour = style.primary_colour;
-						sub.effect_colour = style.back_colour;
-						sub.bold = style.bold;
-						sub.italic = style.italic;
-						sub.underline = style.underline;
-						sub.effect = style.effect;
-						sub.horizontal_position.reference = style.horizontal_reference;
-						sub.vertical_position.reference = style.vertical_reference;
+						style = styles[event[i]];
+						sub.font = style->font_name;
+						sub.font_size = FontSize::from_proportional(static_cast<float>(style->font_size) / play_res_y);
+						sub.colour = style->primary_colour;
+						sub.effect_colour = style->back_colour;
+						sub.bold = style->bold;
+						sub.italic = style->italic;
+						sub.underline = style->underline;
+						sub.effect = style->effect;
+						sub.horizontal_position.reference = style->horizontal_reference;
+						sub.vertical_position.reference = style->vertical_reference;
 						if (sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
-							sub.vertical_position.proportional = float(style.vertical_margin) / play_res_y;
+							sub.vertical_position.proportional = float(style->vertical_margin) / play_res_y;
 						}
 					} else if (event_format[i] == "MarginV") {
 						if (event[i] != "0" && sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
@@ -505,7 +509,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 							sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 						}
 					} else if (event_format[i] == "Text") {
-						for (auto j: parse_line (sub, event[i], play_res_x, play_res_y)) {
+						for (auto j: parse_line(sub, event[i], play_res_x, play_res_y, style ? style->primary_colour : Colour(1, 1, 1))) {
 							_subs.push_back (j);
 						}
 					}

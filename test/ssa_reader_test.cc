@@ -91,7 +91,8 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test1)
 	auto r = sub::SSAReader::parse_line (
 		base,
 		"This is a line with some {\\i1}italics{\\i0} and then\\nthere is a new line.",
-		1920, 1080
+		1920, 1080,
+		sub::Colour(1, 1, 1)
 		);
 
 	auto i = r.begin();
@@ -122,7 +123,8 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 	auto r = sub::SSAReader::parse_line (
 		base,
 		"{\\i1}It's all just italics{\\i0}",
-		1920, 1080
+		1920, 1080,
+		sub::Colour(1, 1, 1)
 		);
 
 	/* Convert a font size in points to a vertical position for this file */
@@ -139,7 +141,8 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 	r = sub::SSAReader::parse_line (
 		base,
 		"{\\i1}Italic{\\i0}\\Nand new line",
-		1920, 1080
+		1920, 1080,
+		sub::Colour(1, 1, 1)
 		);
 
 	i = r.begin ();
@@ -612,7 +615,8 @@ BOOST_AUTO_TEST_CASE (ssa_reader_fs)
 	auto r = sub::SSAReader::parse_line (
 		base,
 		"This is a line with some {\\fs64}font sizing.",
-		1920, 1080
+		1920, 1080,
+		sub::Colour(1, 1, 1)
 		);
 
 	auto i = r.begin ();
@@ -635,7 +639,8 @@ test_c(string command, string colour)
 	auto r = sub::SSAReader::parse_line (
 		base,
 		String::compose("{\\c%1}Hello world", command),
-		1920, 1080
+		1920, 1080,
+		sub::Colour(1, 0, 1)
 		);
 
 	auto i = r.begin ();
@@ -655,5 +660,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_c)
 	test_c("&HFF00&", "00ff00");
 	test_c("&HFF0000&", "0000ff");
 	test_c("&HFFFFFF&", "ffffff");
+	/* \c with no parameter seems to be parsed as "return to primary colour" */
+	test_c("", "ff00ff");
 }
 
