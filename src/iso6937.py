@@ -1,29 +1,29 @@
-import urllib2
+from urllib.request import urlopen
 import sys
 
 DATA = 'http://www.unicode.org/Public/6.0.0/ucd/UnicodeData.txt'
 OUTPUT = 'src/iso6937_tables'
 
-data = urllib2.urlopen(DATA).read()
+data = urlopen(DATA).read()
 # data = open('UnicodeData.txt').read()
 output_c = open(OUTPUT + '.cc', 'w')
 output_h = open(OUTPUT + '.h', 'w')
 
 def find_unicode(n):
     for line in iter(data.splitlines()):
-        s = line.split(';')
+        s = line.decode('UTF-8').split(';')
         if s[1] == n:
             return s[0]
 
-    print 'Could not find %s' % n
+    print('Could not find %s' % n)
     sys.exit(1)
 
 def setup(output_diacritical_name):
-    print>>output_c,'map<char, wchar_t> sub::iso6937::%s;' % output_diacritical_name
+    print('map<char, wchar_t> sub::iso6937::%s;' % output_diacritical_name, file=output_c)
 
 def fill(unicode_diacritical_name, output_diacritical_name, letters):
 
-    print>>output_h,'extern std::map<char, wchar_t> %s;' % output_diacritical_name
+    print('extern std::map<char, wchar_t> %s;' % output_diacritical_name, file=output_h)
 
     for letter in letters:
         if letter.isupper():
@@ -32,11 +32,11 @@ def fill(unicode_diacritical_name, output_diacritical_name, letters):
             case = 'SMALL'
 
         unicode_name = 'LATIN %s LETTER %s WITH %s' % (case, letter.upper(), unicode_diacritical_name)
-        print>>output_c,"\t%s['%s'] = 0x%s;" % (output_diacritical_name, letter, find_unicode(unicode_name))
+        print("\t%s['%s'] = 0x%s;" % (output_diacritical_name, letter, find_unicode(unicode_name)), file=output_c)
 
-    print>>output_c,""
+    print("", file=output_c)
 
-print>>output_c,"""/*
+print("""/*
     Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
@@ -61,9 +61,9 @@ print>>output_c,"""/*
 #include "iso6937_tables.h"
 
 using std::map;
-"""
+""", file=output_c)
 
-print>>output_h,"""/*
+print("""/*
     Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
@@ -91,7 +91,7 @@ namespace sub {
 extern void make_iso6937_tables ();
 
 namespace iso6937 {
-"""
+""", file=output_h)
 
 groups = [
     (0xC1, 'GRAVE', 'grave', 'AEIOUaeiou'),
@@ -112,125 +112,125 @@ groups = [
 for g in groups:
     setup(g[2])
 
-print>>output_c,"map<char, wchar_t> sub::iso6937::main;"
-print>>output_c,"map<char, map<char, wchar_t> *> sub::iso6937::diacriticals;"
-print>>output_h,"extern std::map<char, wchar_t> main;"
-print>>output_h,"extern std::map<char, std::map<char, wchar_t> *> diacriticals;"
+print("map<char, wchar_t> sub::iso6937::main;", file=output_c)
+print("map<char, map<char, wchar_t> *> sub::iso6937::diacriticals;", file=output_c)
+print("extern std::map<char, wchar_t> main;", file=output_h)
+print("extern std::map<char, std::map<char, wchar_t> *> diacriticals;", file=output_h)
 
-print>>output_c,"""
+print("""
 void
 sub::make_iso6937_tables ()
 {
 \tusing namespace sub::iso6937;
-"""
+""", file=output_c)
 
 for g in groups:
     fill(g[1], g[2], g[3])
 
-print>>output_c,"\tmain[10] = 0x000A;"
+print("\tmain[10] = 0x000A;", file=output_c)
 
 for i in range(32, 127):
     if chr(i) == "'" or chr(i) == "\\":
-        print>>output_c,"\tmain['\\%s'] = 0x00%x;" % (chr(i), i)
+        print("\tmain['\\%s'] = 0x00%x;" % (chr(i), i), file=output_c)
     else:
-        print>>output_c,"\tmain['%s'] = 0x00%x;" % (chr(i), i)
+        print("\tmain['%s'] = 0x00%x;" % (chr(i), i), file=output_c)
 
 # From Wikipedia
 # http://en.wikipedia.org/wiki/ISO/IEC_6937
-print>>output_c,"\tmain[161] = 0x00A1;"
-print>>output_c,"\tmain[162] = 0x00A2;"
-print>>output_c,"\tmain[163] = 0x00A3;"
+print("\tmain[161U] = 0x00A1;", file=output_c)
+print("\tmain[162U] = 0x00A2;", file=output_c)
+print("\tmain[163U] = 0x00A3;", file=output_c)
 # Wikipedia says the dollar is 0x24, but Annotation
 # Edit (and some other sources) disagree.
-print>>output_c,"\tmain[164] = 0x0024;"
-print>>output_c,"\tmain[165] = 0x00A5;"
-print>>output_c,"\tmain[167] = 0x00A7;"
-print>>output_c,"\tmain[168] = 0x00A4;"
-print>>output_c,"\tmain[169] = 0x2018;"
-print>>output_c,"\tmain[170] = 0x201C;"
-print>>output_c,"\tmain[171] = 0x00AB;"
-print>>output_c,"\tmain[172] = 0x2190;"
-print>>output_c,"\tmain[173] = 0x2191;"
-print>>output_c,"\tmain[174] = 0x2192;"
-print>>output_c,"\tmain[175] = 0x2193;"
-print>>output_c,"\tmain[176] = 0x00B0;"
-print>>output_c,"\tmain[177] = 0x00B1;"
-print>>output_c,"\tmain[178] = 0x00B2;"
-print>>output_c,"\tmain[179] = 0x00B3;"
-print>>output_c,"\tmain[180] = 0x00D7;"
-print>>output_c,"\tmain[181] = 0x00B5;"
-print>>output_c,"\tmain[182] = 0x00B6;"
-print>>output_c,"\tmain[183] = 0x00B7;"
-print>>output_c,"\tmain[184] = 0x00F7;"
-print>>output_c,"\tmain[185] = 0x2019;"
-print>>output_c,"\tmain[186] = 0x201D;"
-print>>output_c,"\tmain[187] = 0x00BB;"
-print>>output_c,"\tmain[188] = 0x00BC;"
-print>>output_c,"\tmain[189] = 0x00BD;"
-print>>output_c,"\tmain[190] = 0x00BE;"
-print>>output_c,"\tmain[191] = 0x00BF;"
-print>>output_c,"\tmain[193] = 0x0300;"
-print>>output_c,"\tmain[194] = 0x0301;"
-print>>output_c,"\tmain[195] = 0x0302;"
-print>>output_c,"\tmain[196] = 0x0303;"
-print>>output_c,"\tmain[197] = 0x0304;"
-print>>output_c,"\tmain[198] = 0x0306;"
-print>>output_c,"\tmain[199] = 0x0307;"
-print>>output_c,"\tmain[200] = 0x0308;"
-print>>output_c,"\tmain[202] = 0x030A;"
-print>>output_c,"\tmain[203] = 0x0327;"
-print>>output_c,"\tmain[205] = 0x030B;"
-print>>output_c,"\tmain[206] = 0x032B;"
-print>>output_c,"\tmain[207] = 0x030C;"
-print>>output_c,"\tmain[208] = 0x2015;"
-print>>output_c,"\tmain[209] = 0x00B9;"
-print>>output_c,"\tmain[210] = 0x00AE;"
-print>>output_c,"\tmain[211] = 0x00A9;"
-print>>output_c,"\tmain[212] = 0x2122;"
-print>>output_c,"\tmain[213] = 0x266A;"
-print>>output_c,"\tmain[214] = 0x00AC;"
-print>>output_c,"\tmain[215] = 0x00A6;"
-print>>output_c,"\tmain[220] = 0x215B;"
-print>>output_c,"\tmain[221] = 0x215C;"
-print>>output_c,"\tmain[222] = 0x215D;"
-print>>output_c,"\tmain[223] = 0x215E;"
-print>>output_c,"\tmain[224] = 0x2126;"
-print>>output_c,"\tmain[225] = 0x00C6;"
-print>>output_c,"\tmain[226] = 0x0110;"
-print>>output_c,"\tmain[227] = 0x00AA;"
-print>>output_c,"\tmain[228] = 0x0126;"
-print>>output_c,"\tmain[230] = 0x0132;"
-print>>output_c,"\tmain[231] = 0x013F;"
-print>>output_c,"\tmain[232] = 0x0141;"
-print>>output_c,"\tmain[233] = 0x00D8;"
-print>>output_c,"\tmain[234] = 0x0152;"
-print>>output_c,"\tmain[235] = 0x00BA;"
-print>>output_c,"\tmain[236] = 0x00DE;"
-print>>output_c,"\tmain[237] = 0x0166;"
-print>>output_c,"\tmain[238] = 0x014A;"
-print>>output_c,"\tmain[239] = 0x0149;"
-print>>output_c,"\tmain[240] = 0x0138;"
-print>>output_c,"\tmain[241] = 0x00E6;"
-print>>output_c,"\tmain[242] = 0x0111;"
-print>>output_c,"\tmain[243] = 0x00F0;"
-print>>output_c,"\tmain[244] = 0x0127;"
-print>>output_c,"\tmain[245] = 0x0131;"
-print>>output_c,"\tmain[246] = 0x0133;"
-print>>output_c,"\tmain[247] = 0x0140;"
-print>>output_c,"\tmain[248] = 0x0142;"
-print>>output_c,"\tmain[249] = 0x00F8;"
-print>>output_c,"\tmain[250] = 0x0153;"
-print>>output_c,"\tmain[251] = 0x00DF;"
-print>>output_c,"\tmain[252] = 0x00FE;"
-print>>output_c,"\tmain[253] = 0x0167;"
-print>>output_c,"\tmain[254] = 0x014B;"
-print>>output_c,"\tmain[255] = 0x00AD;"
-print>>output_c,""
+print("\tmain[164U] = 0x0024;", file=output_c)
+print("\tmain[165U] = 0x00A5;", file=output_c)
+print("\tmain[167U] = 0x00A7;", file=output_c)
+print("\tmain[168U] = 0x00A4;", file=output_c)
+print("\tmain[169U] = 0x2018;", file=output_c)
+print("\tmain[170U] = 0x201C;", file=output_c)
+print("\tmain[171U] = 0x00AB;", file=output_c)
+print("\tmain[172U] = 0x2190;", file=output_c)
+print("\tmain[173U] = 0x2191;", file=output_c)
+print("\tmain[174U] = 0x2192;", file=output_c)
+print("\tmain[175U] = 0x2193;", file=output_c)
+print("\tmain[176U] = 0x00B0;", file=output_c)
+print("\tmain[177U] = 0x00B1;", file=output_c)
+print("\tmain[178U] = 0x00B2;", file=output_c)
+print("\tmain[179U] = 0x00B3;", file=output_c)
+print("\tmain[180U] = 0x00D7;", file=output_c)
+print("\tmain[181U] = 0x00B5;", file=output_c)
+print("\tmain[182U] = 0x00B6;", file=output_c)
+print("\tmain[183U] = 0x00B7;", file=output_c)
+print("\tmain[184U] = 0x00F7;", file=output_c)
+print("\tmain[185U] = 0x2019;", file=output_c)
+print("\tmain[186U] = 0x201D;", file=output_c)
+print("\tmain[187U] = 0x00BB;", file=output_c)
+print("\tmain[188U] = 0x00BC;", file=output_c)
+print("\tmain[189U] = 0x00BD;", file=output_c)
+print("\tmain[190U] = 0x00BE;", file=output_c)
+print("\tmain[191U] = 0x00BF;", file=output_c)
+print("\tmain[193U] = 0x0300;", file=output_c)
+print("\tmain[194U] = 0x0301;", file=output_c)
+print("\tmain[195U] = 0x0302;", file=output_c)
+print("\tmain[196U] = 0x0303;", file=output_c)
+print("\tmain[197U] = 0x0304;", file=output_c)
+print("\tmain[198U] = 0x0306;", file=output_c)
+print("\tmain[199U] = 0x0307;", file=output_c)
+print("\tmain[200U] = 0x0308;", file=output_c)
+print("\tmain[202U] = 0x030A;", file=output_c)
+print("\tmain[203U] = 0x0327;", file=output_c)
+print("\tmain[205U] = 0x030B;", file=output_c)
+print("\tmain[206U] = 0x032B;", file=output_c)
+print("\tmain[207U] = 0x030C;", file=output_c)
+print("\tmain[208U] = 0x2015;", file=output_c)
+print("\tmain[209U] = 0x00B9;", file=output_c)
+print("\tmain[210U] = 0x00AE;", file=output_c)
+print("\tmain[211U] = 0x00A9;", file=output_c)
+print("\tmain[212U] = 0x2122;", file=output_c)
+print("\tmain[213U] = 0x266A;", file=output_c)
+print("\tmain[214U] = 0x00AC;", file=output_c)
+print("\tmain[215U] = 0x00A6;", file=output_c)
+print("\tmain[220U] = 0x215B;", file=output_c)
+print("\tmain[221U] = 0x215C;", file=output_c)
+print("\tmain[222U] = 0x215D;", file=output_c)
+print("\tmain[223U] = 0x215E;", file=output_c)
+print("\tmain[224U] = 0x2126;", file=output_c)
+print("\tmain[225U] = 0x00C6;", file=output_c)
+print("\tmain[226U] = 0x0110;", file=output_c)
+print("\tmain[227U] = 0x00AA;", file=output_c)
+print("\tmain[228U] = 0x0126;", file=output_c)
+print("\tmain[230U] = 0x0132;", file=output_c)
+print("\tmain[231U] = 0x013F;", file=output_c)
+print("\tmain[232U] = 0x0141;", file=output_c)
+print("\tmain[233U] = 0x00D8;", file=output_c)
+print("\tmain[234U] = 0x0152;", file=output_c)
+print("\tmain[235U] = 0x00BA;", file=output_c)
+print("\tmain[236U] = 0x00DE;", file=output_c)
+print("\tmain[237U] = 0x0166;", file=output_c)
+print("\tmain[238U] = 0x014A;", file=output_c)
+print("\tmain[239U] = 0x0149;", file=output_c)
+print("\tmain[240U] = 0x0138;", file=output_c)
+print("\tmain[241U] = 0x00E6;", file=output_c)
+print("\tmain[242U] = 0x0111;", file=output_c)
+print("\tmain[243U] = 0x00F0;", file=output_c)
+print("\tmain[244U] = 0x0127;", file=output_c)
+print("\tmain[245U] = 0x0131;", file=output_c)
+print("\tmain[246U] = 0x0133;", file=output_c)
+print("\tmain[247U] = 0x0140;", file=output_c)
+print("\tmain[248U] = 0x0142;", file=output_c)
+print("\tmain[249U] = 0x00F8;", file=output_c)
+print("\tmain[250U] = 0x0153;", file=output_c)
+print("\tmain[251U] = 0x00DF;", file=output_c)
+print("\tmain[252U] = 0x00FE;", file=output_c)
+print("\tmain[253U] = 0x0167;", file=output_c)
+print("\tmain[254U] = 0x014B;", file=output_c)
+print("\tmain[255U] = 0x00AD;", file=output_c)
+print("", file=output_c)
 
 for g in groups:
-    print>>output_c,"\tdiacriticals[%s] = &%s;" % (hex(g[0]), g[2])
+    print("\tdiacriticals[%s] = &%s;" % (hex(g[0]), g[2]), file=output_c)
 
-print>>output_c,"}"
-print>>output_h,""
-print>>output_h,"}"
-print>>output_h,"}"
+print("}", file=output_c)
+print("", file=output_h)
+print("}", file=output_h)
+print("}", file=output_h)
