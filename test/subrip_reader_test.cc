@@ -656,3 +656,27 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 	r._subs.clear ();
 }
 
+
+BOOST_AUTO_TEST_CASE(subrip_with_unicode_line_separator_test)
+{
+	auto f = fopen ("test/data/newline.srt", "r");
+	BOOST_REQUIRE(f);
+	sub::SubripReader reader(f);
+	fclose(f);
+	auto subs = sub::collect<std::vector<sub::Subtitle>>(reader.subtitles());
+
+	BOOST_REQUIRE_EQUAL(subs.size(), 2U);
+
+	BOOST_REQUIRE_EQUAL(subs[0].lines.size(), 2U);
+	BOOST_REQUIRE_EQUAL(subs[0].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[0].lines[0].blocks[0].text, "Du fühlst dich danach besser.");
+	BOOST_REQUIRE_EQUAL(subs[0].lines[1].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[0].lines[1].blocks[0].text, "Okay, Kleiner?");
+
+	BOOST_REQUIRE_EQUAL(subs[1].lines.size(), 2U);
+	BOOST_REQUIRE_EQUAL(subs[1].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[1].lines[0].blocks[0].text, "Sie kann es nicht machen");
+	BOOST_REQUIRE_EQUAL(subs[1].lines[1].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[1].lines[1].blocks[0].text, "wenn du dich bewegst.");
+}
+

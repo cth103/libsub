@@ -28,6 +28,7 @@
 #include "raw_convert.h"
 #include "ssa_reader.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string_regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/bind.hpp>
@@ -135,8 +136,16 @@ SubripReader::read (function<optional<string> ()> get_line)
 			if (line->empty ()) {
 				state = COUNTER;
 			} else {
-				convert_line (*line, rs);
-				rs.vertical_position.line = rs.vertical_position.line.get() + 1;
+				vector<string> sub_lines;
+				/* Split up this line on unicode "LINE SEPARATOR".  This feels hacky but also
+				 * the least unpleasant place to do it.
+				 */
+				boost::algorithm::split_regex(sub_lines, *line, boost::regex("\xe2\x80\xa8"));
+				for (auto sub_line: sub_lines) {
+					convert_line(sub_line, rs);
+					rs.vertical_position.line = rs.vertical_position.line.get() + 1;
+					rs.text.clear();
+				}
 			}
 			break;
 		}
