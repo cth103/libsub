@@ -55,7 +55,7 @@ WebVTTReader::read(std::function<optional<string> ()> get_line)
 	enum class State {
 		/* expecting WEBVTT */
 		HEADER,
-		/* awaiting a NOTE or a subtitle timing line */
+		/* awaiting a NOTE, some other metadata, or a subtitle timing line */
 		DATA,
 		/* reading the text of a subtitle */
 		SUBTITLE,
@@ -125,8 +125,6 @@ WebVTTReader::read(std::function<optional<string> ()> get_line)
 
 				rs.vertical_position.line = 0;
 				state = State::SUBTITLE;
-			} else if (!line->empty()) {
-				throw WebVTTError(*line, "a note or time", _context);
 			}
 			break;
 		case State::SUBTITLE:
