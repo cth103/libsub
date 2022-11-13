@@ -124,8 +124,18 @@ SubripReader::read (function<optional<string> ()> get_line)
 				throw SubripError (*line, "a time/position line", _context);
 			}
 
-			rs.from = convert_time (p[0]);
-			rs.to = convert_time (p[2]);
+			string expected;
+			auto from = convert_time(p[0], &expected);
+			if (!from) {
+				throw SubripError(p[0], expected, _context);
+			}
+			rs.from = *from;
+
+			auto to = convert_time(p[2], &expected);
+			if (!to) {
+				throw SubripError(p[2], expected, _context);
+			}
+			rs.to = *to;
 
 			/* XXX: should not ignore coordinate specifications */
 
@@ -152,19 +162,27 @@ SubripReader::read (function<optional<string> ()> get_line)
 	}
 }
 
-Time
-SubripReader::convert_time (string t)
+optional<Time>
+SubripReader::convert_time(string t, string* expected)
 {
+	auto report_expected = [expected](string const& s) {
+		if (expected) {
+			*expected = s;
+		}
+	};
+
 	vector<string> a;
 	boost::algorithm::split (a, t, boost::is_any_of (":"));
 	if (a.size() != 3) {
-		throw SubripError (t, "time in the format h:m:s,ms", _context);
+		report_expected("time in the format h:m:s,ms");
+		return {};
 	}
 
 	vector<string> b;
 	boost::algorithm::split (b, a[2], boost::is_any_of (","));
 	if (b.size() != 2) {
-		throw SubripError (t, "time in the format h:m:s,ms", _context);
+		report_expected("time in the format h:m:s,ms");
+		return {};
 	}
 
 	int h, m, s, ms;
@@ -172,25 +190,29 @@ SubripReader::convert_time (string t)
 	try {
 		h = lexical_cast<int>(a[0]);
 	} catch (boost::bad_lexical_cast &) {
-		throw SubripError (t, "integer hour value", _context);
+		report_expected("integer hour value");
+		return {};
 	}
 
 	try {
 		m = lexical_cast<int>(a[1]);
 	} catch (boost::bad_lexical_cast &) {
-		throw SubripError (t, "integer minute value", _context);
+		report_expected("integer minute value");
+		return {};
 	}
 
 	try {
 		s = lexical_cast<int>(b[0]);
 	} catch (boost::bad_lexical_cast &) {
-		throw SubripError (t, "integer second value", _context);
+		report_expected("integer second value");
+		return {};
 	}
 
 	try {
 		ms = lexical_cast<int>(b[1]);
 	} catch (boost::bad_lexical_cast &) {
-		throw SubripError (t, "integer millisecond value", _context);
+		report_expected("integer millisecond value");
+		return {};
 	}
 
 	return Time::from_hms (h, m, s, ms);

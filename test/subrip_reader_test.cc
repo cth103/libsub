@@ -408,8 +408,12 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 BOOST_AUTO_TEST_CASE (subrip_reader_convert_time_test)
 {
 	sub::SubripReader reader;
-	BOOST_CHECK_EQUAL (reader.convert_time ("00:03:10,500"), sub::Time::from_hms (0, 3, 10, 500));
-	BOOST_CHECK_EQUAL (reader.convert_time ("04:19:51,782"), sub::Time::from_hms (4, 19, 51, 782));
+	auto t = reader.convert_time("00:03:10,500");
+	BOOST_REQUIRE(t);
+	BOOST_CHECK_EQUAL(*t, sub::Time::from_hms(0, 3, 10, 500));
+	t = reader.convert_time("04:19:51,782");
+	BOOST_REQUIRE(t);
+	BOOST_CHECK_EQUAL(*t, sub::Time::from_hms(4, 19, 51, 782));
 }
 
 static void

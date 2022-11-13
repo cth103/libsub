@@ -41,6 +41,8 @@ public:
 	SubripReader (FILE* f);
 	SubripReader (std::string subs);
 
+	static boost::optional<Time> convert_time(std::string t, std::string* expected = nullptr);
+
 private:
 	/* For tests */
 	friend struct ::subrip_reader_convert_line_test;
@@ -49,7 +51,6 @@ private:
 	friend struct ::subrip_reader_test6;
 	SubripReader () {}
 
-	Time convert_time (std::string t);
 	void convert_line (std::string t, RawSubtitle& p);
 	void maybe_content (RawSubtitle& p);
 	void read (boost::function<boost::optional<std::string> ()> get_line);
