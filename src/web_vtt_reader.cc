@@ -111,13 +111,13 @@ WebVTTReader::read(std::function<optional<string> ()> get_line)
 				}
 
 				string expected;
-				auto from = SubripReader::convert_time(parts[0], &expected);
+				auto from = SubripReader::convert_time(parts[0], ".", &expected);
 				if (!from) {
 					throw WebVTTError(parts[0], expected, _context);
 				}
 				rs.from = *from;
 
-				auto to = SubripReader::convert_time(parts[2], &expected);
+				auto to = SubripReader::convert_time(parts[2], ".", &expected);
 				if (!to) {
 					throw WebVTTError(parts[2], expected, _context);
 				}
