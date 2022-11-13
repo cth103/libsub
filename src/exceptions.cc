@@ -30,9 +30,18 @@ ProgrammingError::ProgrammingError (string file, int line)
 
 }
 
+
 SubripError::SubripError (string saw, string expecting, list<string> context)
 	: runtime_error ("Error in SubRip file: saw " + (saw.empty() ? "an empty string" : saw) + " when expecting " + expecting)
 	, _context (context)
+{
+
+}
+
+
+WebVTTError::WebVTTError(string saw, string expecting, list<string> context)
+	: runtime_error("Error in WebVTT file: saw " + (saw.empty() ? "an empty string" : saw) + " when expecting " + expecting)
+	, _context(context)
 {
 
 }

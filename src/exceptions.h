@@ -66,6 +66,30 @@ private:
 	std::list<std::string> _context;
 };
 
+
+/** @class WebVTTError
+ *  @brief An error raised when reading a WebVTT file.
+ */
+class WebVTTError : public std::runtime_error
+{
+public:
+	WebVTTError(std::string message)
+		: std::runtime_error(message.c_str())
+	{}
+
+	WebVTTError(std::string saw, std::string expecting, std::list<std::string> context);
+
+	~WebVTTError() throw () {}
+
+	std::list<std::string> context() const {
+		return _context;
+	}
+
+private:
+	std::list<std::string> _context;
+};
+
+
 class SSAError : public std::runtime_error
 {
 public:
