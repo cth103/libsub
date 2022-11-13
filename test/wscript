@@ -31,6 +31,7 @@ def build(bld):
                  time_test.cc
                  test.cc
                  vertical_position_test.cc
+                 webvtt_reader_test.cc
                  """
     obj.target = 'tests'
     obj.install_path = ''

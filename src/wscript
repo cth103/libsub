@@ -38,6 +38,7 @@ def build(bld):
                  util.cc
                  vertical_reference.cc
                  vertical_position.cc
+                 web_vtt_reader.cc
                  """
 
     headers = """
@@ -63,6 +64,7 @@ def build(bld):
               subtitle.h
               vertical_position.h
               vertical_reference.h
+              web_vtt_reader.h
               """
 
     bld.install_files('${PREFIX}/include/libsub%s/sub' % bld.env.API_VERSION, headers)
