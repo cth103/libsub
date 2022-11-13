@@ -21,20 +21,23 @@
  *  @brief SubripReader class.
  */
 
-#include "subrip_reader.h"
+
+#include "compose.hpp"
 #include "exceptions.h"
-#include "util.h"
-#include "sub_assert.h"
 #include "raw_convert.h"
 #include "ssa_reader.h"
+#include "sub_assert.h"
+#include "subrip_reader.h"
+#include "util.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
+#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-#include <boost/bind.hpp>
 #include <cstdio>
-#include <vector>
 #include <iostream>
+#include <vector>
+
 
 using std::string;
 using std::vector;
@@ -125,13 +128,13 @@ SubripReader::read (function<optional<string> ()> get_line)
 			}
 
 			string expected;
-			auto from = convert_time(p[0], &expected);
+			auto from = convert_time(p[0], ",", &expected);
 			if (!from) {
 				throw SubripError(p[0], expected, _context);
 			}
 			rs.from = *from;
 
-			auto to = convert_time(p[2], &expected);
+			auto to = convert_time(p[2], ",", &expected);
 			if (!to) {
 				throw SubripError(p[2], expected, _context);
 			}
@@ -163,7 +166,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 }
 
 optional<Time>
-SubripReader::convert_time(string t, string* expected)
+SubripReader::convert_time(string t, string milliseconds_separator, string* expected)
 {
 	auto report_expected = [expected](string const& s) {
 		if (expected) {
@@ -179,9 +182,9 @@ SubripReader::convert_time(string t, string* expected)
 	}
 
 	vector<string> b;
-	boost::algorithm::split (b, a[2], boost::is_any_of (","));
+	boost::algorithm::split(b, a[2], boost::is_any_of(milliseconds_separator));
 	if (b.size() != 2) {
-		report_expected("time in the format h:m:s,ms");
+		report_expected(String::compose("time in the format h:m:s%1ms", milliseconds_separator));
 		return {};
 	}
 

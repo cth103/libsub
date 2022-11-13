@@ -41,7 +41,7 @@ public:
 	SubripReader (FILE* f);
 	SubripReader (std::string subs);
 
-	static boost::optional<Time> convert_time(std::string t, std::string* expected = nullptr);
+	static boost::optional<Time> convert_time(std::string t, std::string milliseconds_separator, std::string* expected = nullptr);
 
 private:
 	/* For tests */
