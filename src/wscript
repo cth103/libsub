@@ -8,12 +8,10 @@ def build(bld):
 
     obj.name = 'libsub%s' % bld.env.API_VERSION
     obj.target = 'sub%s' % bld.env.API_VERSION
-    obj.uselib = 'CXML DCP BOOST_FILESYSTEM BOOST_LOCALE BOOST_REGEX ASDCPLIB_CTH'
-    obj.use = 'libkumu-libsub%s libasdcp-libsub%s' % (bld.env.API_VERSION, bld.env.API_VERSION)
+    obj.uselib = 'CXML BOOST_FILESYSTEM BOOST_LOCALE BOOST_REGEX'
     obj.export_includes = ['.']
     obj.source = """
                  colour.cc
-                 dcp_reader.cc
                  effect.cc
                  exceptions.cc
                  font_size.cc
@@ -44,7 +42,6 @@ def build(bld):
     headers = """
               collect.h
               colour.h
-              dcp_reader.h
               effect.h
               exceptions.h
               font_size.h

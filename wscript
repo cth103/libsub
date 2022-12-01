@@ -22,7 +22,6 @@ import shlex
 from waflib import Context
 
 APPNAME = 'libsub'
-libdcp_version = '1.8.13'
 
 this_version = subprocess.Popen(shlex.split('git tag -l --points-at HEAD'), stdout=subprocess.PIPE).communicate()[0]
 last_version = subprocess.Popen(shlex.split('git describe --tags --abbrev=0'), stdout=subprocess.PIPE).communicate()[0]
@@ -76,7 +75,7 @@ except ImportError:
 def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--enable-debug', action='store_true', default=False, help='build with debugging information and without optimisation')
-    opt.add_option('--static', action='store_true', default=False, help='build libsub statically and link statically to dcp')
+    opt.add_option('--static', action='store_true', default=False, help='build libsub statically')
     opt.add_option('--target-windows-64', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package 64-bit')
     opt.add_option('--target-windows-32', action='store_true', default=False, help='set up to do a cross-compile to make a Windows package 32-bit')
     opt.add_option('--disable-tests', action='store_true', default=False, help='disable building of tests')
@@ -111,16 +110,6 @@ def configure(conf):
     conf.env.append_value('CXXFLAGS', ['-Wno-deprecated-declarations'])
 
     conf.check_cfg(package='openssl', args='--cflags --libs', uselib_store='OPENSSL', mandatory=True)
-
-    if conf.options.static:
-        conf.check_cfg(package='libdcp-1.0', atleast_version=libdcp_version, args='--cflags', uselib_store='DCP', mandatory=True)
-        conf.env.HAVE_DCP = 1
-        conf.env.STLIB_DCP = ['dcp-1.0', 'asdcp-carl', 'kumu-carl', 'openjp2', 'cxml']
-        conf.env.LIB_DCP = ['ssl', 'crypto', 'xmlsec1-openssl', 'xmlsec1', 'glibmm-2.4', 'xml++-2.6', 'xml2', 'dl']
-    else:
-        conf.check_cfg(package='libdcp-1.0', atleast_version=libdcp_version, args='--cflags --libs', uselib_store='DCP', mandatory=True)
-
-    conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     boost_lib_suffix = ''
     if conf.env.TARGET_WINDOWS_64:

@@ -114,14 +114,6 @@ public:
 	{}
 };
 
-class DCPError : public std::runtime_error
-{
-public:
-	DCPError (std::string const & message)
-		: std::runtime_error (message)
-	{}
-};
-
 class ProgrammingError : public std::runtime_error
 {
 public:

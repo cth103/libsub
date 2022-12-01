@@ -23,6 +23,7 @@
 #include "reader.h"
 #include "stl_binary_tables.h"
 #include <map>
+#include <memory>
 
 namespace sub {
 

@@ -1,6 +1,6 @@
 def build(bld):
     obj = bld(features='cxx cxxprogram')
     obj.use = ['libsub-1.0']
-    obj.uselib = 'OPENJPEG DCP CXML ASDCPLIB_CTH BOOST_FILESYSTEM BOOST_REGEX'
+    obj.uselib = 'OPENJPEG CXML BOOST_FILESYSTEM BOOST_REGEX'
     obj.source = 'dumpsubs.cc'
     obj.target = 'dumpsubs'

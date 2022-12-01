@@ -9,7 +9,6 @@ them or to convert between formats.
 The current version has reasonable support for the following subtitle
 formats:
 
-- Digital Cinema Package (DCP) XML
 - SubRip (.srt)
 - SubStation Alpha and Advanced SubStation Alpha (SSA/ASS)
 - EBU-STL text and binary

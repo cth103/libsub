@@ -24,7 +24,6 @@
 #ifndef LIBSUB_COLOUR_H
 #define LIBSUB_COLOUR_H
 
-#include <dcp/types.h>
 #include <string>
 #include <cmath>
 
@@ -57,10 +56,6 @@ public:
 	float g;
 	/** blue component (from 0 to 1) */
 	float b;
-
-	dcp::Colour dcp() const {
-		return dcp::Colour(lrintf(r * 255), lrintf(g * 255), lrintf(b * 255));
-	}
 };
 
 bool

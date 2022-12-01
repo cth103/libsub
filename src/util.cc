@@ -31,7 +31,6 @@ using std::string;
 using std::getline;
 using std::ostream;
 using std::map;
-using std::list;
 using std::shared_ptr;
 using std::vector;
 using boost::optional;

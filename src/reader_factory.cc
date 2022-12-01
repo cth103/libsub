@@ -20,10 +20,8 @@
 #include "reader_factory.h"
 #include "stl_binary_reader.h"
 #include "stl_text_reader.h"
-#include "dcp_reader.h"
 #include "subrip_reader.h"
 #include "sub_assert.h"
-#include <libxml++/libxml++.h>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
 
@@ -38,15 +36,6 @@ sub::reader_factory (boost::filesystem::path file_name)
 {
 	string ext = file_name.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-	if (ext == ".xml") {
-		return shared_ptr<Reader> (new DCPReader (file_name));
-        }
-
-        if (ext == ".mxf") {
-                /* Assume this is some MXF-wrapped SMPTE subtitles */
-                return shared_ptr<Reader> (new DCPReader (file_name));
-        }
 
 	if (ext == ".stl") {
 		/* Check the start of the DFC */

@@ -24,6 +24,7 @@
 
 #include "reader.h"
 #include <cstdio>
+#include <list>
 #include <string>
 
 

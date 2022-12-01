@@ -22,6 +22,7 @@
 
 #include "subtitle.h"
 #include "raw_subtitle.h"
+#include <algorithm>
 
 namespace sub {
 
