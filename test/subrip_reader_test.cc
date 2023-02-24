@@ -397,6 +397,17 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
+	r.convert_line("<font color=\"#0000ffdd\">some blue text with alpha</font>", rs);
+	BOOST_CHECK_EQUAL(r._subs.size(), 1);
+	i = r._subs.begin();
+	BOOST_CHECK_EQUAL(i->text, "some blue text with alpha");
+	BOOST_CHECK_EQUAL(i->bold, false);
+	BOOST_CHECK(fabs(i->colour.r) < 0.01);
+	BOOST_CHECK(fabs(i->colour.g) < 0.01);
+	BOOST_CHECK_CLOSE(i->colour.b, 1, 0.1);
+	r._subs.clear();
+
+	rs = sub::RawSubtitle();
 	r.convert_line ("<< angle brackets but no HTML >>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1);
 	i = r._subs.begin ();

@@ -269,9 +269,16 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 				++i;
 			}
 			++i;
-			if (boost::regex_search (tag, match, re) && string (match[1]).size() == 6) {
-				p.colour = Colour::from_rgb_hex (match[1]);
-				colours.push_back (p.colour);
+			if (boost::regex_search(tag, match, re)) {
+				if (string(match[1]).size() == 6) {
+					p.colour = Colour::from_rgb_hex(match[1]);
+					colours.push_back(p.colour);
+				} else if (string(match[1]).size() == 8) {
+					p.colour = Colour::from_rgba_hex(match[1]);
+					colours.push_back(p.colour);
+				} else {
+					throw SubripError(tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
+				}
 			} else {
 				re = boost::regex (
 					".*color=\"rgba\\("
@@ -287,7 +294,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					p.colour.b = raw_convert<int>(string(match[3])) / 255.0;
 					colours.push_back (p.colour);
 				} else {
-					throw SubripError (tag, "a colour in the format #rrggbb or rgba(rr,gg,bb,aa)", _context);
+					throw SubripError (tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
 				}
 			}
 		} else if (has_next(t, i, "</font>")) {
