@@ -47,7 +47,7 @@ public:
 		, b (b)
 	{}
 
-	static Colour from_argb_hex (std::string);
+	static Colour from_rgba_hex(std::string);
 	static Colour from_rgb_hex (std::string);
 
 	/** red component (from 0 to 1) */
