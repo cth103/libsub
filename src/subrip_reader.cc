@@ -261,7 +261,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 			p.underline = false;
 		} else if (has_next(t, i, "<font") || has_next(t, i, "<Font")) {
 			maybe_content (p);
-			boost::regex re (".*color=\"?#([[:xdigit:]]+)\"?");
+			boost::regex re (".*color=[\"\']?#([[:xdigit:]]+)[\"\']?");
 			boost::smatch match;
 			string tag;
 			while (i < t.size() && t[i] != '>') {

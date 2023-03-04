@@ -335,6 +335,17 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 1, 0.1);
 	r._subs.clear ();
 
+	/* single quotes are apparently also allowed */
+	rs = sub::RawSubtitle();
+	r.convert_line("<font color=\'#ff00ff\'>simple color</font>", rs);
+	BOOST_CHECK_EQUAL(r._subs.size(), 1);
+	BOOST_CHECK_EQUAL(r._subs.front().text, "simple color");
+	BOOST_CHECK_EQUAL(r._subs.front().bold, false);
+	BOOST_CHECK_CLOSE(r._subs.front().colour.r, 1, 0.1);
+	BOOST_CHECK(fabs(r._subs.front().colour.g) < 0.01);
+	BOOST_CHECK_CLOSE(r._subs.front().colour.b, 1, 0.1);
+	r._subs.clear();
+
 	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#FF00FF\">simple color in capitals</font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1);
@@ -615,6 +626,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 2.0 / 255, 0.1);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.b, 3.0 / 255, 0.1);
 }
+
 
 /** Test alignment */
 BOOST_AUTO_TEST_CASE (subrip_reader_test6)
