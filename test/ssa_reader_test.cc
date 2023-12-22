@@ -173,6 +173,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 	test ("dcpsubtest-en.ssa");
 	test ("dcpsubtest-en.ssa");
 	test ("W_GERMAN_SUBS_grey.ass");
+	test ("XxxHolic (2022) ITA 071223.ass");
 }
 
 #define SUB_START(f, t) \

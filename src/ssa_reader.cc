@@ -488,8 +488,16 @@ SSAReader::read (function<optional<string> ()> get_line)
 						   "they seem to mean literally nothing".  Go figure...
 						*/
 						trim_left_if (event[i], boost::is_any_of ("*"));
-						SUB_ASSERT (styles.find(event[i]) != styles.end());
-						style = styles[event[i]];
+						/* Use the specified style unless it's not defined, in which case use
+						 * "Default" (if it exists).
+						 */
+						if (styles.find(event[i]) != styles.end()) {
+							style = styles[event[i]];
+						} else if (styles.find("Default") != styles.end()) {
+							style = styles["Default"];
+						} else {
+							continue;
+						}
 						sub.font = style->font_name;
 						sub.font_size = FontSize::from_proportional(static_cast<float>(style->font_size) / play_res_y);
 						sub.colour = style->primary_colour;
