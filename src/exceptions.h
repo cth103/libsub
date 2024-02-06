@@ -90,6 +90,15 @@ private:
 };
 
 
+class WebVTTHeaderError : public WebVTTError
+{
+public:
+	WebVTTHeaderError()
+		: WebVTTError("No WEBVTT header found")
+	{}
+};
+
+
 class SSAError : public std::runtime_error
 {
 public:

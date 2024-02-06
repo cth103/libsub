@@ -86,7 +86,7 @@ WebVTTReader::read(std::function<optional<string> ()> get_line)
 		switch (state) {
 		case State::HEADER:
 			if (!boost::starts_with(*line, "WEBVTT")) {
-				throw WebVTTError("No WEBVTT header found");
+				throw WebVTTHeaderError();
 			}
 			state = State::DATA;
 			break;
