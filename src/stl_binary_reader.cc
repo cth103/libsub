@@ -248,14 +248,46 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 					break;
 				}
 
-				if (c >= 0x80 && c <= 0x83) {
-					/* Italic or underline control code */
+				if (c <= 0x07 || (c >= 0x80 && c <= 0x83)) {
+					/* Colour, italic or underline control code */
 					sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
 					_subs.push_back (sub);
 					text.clear ();
 				}
 
 				switch (c) {
+				case 0x0:
+					/* Black */
+					sub.colour = Colour(0, 0, 0);
+					break;
+				case 0x1:
+					/* Red */
+					sub.colour = Colour(1, 0, 0);
+					break;
+				case 0x2:
+					/* Lime */
+					sub.colour = Colour(0, 1, 0);
+					break;
+				case 0x3:
+					/* Yellow */
+					sub.colour = Colour(1, 1, 0);
+					break;
+				case 0x4:
+					/* Blue */
+					sub.colour = Colour(0, 0, 1);
+					break;
+				case 0x5:
+					/* Magenta */
+					sub.colour = Colour(1, 0, 1);
+					break;
+				case 0x6:
+					/* Cyan */
+					sub.colour = Colour(0, 1, 1);
+					break;
+				case 0x7:
+					/* White */
+					sub.colour = Colour(1, 1, 1);
+					break;
 				case 0x80:
 					italic = true;
 					break;

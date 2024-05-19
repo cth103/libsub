@@ -17,6 +17,7 @@
 
 */
 
+
 #include "stl_binary_reader.h"
 #include "subtitle.h"
 #include "test.h"
@@ -24,10 +25,13 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 
+
 using std::ifstream;
+using std::make_shared;
 using std::ofstream;
 using std::shared_ptr;
-using std::make_shared;
+using std::vector;
+
 
 /* Test reading of a binary STL file */
 BOOST_AUTO_TEST_CASE (stl_binary_reader_test1)
@@ -91,6 +95,39 @@ BOOST_AUTO_TEST_CASE (stl_binary_reader_test3)
 	for (auto i: reader->subtitles()) {
 		BOOST_REQUIRE(*i.vertical_position.line >= 0);
 		BOOST_REQUIRE(*i.vertical_position.line <= 12);
+	}
+}
+
+
+BOOST_AUTO_TEST_CASE(stl_binary_reader_with_colour)
+{
+	auto path = private_test / "at.stl";
+	ifstream in(path.string().c_str());
+	auto reader = make_shared<sub::STLBinaryReader>(in);
+
+	vector<sub::Colour> reference = {
+		{ 1, 1, 1 },
+		{ 1, 0, 1 },
+		{ 1, 1, 1 },
+		{ 1, 0, 1 },
+		{ 1, 1, 1 },
+		{ 1, 1, 0 },
+		{ 1, 1, 1 },
+		{ 1, 1, 0 },
+		{ 1, 1, 1 },
+		{ 1, 1, 0 },
+		{ 1, 1, 1 },
+		{ 1, 1, 0 },
+		{ 1, 1, 1 },
+		{ 1, 1, 0 }
+	};
+
+	/* Check the first few lines */
+	auto subs = reader->subtitles();
+	BOOST_REQUIRE(subs.size() >= reference.size());
+
+	for (size_t i = 0; i < reference.size(); ++i) {
+		BOOST_CHECK(subs[i].colour == reference[i]);
 	}
 }
 
