@@ -149,6 +149,10 @@ public:
 				}
 			} else if (keys[i] == "MarginV") {
 				vertical_margin = raw_convert<int> (style[i]);
+			} else if (keys[i] == "MarginL") {
+				left_margin = raw_convert<int>(style[i]);
+			} else if (keys[i] == "MarginR") {
+				right_margin = raw_convert<int>(style[i]);
 			}
 		}
 	}
@@ -166,6 +170,8 @@ public:
 	HorizontalReference horizontal_reference;
 	VerticalReference vertical_reference;
 	int vertical_margin;
+	int left_margin = 0;
+	int right_margin = 0;
 
 private:
 	Colour colour (string c) const
@@ -184,6 +190,24 @@ private:
 		}
 	}
 };
+
+
+void
+SSAReader::Context::update_horizontal_position(RawSubtitle& sub) const
+{
+	switch (sub.horizontal_position.reference) {
+	case LEFT_OF_SCREEN:
+		sub.horizontal_position.proportional = static_cast<float>(left_margin) / play_res_x;
+		break;
+	case HORIZONTAL_CENTRE_OF_SCREEN:
+		sub.horizontal_position.proportional = static_cast<float>(left_margin - right_margin) / (2 * play_res_x);
+		break;
+	case RIGHT_OF_SCREEN:
+		sub.horizontal_position.proportional = static_cast<float>(right_margin) / play_res_x;
+		break;
+	}
+}
+
 
 Time
 SSAReader::parse_time (string t) const
@@ -218,30 +242,39 @@ SSAReader::parse_tag(RawSubtitle& sub, string tag, Context const& context)
 	} else if (tag == "\\an1") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an2") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an3") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an4") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an5") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an6") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an7") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an8") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (tag == "\\an9") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
+		context.update_horizontal_position(sub);
 	} else if (boost::starts_with(tag, "\\pos")) {
 		vector<string> bits;
 		boost::algorithm::split (bits, tag, boost::is_any_of("(,"));
@@ -292,6 +325,8 @@ SSAReader::parse_line(RawSubtitle base, string line, Context const& context)
 	 * if required.
 	 */
 	current.vertical_position.proportional = 0;
+
+	context.update_horizontal_position(current);
 
 	/* We must have a font size, as there could be a margin specified
 	   in pixels and in that case we must know how big the subtitle
@@ -477,6 +512,8 @@ SSAReader::read (function<optional<string> ()> get_line)
 
 				RawSubtitle sub;
 				optional<Style> style;
+				int left_margin = 0;
+				int right_margin = 0;
 
 				for (size_t i = 0; i < event.size(); ++i) {
 					trim (event[i]);
@@ -512,13 +549,24 @@ SSAReader::read (function<optional<string> ()> get_line)
 						if (sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
 							sub.vertical_position.proportional = float(style->vertical_margin) / play_res_y;
 						}
+						left_margin = style->left_margin;
+						right_margin = style->right_margin;
 					} else if (event_format[i] == "MarginV") {
 						if (event[i] != "0" && sub.vertical_position.reference != sub::VERTICAL_CENTRE_OF_SCREEN) {
 							/* Override the style if its non-zero */
 							sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 						}
+					} else if (event_format[i] == "MarginL") {
+						if (event[i] != "0") {
+							left_margin = raw_convert<int>(event[i]);
+						}
+					} else if (event_format[i] == "MarginR") {
+						if (event[i] != "0") {
+							right_margin = raw_convert<int>(event[i]);
+						}
 					} else if (event_format[i] == "Text") {
-						for (auto j: parse_line(sub, event[i], Context(play_res_x, play_res_y, style ? style->primary_colour : Colour(1, 1, 1)))) {
+						auto context = Context(play_res_x, play_res_y, style ? style->primary_colour : Colour(1, 1, 1), left_margin, right_margin);
+						for (auto j: parse_line(sub, event[i], context)) {
 							_subs.push_back (j);
 						}
 					}

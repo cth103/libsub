@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	/* Alignments */
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 230), sub::Time::from_hms (0, 0, 11, 560));
-	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, (10.0 / 1920), sub::LEFT_OF_SCREEN);
 	BLOCK("bottom left", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
@@ -264,13 +264,13 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 250), sub::Time::from_hms (0, 0, 11, 560));
-	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::BOTTOM_OF_SCREEN, (10.0 / 1920), sub::RIGHT_OF_SCREEN);
 	BLOCK("bottom right", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 260), sub::Time::from_hms (0, 0, 11, 560));
 	/* Position is half of a 20pt line (with line spacing) above vertical centre */
-	LINE (-vp(10), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	LINE (-vp(10), sub::VERTICAL_CENTRE_OF_SCREEN, (10.0 / 1920), sub::LEFT_OF_SCREEN);
 	BLOCK("middle left", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
@@ -280,12 +280,12 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 280), sub::Time::from_hms (0, 0, 11, 560));
-	LINE (-vp(10), sub::VERTICAL_CENTRE_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE (-vp(10), sub::VERTICAL_CENTRE_OF_SCREEN, (10.0 / 1920), sub::RIGHT_OF_SCREEN);
 	BLOCK("middle right", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 290), sub::Time::from_hms (0, 0, 11, 560));
-	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::LEFT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, (10.0 / 1920), sub::LEFT_OF_SCREEN);
 	BLOCK("top left", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 	SUB_END ();
 
 	SUB_START (sub::Time::from_hms (0, 0, 9, 310), sub::Time::from_hms (0, 0, 11, 560));
-	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, 0, sub::RIGHT_OF_SCREEN);
+	LINE ((10.0 / 1080), sub::TOP_OF_SCREEN, (10.0 / 1920), sub::RIGHT_OF_SCREEN);
 	BLOCK("top right", "Arial", fs(20), false, false, false);
 	SUB_END ();
 
@@ -635,5 +635,39 @@ BOOST_AUTO_TEST_CASE (ssa_reader_c)
 	test_c("&HFFFFFF&", "ffffff");
 	/* \c with no parameter seems to be parsed as "return to primary colour" */
 	test_c("", "ff00ff");
+}
+
+
+BOOST_AUTO_TEST_CASE(ssa_reader_horizontal_margin)
+{
+	auto subs = read_file("test/data/horizontal_margin.ssa");
+	BOOST_REQUIRE_EQUAL(subs.size(), 5U);
+
+	int n = 0;
+
+	BOOST_REQUIRE_EQUAL(subs[n].lines.size(), 1U);
+	BOOST_CHECK(subs[n].lines[0].horizontal_position.reference == sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BOOST_CHECK_CLOSE(subs[n].lines[0].horizontal_position.proportional, 0, 1);
+	++n;
+
+	BOOST_REQUIRE_EQUAL(subs[n].lines.size(), 1U);
+	BOOST_CHECK(subs[n].lines[0].horizontal_position.reference == sub::HORIZONTAL_CENTRE_OF_SCREEN);
+	BOOST_CHECK_CLOSE(subs[n].lines[0].horizontal_position.proportional, -90.0f / (2 * 1920.0f), 1);
+	++n;
+
+	BOOST_REQUIRE_EQUAL(subs[n].lines.size(), 1U);
+	BOOST_CHECK(subs[n].lines[0].horizontal_position.reference == sub::LEFT_OF_SCREEN);
+	BOOST_CHECK_CLOSE(subs[n].lines[0].horizontal_position.proportional, 10.0f / 1920.f, 1);
+	++n;
+
+	BOOST_REQUIRE_EQUAL(subs[n].lines.size(), 1U);
+	BOOST_CHECK(subs[n].lines[0].horizontal_position.reference == sub::RIGHT_OF_SCREEN);
+	BOOST_CHECK_CLOSE(subs[n].lines[0].horizontal_position.proportional, 100.0f / 1920.f, 1);
+	++n;
+
+	BOOST_REQUIRE_EQUAL(subs[n].lines.size(), 1U);
+	BOOST_CHECK(subs[n].lines[0].horizontal_position.reference == sub::LEFT_OF_SCREEN);
+	BOOST_CHECK_CLOSE(subs[n].lines[0].horizontal_position.proportional, 200.0f / 1920.f, 1);
+	++n;
 }
 

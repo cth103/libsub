@@ -1,0 +1,23 @@
+[Script Info]
+Title: libsub test
+ScriptType: v4.00
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1920
+PlayResY: 1080
+
+[V4 Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding
+Style: Default,Arial,20,16777215,255,0,0,0,0,1,2,2,2,200,100,10,0,1
+
+[Fonts]
+
+[Graphics]
+
+[Events]
+Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: Marked=0,0:00:01.23,0:00:04.55,Default,,100,0,0,,Hello world
+Dialogue: Marked=0,0:01:01.23,0:01:04.55,Default,,10,0,0,,Left of centre
+Dialogue: Marked=0,0:02:01.23,0:02:04.55,Default,,10,0,0,,{\an4}Left
+Dialogue: Marked=0,0:03:01.23,0:03:04.55,Default,,10,0,0,,{\an6}Right
+Dialogue: Marked=0,0:04:01.23,0:04:04.55,Default,,0,100,0,,{\an4}Style left

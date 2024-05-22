@@ -44,15 +44,21 @@ public:
 	class Context
 	{
 	public:
-		Context(int play_res_x_, int play_res_y_, Colour primary_colour_)
+		Context(int play_res_x_, int play_res_y_, Colour primary_colour_, int left_margin_ = 0, int right_margin_ = 0)
 			: play_res_x(play_res_x_)
 			, play_res_y(play_res_y_)
 			, primary_colour(primary_colour_)
+			, left_margin(left_margin_)
+			, right_margin(right_margin_)
 		{}
 
 		int play_res_x;
 		int play_res_y;
 		Colour primary_colour;
+		int left_margin;
+		int right_margin;
+
+		void update_horizontal_position(RawSubtitle& sub) const;
 	};
 
 	static std::vector<RawSubtitle> parse_line(RawSubtitle base, std::string line, Context const& context);
