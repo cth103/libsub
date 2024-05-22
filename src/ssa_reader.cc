@@ -200,66 +200,66 @@ SSAReader::parse_time (string t) const
 }
 
 void
-SSAReader::parse_style(RawSubtitle& sub, string style, int play_res_x, int play_res_y, Colour primary_colour)
+SSAReader::parse_tag(RawSubtitle& sub, string tag, int play_res_x, int play_res_y, Colour primary_colour)
 {
-	if (style == "\\i1") {
+	if (tag == "\\i1") {
 		sub.italic = true;
-	} else if (style == "\\i0" || style == "\\i") {
+	} else if (tag == "\\i0" || tag == "\\i") {
 		sub.italic = false;
-	} else if (style == "\\b1") {
+	} else if (tag == "\\b1") {
 		sub.bold = true;
-	} else if (style == "\\b0") {
+	} else if (tag == "\\b0") {
 		sub.bold = false;
-	} else if (style == "\\u1") {
+	} else if (tag == "\\u1") {
 		sub.underline = true;
-	} else if (style == "\\u0") {
+	} else if (tag == "\\u0") {
 		sub.underline = false;
-	} else if (style == "\\an1") {
+	} else if (tag == "\\an1") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
-	} else if (style == "\\an2") {
+	} else if (tag == "\\an2") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
-	} else if (style == "\\an3") {
+	} else if (tag == "\\an3") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::BOTTOM_OF_SCREEN;
-	} else if (style == "\\an4") {
+	} else if (tag == "\\an4") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
-	} else if (style == "\\an5") {
+	} else if (tag == "\\an5") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
-	} else if (style == "\\an6") {
+	} else if (tag == "\\an6") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::VERTICAL_CENTRE_OF_SCREEN;
-	} else if (style == "\\an7") {
+	} else if (tag == "\\an7") {
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
-	} else if (style == "\\an8") {
+	} else if (tag == "\\an8") {
 		sub.horizontal_position.reference = sub::HORIZONTAL_CENTRE_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
-	} else if (style == "\\an9") {
+	} else if (tag == "\\an9") {
 		sub.horizontal_position.reference = sub::RIGHT_OF_SCREEN;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
-	} else if (boost::starts_with(style, "\\pos")) {
+	} else if (boost::starts_with(tag, "\\pos")) {
 		vector<string> bits;
-		boost::algorithm::split (bits, style, boost::is_any_of("(,"));
+		boost::algorithm::split (bits, tag, boost::is_any_of("(,"));
 		SUB_ASSERT (bits.size() == 3);
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
 		sub.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
 		sub.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
-	} else if (boost::starts_with(style, "\\fs")) {
-		SUB_ASSERT (style.length() > 3);
-		sub.font_size.set_proportional(raw_convert<float>(style.substr(3)) / play_res_y);
-	} else if (boost::starts_with(style, "\\c")) {
+	} else if (boost::starts_with(tag, "\\fs")) {
+		SUB_ASSERT (tag.length() > 3);
+		sub.font_size.set_proportional(raw_convert<float>(tag.substr(3)) / play_res_y);
+	} else if (boost::starts_with(tag, "\\c")) {
 		/* \c&Hbbggrr& */
-		if (style.length() > 2) {
-			sub.colour = h_colour(style.substr(2, style.length() - 3));
-		} else if (style.length() == 2) {
+		if (tag.length() > 2) {
+			sub.colour = h_colour(tag.substr(2, tag.length() - 3));
+		} else if (tag.length() == 2) {
 			sub.colour = primary_colour;
 		} else {
-			throw SSAError(String::compose("Badly formatted colour tag %1", style));
+			throw SSAError(String::compose("Badly formatted colour tag %1", tag));
 		}
 	}
 }
@@ -273,13 +273,13 @@ SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_re
 {
 	enum {
 		TEXT,
-		STYLE,
+		TAG,
 		BACKSLASH
 	} state = TEXT;
 
 	vector<RawSubtitle> subs;
 	RawSubtitle current = base;
-	string style;
+	string tag;
 
 	if (!current.vertical_position.reference) {
 		current.vertical_position.reference = BOTTOM_OF_SCREEN;
@@ -318,27 +318,27 @@ SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_re
 		switch (state) {
 		case TEXT:
 			if (c == '{') {
-				state = STYLE;
+				state = TAG;
 			} else if (c == '\\') {
 				state = BACKSLASH;
 			} else if (c != '\r' && c != '\n') {
 				current.text += c;
 			}
 			break;
-		case STYLE:
+		case TAG:
 			if (c == '}' || c == '\\') {
 				if (!current.text.empty ()) {
 					subs.push_back (current);
 					current.text = "";
 				}
-				parse_style(current, style, play_res_x, play_res_y, primary_colour);
-				style = "";
+				parse_tag(current, tag, play_res_x, play_res_y, primary_colour);
+				tag = "";
 			}
 
 			if (c == '}') {
 				state = TEXT;
 			} else {
-				style += c;
+				tag += c;
 			}
 			break;
 		case BACKSLASH:

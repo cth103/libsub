@@ -42,7 +42,7 @@ public:
 	SSAReader (std::string subs);
 
 	static std::vector<RawSubtitle> parse_line(RawSubtitle base, std::string line, int play_res_x, int play_res_y, Colour primary_colour);
-	static void parse_style(RawSubtitle& sub, std::string style, int play_res_x, int play_res_y, Colour primary_colour);
+	static void parse_tag(RawSubtitle& sub, std::string style, int play_res_x, int play_res_y, Colour primary_colour);
 
 private:
 	void read (boost::function<boost::optional<std::string> ()> get_line);
