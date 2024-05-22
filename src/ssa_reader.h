@@ -41,8 +41,22 @@ public:
 	SSAReader (FILE* f);
 	SSAReader (std::string subs);
 
-	static std::vector<RawSubtitle> parse_line(RawSubtitle base, std::string line, int play_res_x, int play_res_y, Colour primary_colour);
-	static void parse_tag(RawSubtitle& sub, std::string style, int play_res_x, int play_res_y, Colour primary_colour);
+	class Context
+	{
+	public:
+		Context(int play_res_x_, int play_res_y_, Colour primary_colour_)
+			: play_res_x(play_res_x_)
+			, play_res_y(play_res_y_)
+			, primary_colour(primary_colour_)
+		{}
+
+		int play_res_x;
+		int play_res_y;
+		Colour primary_colour;
+	};
+
+	static std::vector<RawSubtitle> parse_line(RawSubtitle base, std::string line, Context const& context);
+	static void parse_tag(RawSubtitle& sub, std::string style, Context const& context);
 
 private:
 	void read (boost::function<boost::optional<std::string> ()> get_line);

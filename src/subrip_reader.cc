@@ -309,7 +309,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 				++i;
 			}
 			++i;
-			SSAReader::parse_tag(p, ssa, 288, 288, Colour(1, 1, 1));
+			SSAReader::parse_tag(p, ssa, SSAReader::Context{288, 288, Colour(1, 1, 1)});
 		} else {
 			p.text += t[i];
 			++i;

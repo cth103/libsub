@@ -199,8 +199,9 @@ SSAReader::parse_time (string t) const
 		);
 }
 
+
 void
-SSAReader::parse_tag(RawSubtitle& sub, string tag, int play_res_x, int play_res_y, Colour primary_colour)
+SSAReader::parse_tag(RawSubtitle& sub, string tag, Context const& context)
 {
 	if (tag == "\\i1") {
 		sub.italic = true;
@@ -246,18 +247,18 @@ SSAReader::parse_tag(RawSubtitle& sub, string tag, int play_res_x, int play_res_
 		boost::algorithm::split (bits, tag, boost::is_any_of("(,"));
 		SUB_ASSERT (bits.size() == 3);
 		sub.horizontal_position.reference = sub::LEFT_OF_SCREEN;
-		sub.horizontal_position.proportional = raw_convert<float>(bits[1]) / play_res_x;
+		sub.horizontal_position.proportional = raw_convert<float>(bits[1]) / context.play_res_x;
 		sub.vertical_position.reference = sub::TOP_OF_SCREEN;
-		sub.vertical_position.proportional = raw_convert<float>(bits[2]) / play_res_y;
+		sub.vertical_position.proportional = raw_convert<float>(bits[2]) / context.play_res_y;
 	} else if (boost::starts_with(tag, "\\fs")) {
 		SUB_ASSERT (tag.length() > 3);
-		sub.font_size.set_proportional(raw_convert<float>(tag.substr(3)) / play_res_y);
+		sub.font_size.set_proportional(raw_convert<float>(tag.substr(3)) / context.play_res_y);
 	} else if (boost::starts_with(tag, "\\c")) {
 		/* \c&Hbbggrr& */
 		if (tag.length() > 2) {
 			sub.colour = h_colour(tag.substr(2, tag.length() - 3));
 		} else if (tag.length() == 2) {
-			sub.colour = primary_colour;
+			sub.colour = context.primary_colour;
 		} else {
 			throw SSAError(String::compose("Badly formatted colour tag %1", tag));
 		}
@@ -269,7 +270,7 @@ SSAReader::parse_tag(RawSubtitle& sub, string tag, int play_res_x, int play_res_
  *  @return List of RawSubtitles to represent line with vertical reference TOP_OF_SUBTITLE.
  */
 vector<RawSubtitle>
-SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_res_y, Colour primary_colour)
+SSAReader::parse_line(RawSubtitle base, string line, Context const& context)
 {
 	enum {
 		TEXT,
@@ -297,7 +298,7 @@ SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_re
 	   lines are to work out the position on screen.
 	*/
 	if (!current.font_size.proportional()) {
-		current.font_size.set_proportional(72.0 / play_res_y);
+		current.font_size.set_proportional(72.0 / context.play_res_y);
 	}
 
 	/* Count the number of line breaks */
@@ -311,7 +312,7 @@ SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_re
 	}
 
 	/* There are vague indications that with ASS 1 point should equal 1 pixel */
-	double const line_size = current.font_size.proportional(play_res_y) * 1.2;
+	double const line_size = current.font_size.proportional(context.play_res_y) * 1.2;
 
 	for (size_t i = 0; i < line.length(); ++i) {
 		char const c = line[i];
@@ -331,7 +332,7 @@ SSAReader::parse_line(RawSubtitle base, string line, int play_res_x, int play_re
 					subs.push_back (current);
 					current.text = "";
 				}
-				parse_tag(current, tag, play_res_x, play_res_y, primary_colour);
+				parse_tag(current, tag, context);
 				tag = "";
 			}
 
@@ -517,7 +518,7 @@ SSAReader::read (function<optional<string> ()> get_line)
 							sub.vertical_position.proportional = raw_convert<float>(event[i]) / play_res_y;
 						}
 					} else if (event_format[i] == "Text") {
-						for (auto j: parse_line(sub, event[i], play_res_x, play_res_y, style ? style->primary_colour : Colour(1, 1, 1))) {
+						for (auto j: parse_line(sub, event[i], Context(play_res_x, play_res_y, style ? style->primary_colour : Colour(1, 1, 1)))) {
 							_subs.push_back (j);
 						}
 					}
