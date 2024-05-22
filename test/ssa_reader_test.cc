@@ -36,13 +36,20 @@ using std::string;
 using std::vector;
 
 
+static
+vector<sub::Subtitle>
+read_file(boost::filesystem::path filename)
+{
+	auto file = fopen(filename.string().c_str(), "r");
+	BOOST_REQUIRE(file);
+	sub::SSAReader reader(file);
+	fclose(file);
+	return sub::collect<vector<sub::Subtitle>>(reader.subtitles());
+}
+
 BOOST_AUTO_TEST_CASE (ssa_reader_test)
 {
-	boost::filesystem::path p = private_test / "example.ssa";
-	FILE* f = fopen (p.string().c_str(), "r");
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file(private_test / "example.ssa");
 
 	auto i = subs.begin ();
 
@@ -159,11 +166,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_line_test2)
 static void
 test (boost::filesystem::path p)
 {
-	p = private_test / p;
-	FILE* f = fopen (p.string().c_str(), "r");
-	BOOST_REQUIRE (f);
-	sub::SSAReader r (f);
-	fclose (f);
+	read_file(private_test / p);
 }
 
 /** Test of reading some typical .ssa files */
@@ -209,11 +212,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test2)
 /** Test reading of a file within the libsub tree which exercises the parser */
 BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 {
-	boost::filesystem::path p = "test/data/test.ssa";
-	FILE* f = fopen (p.string().c_str(), "r");
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file("test/data/test.ssa");
 
 	/* Convert a font size in points to a proportional size for this file */
 	auto fs = [](int x) {
@@ -310,11 +309,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test3)
 /** Test reading of a file within the libsub-test-private tree which exercises the parser */
 BOOST_AUTO_TEST_CASE (ssa_reader_test4)
 {
-	boost::filesystem::path p = private_test / "dcpsubtest2-en.ssa";
-	FILE* f = fopen (p.string().c_str(), "r");
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file(private_test / "dcpsubtest2-en.ssa");
 
 	auto i = subs.begin();
 	vector<sub::Line>::iterator j;
@@ -369,11 +364,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test4)
 /** Test reading of a .ass file */
 BOOST_AUTO_TEST_CASE (ssa_reader_test5)
 {
-	boost::filesystem::path p = private_test / "dcpsubtest-en.ass";
-	FILE* f = fopen (p.string().c_str(), "r");
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file(private_test / "dcpsubtest-en.ass");
 
 	/* Convert a font size in points to a proportional size for this file */
 	auto fs = [](int x) {
@@ -428,12 +419,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test5)
 /** Test reading of another .ass file */
 BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 {
-	boost::filesystem::path p = private_test / "DCP-o-matic_test_subs_1.ass";
-	auto f = fopen (p.string().c_str(), "r");
-	BOOST_REQUIRE (f);
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file(private_test / "DCP-o-matic_test_subs_1.ass");
 
 	/* Convert a font size in points to a proportional size for this file */
 	auto fs = [](int x) {
@@ -521,12 +507,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test6)
 
 BOOST_AUTO_TEST_CASE (ssa_reader_test7)
 {
-	auto p = boost::filesystem::path("test") / "data" / "test3.ssa";
-	auto f = fopen(p.string().c_str(), "r");
-	BOOST_REQUIRE(f);
-	sub::SSAReader reader(f);
-	fclose(f);
-	auto subs = sub::collect<vector<sub::Subtitle>>(reader.subtitles());
+	auto subs = read_file("test/data/test3.ssa");
 
 	/* Convert a font size in points to a proportional size for this file */
 	auto fs = [](int x) {
@@ -584,11 +565,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test7)
 /** Test \pos */
 BOOST_AUTO_TEST_CASE (ssa_reader_pos)
 {
-	boost::filesystem::path p = "test/data/test2.ssa";
-	FILE* f = fopen (p.string().c_str(), "r");
-	sub::SSAReader reader (f);
-	fclose (f);
-	auto subs = sub::collect<vector<sub::Subtitle>> (reader.subtitles());
+	auto subs = read_file("test/data/test2.ssa");
 
 	/* Convert a font size in points to a proportional size for this file */
 	auto fs = [](int x) {
