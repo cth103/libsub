@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 2, 41, 790));
 	auto j = i->lines.begin();
 	BOOST_REQUIRE (j != i->lines.end ());
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
+	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1U);
 	sub::Block b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "Et les enregistrements de ses ondes delta ?");
 	BOOST_CHECK_EQUAL (b.font.get(), "Wolf_Rain");
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE (ssa_reader_test)
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 2, 44, 150));
 	j = i->lines.begin();
 	BOOST_REQUIRE (j != i->lines.end ());
-	BOOST_REQUIRE_EQUAL (j->blocks.size(), 1);
+	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1U);
 	b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "Toujours rien.");
 	BOOST_CHECK_EQUAL (b.font.get(), "Wolf_Rain");

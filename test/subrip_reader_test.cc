@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 
 	auto j = i->lines.begin();
 	BOOST_CHECK (j != i->lines.end ());
-	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
+	BOOST_CHECK_EQUAL(j->blocks.size(), 1U);
 	auto b = j->blocks.front();
 	BOOST_CHECK_EQUAL (b.text, "This is a subtitle");
 	/* No font is specified by subrip, so none should be seen here */
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	++j;
 
 	BOOST_CHECK (j != i->lines.end ());
-	BOOST_CHECK_EQUAL (j->blocks.size(), 1);
+	BOOST_CHECK_EQUAL(j->blocks.size(), 1U);
 	b = j->blocks.front ();
 	BOOST_CHECK_EQUAL (b.text, "and that's a line break");
 	/* No font is specified by subrip, so none should be seen here */
@@ -87,9 +87,9 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test)
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 1, 10));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 2, 100));
 
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL(i->lines.size(), 1U);
 	sub::Line l = i->lines.front ();
-	BOOST_CHECK_EQUAL (l.blocks.size(), 7);
+	BOOST_CHECK_EQUAL(l.blocks.size(), 7U);
 	BOOST_CHECK_EQUAL (l.vertical_position.line.get(), 0);
 	BOOST_CHECK_EQUAL (l.vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 
@@ -181,7 +181,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 49, 200));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 52, 351));
-	BOOST_CHECK_EQUAL (i->lines.size(), 2);
+	BOOST_CHECK_EQUAL (i->lines.size(), 2U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "This is a subtitle, and it goes ");
 	BOOST_CHECK_EQUAL (i->lines.back().blocks.front().text, "over two lines.");
 
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 52, 440));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 54, 351));
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.size(), 1U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "We have emboldened this");
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().bold, true);
 
@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 54, 440));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 56, 590));
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.size(), 1U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "And italicised this.");
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().italic, true);
 
@@ -205,28 +205,28 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test2)
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 1, 56, 680));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 1, 58, 955));
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.size(), 1U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Shall I compare thee to a summers' day?");
 
 	++i;
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 2, 0, 840));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 2, 3, 400));
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.size(), 1U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Is this a dagger I see before me?");
 
 	++i;
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 3, 54, 560));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 3, 56, 471));
-	BOOST_CHECK_EQUAL (i->lines.size(), 1);
+	BOOST_CHECK_EQUAL (i->lines.size(), 1U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Hello world.");
 
 	++i;
 	BOOST_CHECK (i != subs.end ());
 	BOOST_CHECK_EQUAL (i->from, sub::Time::from_hms (0, 4, 50, 123));
 	BOOST_CHECK_EQUAL (i->to, sub::Time::from_hms (0, 4, 55, 23));
-	BOOST_CHECK_EQUAL (i->lines.size(), 2);
+	BOOST_CHECK_EQUAL (i->lines.size(), 2U);
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().text, "Some italics over");
 	BOOST_CHECK_EQUAL (i->lines.front().blocks.front().italic, true);
 	BOOST_CHECK_EQUAL (i->lines.back().blocks.front().text, "multiple lines");
@@ -243,55 +243,55 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	sub::RawSubtitle rs;
 	r.convert_line ("Hello world", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<b>Hello world</b>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<i>Hello world</i>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<u>Hello world</u>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("{b}Hello world{/b}", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("{i}Hello world{/i}", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("{u}Hello world{/u}", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<b>This is <i>nesting</i> of subtitles</b>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 3);
+	BOOST_CHECK_EQUAL(r._subs.size(), 3U);
 	auto i = r._subs.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
 	BOOST_CHECK_EQUAL (i->bold, true);
@@ -309,7 +309,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<B>This is <I>nesting</I> of subtitles</B>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 3);
+	BOOST_CHECK_EQUAL(r._subs.size(), 3U);
 	i = r._subs.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
 	BOOST_CHECK_EQUAL (i->bold, true);
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#ff00ff\">simple color</font>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, false);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1, 0.1);
@@ -338,7 +338,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	/* single quotes are apparently also allowed */
 	rs = sub::RawSubtitle();
 	r.convert_line("<font color=\'#ff00ff\'>simple color</font>", rs);
-	BOOST_CHECK_EQUAL(r._subs.size(), 1);
+	BOOST_CHECK_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL(r._subs.front().text, "simple color");
 	BOOST_CHECK_EQUAL(r._subs.front().bold, false);
 	BOOST_CHECK_CLOSE(r._subs.front().colour.r, 1, 0.1);
@@ -348,7 +348,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#FF00FF\">simple color in capitals</font>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color in capitals");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, false);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1, 0.1);
@@ -358,7 +358,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some red text ");
 	BOOST_CHECK_EQUAL (i->bold, false);
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<Font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some red text ");
 	BOOST_CHECK_EQUAL (i->bold, false);
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<font color=\"#0000ff\">some blue text <b>in bold</b></font>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 2);
+	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some blue text ");
 	BOOST_CHECK_EQUAL (i->bold, false);
@@ -409,7 +409,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line("<font color=\"#0000ffdd\">some blue text with alpha</font>", rs);
-	BOOST_CHECK_EQUAL(r._subs.size(), 1);
+	BOOST_CHECK_EQUAL(r._subs.size(), 1U);
 	i = r._subs.begin();
 	BOOST_CHECK_EQUAL(i->text, "some blue text with alpha");
 	BOOST_CHECK_EQUAL(i->bold, false);
@@ -420,7 +420,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	rs = sub::RawSubtitle();
 	r.convert_line ("<< angle brackets but no HTML >>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "<< angle brackets but no HTML >>");
 	r._subs.clear();
@@ -611,7 +611,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 	sub::RawSubtitle rs;
 	sub::SubripReader r;
 	r.convert_line ("<font color=\"rgba(255,128,64,15)\">Foo bar</font>", rs);
-	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 255.0 / 255, 0.1);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 128.0 / 255, 0.1);
@@ -620,7 +620,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 
 	rs = sub::RawSubtitle ();
 	r.convert_line ("<font color=\"rgba(1, 2 , 3, 4)\">Foo bar</font>", rs);
-	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1.0 / 255, 0.1);
 	BOOST_CHECK_CLOSE (r._subs.front().colour.g, 2.0 / 255, 0.1);
@@ -636,7 +636,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 	rs.vertical_position.reference = sub::TOP_OF_SUBTITLE;
 	sub::SubripReader r;
 	r.convert_line ("Hello world", rs);
-	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
 	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
@@ -647,7 +647,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 	rs = sub::RawSubtitle ();
 	rs.vertical_position.line = 0;
 	r.convert_line ("{\\an1}Hello", rs);
-	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
 	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);
@@ -660,7 +660,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 	rs = sub::RawSubtitle ();
 	rs.vertical_position.line = 0;
 	r.convert_line ("{\\an2}to", rs);
-	BOOST_REQUIRE_EQUAL (r._subs.size(), 1);
+	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "to");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
 	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);

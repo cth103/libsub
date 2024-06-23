@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(vtt_reader_test)
 
 	auto j = i->lines.begin();
 	BOOST_CHECK(j != i->lines.end());
-	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1);
+	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1U);
 	auto b = j->blocks[0];
 	BOOST_CHECK_EQUAL(b.text, "This is a subtitle");
 	/* No font is specified by WebVTT, so none should be seen here */
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(vtt_reader_test)
 	++j;
 
 	BOOST_CHECK(j != i->lines.end());
-	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1);
+	BOOST_REQUIRE_EQUAL(j->blocks.size(), 1U);
 	b = j->blocks[0];
 	BOOST_CHECK_EQUAL(b.text, "and that's a line break");
 	/* No font is specified by WebVTT, so none should be seen here */
@@ -89,9 +89,9 @@ BOOST_AUTO_TEST_CASE(vtt_reader_test)
 	BOOST_CHECK_EQUAL(i->from, sub::Time::from_hms(0, 1, 1, 10));
 	BOOST_CHECK_EQUAL(i->to, sub::Time::from_hms(0, 1, 2, 100));
 
-	BOOST_CHECK_EQUAL(i->lines.size(), 1);
+	BOOST_CHECK_EQUAL(i->lines.size(), 1U);
 	sub::Line l = i->lines[0];
-	BOOST_CHECK_EQUAL(l.blocks.size(), 1);
+	BOOST_CHECK_EQUAL(l.blocks.size(), 1U);
 	BOOST_CHECK_EQUAL(l.vertical_position.line.get(), 0);
 	BOOST_CHECK_EQUAL(l.vertical_position.reference.get(), sub::TOP_OF_SUBTITLE);
 

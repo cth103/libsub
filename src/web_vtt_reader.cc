@@ -24,7 +24,7 @@
 #include "web_vtt_reader.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/regex.hpp>
 #include <iostream>
 #include <vector>

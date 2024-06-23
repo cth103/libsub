@@ -31,7 +31,7 @@
 #include "util.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string_regex.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <cstdio>
