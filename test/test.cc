@@ -17,8 +17,9 @@
 
 */
 
-#define BOOST_TEST_DYN_LINK
+
 #define BOOST_TEST_MODULE libsub_test
+
 #include "iso6937_tables.h"
 #include "compose.hpp"
 #include <boost/test/unit_test.hpp>
