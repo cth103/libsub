@@ -707,3 +707,33 @@ BOOST_AUTO_TEST_CASE(subrip_with_unicode_line_separator_test)
 	BOOST_CHECK_EQUAL(subs[1].lines[1].blocks[0].text, "wenn du dich bewegst.");
 }
 
+
+
+BOOST_AUTO_TEST_CASE(subrip_returns_to_bottom_middle)
+{
+	auto f = fopen("test/data/test3.srt", "r");
+	BOOST_REQUIRE(f);
+	sub::SubripReader reader(f);
+	fclose(f);
+	auto subs = sub::collect<std::vector<sub::Subtitle>>(reader.subtitles());
+
+	BOOST_REQUIRE_EQUAL(subs.size(), 4U);
+
+	BOOST_REQUIRE_EQUAL(subs[0].lines.size(), 1U);
+	BOOST_REQUIRE_EQUAL(subs[0].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[0].lines[0].blocks[0].text, "Let's go bottom left");
+	BOOST_CHECK(subs[0].lines[0].horizontal_position.reference == sub::HorizontalReference::LEFT_OF_SCREEN);
+
+	BOOST_REQUIRE_EQUAL(subs[1].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[1].lines[0].blocks[0].text, "Now back to the middle");
+	BOOST_CHECK(subs[1].lines[0].horizontal_position.reference == sub::HorizontalReference::HORIZONTAL_CENTRE_OF_SCREEN);
+
+	BOOST_REQUIRE_EQUAL(subs[2].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[2].lines[0].blocks[0].text, "And top right");
+	BOOST_CHECK(subs[2].lines[0].horizontal_position.reference == sub::HorizontalReference::RIGHT_OF_SCREEN);
+
+	BOOST_REQUIRE_EQUAL(subs[3].lines[0].blocks.size(), 1U);
+	BOOST_CHECK_EQUAL(subs[3].lines[0].blocks[0].text, "And here we are again");
+	BOOST_CHECK(subs[3].lines[0].horizontal_position.reference == sub::HorizontalReference::HORIZONTAL_CENTRE_OF_SCREEN);
+}
+

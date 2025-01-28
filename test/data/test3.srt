@@ -1,0 +1,15 @@
+1
+00:01:49,200 --> 00:01:52,351
+{\an1}Let's go bottom left
+
+2
+00:01:52,440 --> 00:01:54,351
+Now back to the middle
+
+3
+00:01:54,440 --> 00:01:56,590
+{\an9}And top right
+
+4
+00:01:56,680 --> 00:01:58,955
+And here we are again

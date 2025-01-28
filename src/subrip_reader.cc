@@ -71,10 +71,14 @@ SubripReader::read (function<optional<string> ()> get_line)
 		CONTENT
 	} state = COUNTER;
 
-	RawSubtitle rs;
 
-	rs.vertical_position.line = 0;
-	rs.vertical_position.reference = TOP_OF_SUBTITLE;
+	auto prepare = [](RawSubtitle& rs) {
+		rs.vertical_position.line = 0;
+		rs.vertical_position.reference = TOP_OF_SUBTITLE;
+	};
+
+	RawSubtitle rs;
+	prepare(rs);
 
 	while (true) {
 		auto line = get_line ();
