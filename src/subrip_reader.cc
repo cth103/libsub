@@ -100,13 +100,8 @@ SubripReader::read (function<optional<string> ()> get_line)
 			}
 
 			state = METADATA;
-
-			/* Reset stuff that should not persist across separate subtitles */
-			rs.bold = false;
-			rs.italic = false;
-			rs.underline = false;
-			rs.vertical_position.line = 0;
-			rs.vertical_position.reference = TOP_OF_SUBTITLE;
+			rs = RawSubtitle{};
+			prepare(rs);
 		}
 		break;
 		case METADATA:
