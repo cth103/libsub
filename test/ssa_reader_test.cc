@@ -41,7 +41,7 @@ vector<sub::Subtitle>
 read_file(boost::filesystem::path filename)
 {
 	auto file = fopen(filename.string().c_str(), "r");
-	BOOST_REQUIRE(file);
+	BOOST_REQUIRE_MESSAGE(file, "Could not open " << filename.c_str());
 	sub::SSAReader reader(file);
 	fclose(file);
 	return sub::collect<vector<sub::Subtitle>>(reader.subtitles());
