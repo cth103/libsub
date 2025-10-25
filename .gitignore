@@ -9,3 +9,4 @@ doc/html
 doc/latex
 waf-tools/*.pyc
 .ccls-cache
+waf-tools/__pycache__
