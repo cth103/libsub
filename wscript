@@ -133,17 +133,23 @@ def configure(conf):
                    okmsg='yes',
                    errmsg='too old\nPlease install boost version 1.45 or higher.')
 
+    conf.env.HAVE_BOOST_SYSTEM = conf.check_cxx(lib='boost_system%s' % boost_lib_suffix, mandatory=False)
+    def boost_libs(name):
+        libs = ['boost_system%s' % boost_lib_suffix] if conf.env.HAVE_BOOST_SYSTEM else []
+        libs.append('boost_%s%s' % (name, boost_lib_suffix))
+        return libs
+
     conf.check_cxx(fragment="""
     			    #include <boost/filesystem.hpp>\n
     			    int main() { boost::filesystem::copy_file ("a", "b"); }\n
 			    """,
                    msg='Checking for boost filesystem library',
                    libpath='/usr/local/lib',
-                   lib=['boost_filesystem%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
+                   lib=boost_libs('filesystem'),
                    uselib_store='BOOST_FILESYSTEM')
 
     # Find the icu- libraries on the system as we need to link to them when we look for boost locale.
-    locale_libs = ['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix]
+    locale_libs = boost_libs('locale')
     for pkg in subprocess.check_output(['pkg-config', '--list-all']).splitlines():
         if pkg.startswith(b'icu'):
             for lib in subprocess.check_output(['pkg-config', '--libs-only-l', pkg.split()[0]]).split():
@@ -166,7 +172,7 @@ def configure(conf):
 			    """,
                    msg='Checking for boost regex library',
                    libpath='/usr/local/lib',
-                   lib=['boost_regex%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
+                   lib=boost_libs('regex'),
                    uselib_store='BOOST_REGEX')
 
     if not conf.env.DISABLE_TESTS:
@@ -182,10 +188,14 @@ def build(bld):
     else:
         boost_lib_suffix = ''
 
+    libs = '-L$(libdir} -lsub%s' % bld.env.API_VERSION
+    if bld.env.HAVE_BOOST_SYSTEM:
+        libs += ' -lboost_system%s' % boost_lib_suffix
+
     bld(source='libsub%s.pc.in' % bld.env.API_VERSION,
         version=VERSION,
         includedir='%s/include/libsub%s' % (bld.env.PREFIX, bld.env.API_VERSION),
-        libs="-L${libdir} -lsub%s -lboost_system%s" % (bld.env.API_VERSION, boost_lib_suffix),
+        libs=libs,
         install_path='${LIBDIR}/pkgconfig')
 
     bld.recurse('src')
