@@ -21,19 +21,26 @@ import os
 
 option_defaults = { 'force-cpp11': False }
 
-def build(target, options):
-    cmd = './waf configure --prefix=%s' % target.directory
-    if target.platform == 'linux':
-        cmd += ' --static'
-        if (target.distro, target.version) in [('centos', '7'), ('ubuntu', '16.04'), ('ubuntu', '14.04')]:
-            cmd += ' --static-boost'
-    if target.debug:
-        cmd += ' --enable-debug'
-    if target.platform == 'windows':
-        cmd += f' --target-windows-{target.bits} --disable-tests'
+def build(target, options, for_package, version):
+    if for_package and target.platform == 'linux' and target.distro == 'arch':
+        target.command('git clone https://aur.archlinux.org/libsub.git')
+        os.chdir('libsub')
+        target.command('sed -i "s/tag=v\${pkgver}/branch=main/" PKGBUILD')
+        target.command('makepkg --skipinteg')
+        target.command('sudo pacman --noconfirm -U libsub*.zst')
+    else:
+        cmd = './waf configure --prefix=%s' % target.directory
+        if target.platform == 'linux':
+            cmd += ' --static'
+            if (target.distro, target.version) in [('centos', '7'), ('ubuntu', '16.04'), ('ubuntu', '14.04')]:
+                cmd += ' --static-boost'
+        if target.debug:
+            cmd += ' --enable-debug'
+        if target.platform == 'windows':
+            cmd += f' --target-windows-{target.bits} --disable-tests'
 
-    target.command(cmd)
-    target.command('./waf build install')
+        target.command(cmd)
+        target.command('./waf build install')
 
 def make_doxygen(target):
     os.makedirs('build/doc')
