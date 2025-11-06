@@ -188,7 +188,7 @@ def build(bld):
     else:
         boost_lib_suffix = ''
 
-    libs = '-L$(libdir} -lsub%s' % bld.env.API_VERSION
+    libs = '-L${libdir} -lsub%s' % bld.env.API_VERSION
     if bld.env.HAVE_BOOST_SYSTEM:
         libs += ' -lboost_system%s' % boost_lib_suffix
 
