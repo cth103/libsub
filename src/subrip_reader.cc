@@ -298,9 +298,11 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 			}
 		} else if (has_next(t, i, "</font>")) {
 			maybe_content (p);
-			SUB_ASSERT (!colours.empty());
-			colours.pop_back ();
-			p.colour = colours.back ();
+			/* Maybe there were no colours, or this is an extra unmatched </font> */
+			if (!colours.empty()) {
+				colours.pop_back();
+				p.colour = colours.back();
+			}
 		} else if (has_next(t, i, "{\\")) {
 			string ssa = "\\";
 			while (i < t.size() && t[i] != '}') {

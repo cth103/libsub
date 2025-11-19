@@ -737,3 +737,12 @@ BOOST_AUTO_TEST_CASE(subrip_returns_to_bottom_middle)
 	BOOST_CHECK(subs[3].lines[0].horizontal_position.reference == sub::HorizontalReference::HORIZONTAL_CENTRE_OF_SCREEN);
 }
 
+
+BOOST_AUTO_TEST_CASE(subrip_tolerates_extra_font_closing_tags)
+{
+	auto f = fopen(boost::filesystem::path(private_test / "LetniSkola.srt").c_str(), "r");
+	BOOST_REQUIRE(f);
+	sub::SubripReader reader(f);
+	fclose(f);
+}
+
