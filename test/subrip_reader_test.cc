@@ -242,55 +242,55 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	sub::SubripReader r;
 
 	sub::RawSubtitle rs;
-	r.convert_line ("Hello world", rs);
+	r.convert_line(0, "Hello world", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<b>Hello world</b>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
-	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
-	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
-	r._subs.clear ();
-
-	rs = sub::RawSubtitle();
-	r.convert_line ("<i>Hello world</i>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
-	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
-	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
-	r._subs.clear ();
-
-	rs = sub::RawSubtitle();
-	r.convert_line ("<u>Hello world</u>", rs);
-	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
-	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
-	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
-	r._subs.clear ();
-
-	rs = sub::RawSubtitle();
-	r.convert_line ("{b}Hello world{/b}", rs);
+	r.convert_line(0, "<b>Hello world</b>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("{i}Hello world{/i}", rs);
+	r.convert_line(0, "<i>Hello world</i>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("{u}Hello world{/u}", rs);
+	r.convert_line(0, "<u>Hello world</u>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<b>This is <i>nesting</i> of subtitles</b>", rs);
+	r.convert_line(0, "{b}Hello world{/b}", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().bold, true);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
+	r.convert_line(0, "{i}Hello world{/i}", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().italic, true);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
+	r.convert_line(0, "{u}Hello world{/u}", rs);
+	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
+	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
+	BOOST_CHECK_EQUAL (r._subs.front().underline, true);
+	r._subs.clear ();
+
+	rs = sub::RawSubtitle();
+	r.convert_line(0, "<b>This is <i>nesting</i> of subtitles</b>", rs);
 	BOOST_CHECK_EQUAL(r._subs.size(), 3U);
 	auto i = r._subs.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<B>This is <I>nesting</I> of subtitles</B>", rs);
+	r.convert_line(0, "<B>This is <I>nesting</I> of subtitles</B>", rs);
 	BOOST_CHECK_EQUAL(r._subs.size(), 3U);
 	i = r._subs.begin();
 	BOOST_CHECK_EQUAL (i->text, "This is ");
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<font color=\"#ff00ff\">simple color</font>", rs);
+	r.convert_line(0, "<font color=\"#ff00ff\">simple color</font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, false);
@@ -337,7 +337,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 
 	/* single quotes are apparently also allowed */
 	rs = sub::RawSubtitle();
-	r.convert_line("<font color=\'#ff00ff\'>simple color</font>", rs);
+	r.convert_line(0, "<font color=\'#ff00ff\'>simple color</font>", rs);
 	BOOST_CHECK_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL(r._subs.front().text, "simple color");
 	BOOST_CHECK_EQUAL(r._subs.front().bold, false);
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<font color=\"#FF00FF\">simple color in capitals</font>", rs);
+	r.convert_line(0, "<font color=\"#FF00FF\">simple color in capitals</font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "simple color in capitals");
 	BOOST_CHECK_EQUAL (r._subs.front().bold, false);
@@ -357,7 +357,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
+	r.convert_line(0, "<font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some red text ");
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<Font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
+	r.convert_line(0, "<Font color=\"#ff0000\">some red text <b>in bold</b></font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some red text ");
@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<font color=\"#0000ff\">some blue text <b>in bold</b></font>", rs);
+	r.convert_line(0, "<font color=\"#0000ff\">some blue text <b>in bold</b></font>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 2U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "some blue text ");
@@ -408,7 +408,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle();
-	r.convert_line("<font color=\"#0000ffdd\">some blue text with alpha</font>", rs);
+	r.convert_line(0, "<font color=\"#0000ffdd\">some blue text with alpha</font>", rs);
 	BOOST_CHECK_EQUAL(r._subs.size(), 1U);
 	i = r._subs.begin();
 	BOOST_CHECK_EQUAL(i->text, "some blue text with alpha");
@@ -419,7 +419,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_convert_line_test)
 	r._subs.clear();
 
 	rs = sub::RawSubtitle();
-	r.convert_line ("<< angle brackets but no HTML >>", rs);
+	r.convert_line(0, "<< angle brackets but no HTML >>", rs);
 	BOOST_CHECK_EQUAL (r._subs.size(), 1U);
 	i = r._subs.begin ();
 	BOOST_CHECK_EQUAL (i->text, "<< angle brackets but no HTML >>");
@@ -610,7 +610,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 {
 	sub::RawSubtitle rs;
 	sub::SubripReader r;
-	r.convert_line ("<font color=\"rgba(255,128,64,15)\">Foo bar</font>", rs);
+	r.convert_line(0, "<font color=\"rgba(255,128,64,15)\">Foo bar</font>", rs);
 	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 255.0 / 255, 0.1);
@@ -619,7 +619,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test5)
 	r._subs.clear ();
 
 	rs = sub::RawSubtitle ();
-	r.convert_line ("<font color=\"rgba(1, 2 , 3, 4)\">Foo bar</font>", rs);
+	r.convert_line(0, "<font color=\"rgba(1, 2 , 3, 4)\">Foo bar</font>", rs);
 	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Foo bar");
 	BOOST_CHECK_CLOSE (r._subs.front().colour.r, 1.0 / 255, 0.1);
@@ -635,7 +635,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 	rs.vertical_position.line = 0;
 	rs.vertical_position.reference = sub::TOP_OF_SUBTITLE;
 	sub::SubripReader r;
-	r.convert_line ("Hello world", rs);
+	r.convert_line(0, "Hello world", rs);
 	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello world");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
@@ -646,7 +646,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 
 	rs = sub::RawSubtitle ();
 	rs.vertical_position.line = 0;
-	r.convert_line ("{\\an1}Hello", rs);
+	r.convert_line(0, "{\\an1}Hello", rs);
 	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "Hello");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
@@ -659,7 +659,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 
 	rs = sub::RawSubtitle ();
 	rs.vertical_position.line = 0;
-	r.convert_line ("{\\an2}to", rs);
+	r.convert_line(0, "{\\an2}to", rs);
 	BOOST_REQUIRE_EQUAL(r._subs.size(), 1U);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "to");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
@@ -672,7 +672,7 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test6)
 
 	rs = sub::RawSubtitle ();
 	rs.vertical_position.line = 0;
-	r.convert_line ("{\\an3}you", rs);
+	r.convert_line(0, "{\\an3}you", rs);
 	BOOST_CHECK_EQUAL (r._subs.front().text, "you");
 	BOOST_REQUIRE (r._subs.front().vertical_position.line);
 	BOOST_CHECK_EQUAL (r._subs.front().vertical_position.line.get(), 0);

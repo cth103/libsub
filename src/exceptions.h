@@ -55,13 +55,18 @@ public:
 class SubripError : public std::runtime_error
 {
 public:
-	SubripError (std::string saw, std::string expecting, std::list<std::string> context);
+	SubripError(int line_number, std::string saw, std::string expecting, std::list<std::string> context);
 
 	std::list<std::string> context () const {
 		return _context;
 	}
 
+	int line_number() const {
+		return _line_number;
+	}
+
 private:
+	int _line_number;
 	std::list<std::string> _context;
 };
 

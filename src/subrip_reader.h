@@ -51,7 +51,7 @@ private:
 	friend struct ::subrip_reader_test6;
 	SubripReader () {}
 
-	void convert_line (std::string t, RawSubtitle& p);
+	void convert_line(int line_number, std::string t, RawSubtitle& p);
 	void maybe_content (RawSubtitle& p);
 	void read (boost::function<boost::optional<std::string> ()> get_line);
 

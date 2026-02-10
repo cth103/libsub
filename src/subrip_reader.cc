@@ -79,9 +79,11 @@ SubripReader::read (function<optional<string> ()> get_line)
 
 	RawSubtitle rs;
 	prepare(rs);
+	int line_number = 0;
 
 	while (true) {
 		auto line = get_line ();
+		++line_number;
 		if (!line) {
 			break;
 		}
@@ -123,19 +125,19 @@ SubripReader::read (function<optional<string> ()> get_line)
 						_context.push_back (*ex);
 					}
 				}
-				throw SubripError (*line, "a time/position line", _context);
+				throw SubripError(line_number, *line, "a time/position line", _context);
 			}
 
 			string expected;
 			auto from = convert_time(p[0], ",", &expected);
 			if (!from) {
-				throw SubripError(p[0], expected, _context);
+				throw SubripError(line_number, p[0], expected, _context);
 			}
 			rs.from = *from;
 
 			auto to = convert_time(p[2], ",", &expected);
 			if (!to) {
-				throw SubripError(p[2], expected, _context);
+				throw SubripError(line_number, p[2], expected, _context);
 			}
 			rs.to = *to;
 
@@ -154,7 +156,7 @@ SubripReader::read (function<optional<string> ()> get_line)
 				 */
 				boost::algorithm::split_regex(sub_lines, *line, boost::regex("\xe2\x80\xa8"));
 				for (auto sub_line: sub_lines) {
-					convert_line(sub_line, rs);
+					convert_line(line_number, sub_line, rs);
 					rs.vertical_position.line = rs.vertical_position.line.get() + 1;
 					rs.text.clear();
 				}
@@ -221,7 +223,7 @@ SubripReader::convert_time(string t, string milliseconds_separator, string* expe
 }
 
 void
-SubripReader::convert_line (string t, RawSubtitle& p)
+SubripReader::convert_line(int line_number, string t, RawSubtitle& p)
 {
 	vector<Colour> colours;
 	colours.push_back (Colour (1, 1, 1));
@@ -276,7 +278,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					p.colour = Colour::from_rgba_hex(match[1]);
 					colours.push_back(p.colour);
 				} else {
-					throw SubripError(tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
+					throw SubripError(line_number, tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
 				}
 			} else {
 				re = boost::regex (
@@ -293,7 +295,7 @@ SubripReader::convert_line (string t, RawSubtitle& p)
 					p.colour.b = raw_convert<int>(string(match[3])) / 255.0;
 					colours.push_back (p.colour);
 				} else {
-					throw SubripError (tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
+					throw SubripError(line_number, tag, "a colour in the format #rrggbb #rrggbbaa or rgba(rr,gg,bb,aa)", _context);
 				}
 			}
 		} else if (has_next(t, i, "</font>")) {

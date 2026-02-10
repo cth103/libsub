@@ -31,8 +31,9 @@ ProgrammingError::ProgrammingError (string file, int line)
 }
 
 
-SubripError::SubripError (string saw, string expecting, list<string> context)
-	: runtime_error ("Error in SubRip file: saw " + (saw.empty() ? "an empty string" : saw) + " when expecting " + expecting)
+SubripError::SubripError(int line_number, string saw, string expecting, list<string> context)
+	: runtime_error(String::compose("Error in SubRip file line %1: saw %2 when expecting %3", line_number, saw.empty() ? "an empty string" : saw, expecting).c_str())
+	, _line_number(line_number)
 	, _context (context)
 {
 
