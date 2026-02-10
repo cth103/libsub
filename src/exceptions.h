@@ -56,7 +56,6 @@ class SubripError : public std::runtime_error
 {
 public:
 	SubripError (std::string saw, std::string expecting, std::list<std::string> context);
-	~SubripError () throw () {}
 
 	std::list<std::string> context () const {
 		return _context;
@@ -78,8 +77,6 @@ public:
 	{}
 
 	WebVTTError(std::string saw, std::string expecting, std::list<std::string> context);
-
-	~WebVTTError() throw () {}
 
 	std::list<std::string> context() const {
 		return _context;
