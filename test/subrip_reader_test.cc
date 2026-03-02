@@ -28,9 +28,10 @@
 #include <iostream>
 #include <cstdio>
 
-using std::cerr;
+
 using std::vector;
 using std::fabs;
+
 
 /* Test reading of a Subrip file */
 BOOST_AUTO_TEST_CASE (subrip_reader_test)
@@ -443,11 +444,7 @@ test (boost::filesystem::path p)
 {
 	p = private_test / p;
 	FILE* f = fopen (p.string().c_str(), "r");
-	BOOST_CHECK (f);
-	if (!f) {
-		cerr << p << " not found.\n";
-		return;
-	}
+	BOOST_REQUIRE(f);
 	sub::SubripReader r (f);
 	fclose (f);
 }
@@ -457,11 +454,7 @@ test_throw (boost::filesystem::path p)
 {
 	p = private_test / p;
 	FILE* f = fopen (p.string().c_str(), "r");
-	BOOST_CHECK (f);
-	if (!f) {
-		cerr << p << " not found.\n";
-		return;
-	}
+	BOOST_REQUIRE(f);
 	BOOST_CHECK_THROW (sub::SubripReader r(f), sub::SubripError);
 	fclose (f);
 }
