@@ -301,7 +301,7 @@ SubripReader::convert_line(int line_number, string t, RawSubtitle& p)
 		} else if (has_next(t, i, "</font>")) {
 			maybe_content (p);
 			/* Maybe there were no colours, or this is an extra unmatched </font> */
-			if (!colours.empty()) {
+			if (colours.size() >= 2) {
 				colours.pop_back();
 				p.colour = colours.back();
 			}
