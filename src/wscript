@@ -32,6 +32,7 @@ def build(bld):
                  stl_util.cc
                  sub_time.cc
                  subrip_reader.cc
+                 subrip_writer.cc
                  subtitle.cc
                  util.cc
                  vertical_reference.cc
@@ -58,6 +59,7 @@ def build(bld):
               stl_text_reader.h
               sub_time.h
               subrip_reader.h
+              subrip_writer.h
               subtitle.h
               vertical_position.h
               vertical_reference.h
