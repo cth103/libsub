@@ -175,6 +175,8 @@ def configure(conf):
                    lib=boost_libs('regex'),
                    uselib_store='BOOST_REGEX')
 
+    conf.check_cfg(package='fmt', args='--cflags --libs', uselib_store='FMT', mandatory=True)
+
     if not conf.env.DISABLE_TESTS:
         conf.recurse('test')
 
