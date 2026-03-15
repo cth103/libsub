@@ -103,5 +103,5 @@ BOOST_AUTO_TEST_CASE(subrip_writer_test)
 
 	BOOST_CHECK_EQUAL(lines[5], "2");
 	BOOST_CHECK_EQUAL(lines[6], "00:01:01,010 --> 00:01:02,100");
-	BOOST_CHECK_EQUAL(lines[7], "This is some <b>bold</b> <u>underlined</u>");
+	BOOST_CHECK_EQUAL(lines[7], "This is some <b>bold</b> and some <u>underlined</u>");
 }
