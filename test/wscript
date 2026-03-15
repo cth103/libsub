@@ -17,7 +17,7 @@ def configure(conf):
 def build(bld):
     obj = bld(features='cxx cxxprogram')
     obj.name   = 'tests'
-    obj.uselib = 'BOOST_TEST BOOST_REGEX BOOST_FILESYSTEM CXML'
+    obj.uselib = 'BOOST_TEST BOOST_REGEX BOOST_FILESYSTEM CXML FMT'
     obj.use    = 'libsub-1.0'
     obj.source = """
                  iso6937_test.cc
