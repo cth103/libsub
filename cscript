@@ -32,7 +32,7 @@ def build(target, options, for_package, version):
         cmd = './waf configure --prefix=%s' % target.directory
         if target.platform == 'linux':
             cmd += ' --static'
-            if (target.distro, target.version) in [('centos', '7'), ('ubuntu', '16.04'), ('ubuntu', '14.04')]:
+            if (target.distro, target.version) in [('rocky', '8'), ('centos', '7'), ('ubuntu', '18.04'), ('ubuntu', '16.04'), ('ubuntu', '14.04')]:
                 cmd += ' --static-boost'
         if target.debug:
             cmd += ' --enable-debug'
