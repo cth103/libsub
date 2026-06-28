@@ -21,7 +21,6 @@
 #define LIBSUB_SUBTITLE_H
 
 #include "colour.h"
-#include "vertical_reference.h"
 #include "effect.h"
 #include "font_size.h"
 #include "vertical_position.h"
