@@ -17,8 +17,10 @@
 
 */
 
+#include "collect.h"
 #include "subrip_writer.h"
 #include "subtitle.h"
+#include "test.h"
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 
@@ -99,3 +101,44 @@ BOOST_AUTO_TEST_CASE(subrip_writer_test)
 	BOOST_CHECK_EQUAL(lines[6], "00:01:01,010 --> 00:01:02,100");
 	BOOST_CHECK_EQUAL(lines[7], "This is some <b>bold</b> and some <u>underlined</u>");
 }
+
+
+BOOST_AUTO_TEST_CASE(subrip_writer_handles_out_of_order_vertical_position)
+{
+	vector<sub::RawSubtitle> raw;
+
+	{
+		sub::RawSubtitle sub;
+		sub.text = "This goes underneath";
+		sub.vertical_position.reference = sub::VerticalReference::TOP_OF_SCREEN;
+		sub.vertical_position.proportional = 0.75;
+		sub.from = sub::Time::from_hmsf(0, 0, 0, 0, sub::Rational{24, 1});
+		sub.to = sub::Time::from_hmsf(0, 0, 5, 0, sub::Rational{24, 1});
+		raw.push_back(sub);
+	}
+
+	{
+		sub::RawSubtitle sub;
+		sub.text = "This goes on top";
+		sub.vertical_position.reference = sub::VerticalReference::TOP_OF_SCREEN;
+		sub.vertical_position.proportional = 0.5;
+		sub.from = sub::Time::from_hmsf(0, 0, 0, 0, sub::Rational{24, 1});
+		sub.to = sub::Time::from_hmsf(0, 0, 5, 0, sub::Rational{24, 1});
+		raw.push_back(sub);
+	}
+
+	auto subs = sub::collect<std::vector<sub::Subtitle>>(raw);
+	boost::filesystem::path srt = "build/test/test_subrip_writer.srt";
+	sub::write_subrip(subs, srt);
+
+	auto lines = read_lines(srt);
+
+	BOOST_REQUIRE_EQUAL(lines.size(), 5U);
+	BOOST_CHECK_EQUAL(lines[0], "1");
+	BOOST_CHECK_EQUAL(lines[1], "00:00:00,000 --> 00:00:05,000");
+	BOOST_CHECK_EQUAL(lines[2], "This goes on top");
+	BOOST_CHECK_EQUAL(lines[3], "This goes underneath");
+	BOOST_CHECK_EQUAL(lines[4], "");
+
+}
+

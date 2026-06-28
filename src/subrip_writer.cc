@@ -21,6 +21,7 @@
 #include "subrip_writer.h"
 #include "subtitle.h"
 #include <fmt/format.h>
+#include <algorithm>
 #include <fstream>
 
 
@@ -62,7 +63,9 @@ sub::write_subrip(vector<Subtitle> const& subtitles, boost::filesystem::path fil
 		f << index << "\n";
 		f << time_to_subrip_string(sub.from) << " --> " << time_to_subrip_string(sub.to) << "\n";
 
-		for (auto const& line: sub.lines) {
+		auto sorted_lines = sub.lines;
+		std::sort(sorted_lines.begin(), sorted_lines.end(), [](Line const& a, Line const& b) { return a.vertical_position < b.vertical_position; });
+		for (auto const& line: sorted_lines) {
 			for (auto const& block: line.blocks) {
 				f << wrap_with_tags(block.text, block.bold, block.italic, block.underline);
 			}
