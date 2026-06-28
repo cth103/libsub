@@ -10,3 +10,4 @@ doc/latex
 waf-tools/*.pyc
 .ccls-cache
 waf-tools/__pycache__
+/.cache/clangd/index
