@@ -24,3 +24,4 @@ extern boost::filesystem::path private_test;
 
 void check_text (boost::filesystem::path a, boost::filesystem::path b);
 void check_file (boost::filesystem::path a, boost::filesystem::path b);
+std::vector<std::string> read_lines(boost::filesystem::path path);

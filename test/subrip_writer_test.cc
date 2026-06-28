@@ -87,13 +87,7 @@ BOOST_AUTO_TEST_CASE(subrip_writer_test)
 
 	sub::write_subrip(subs, "build/test/test_subrip_writer.srt");
 
-	ifstream f("build/test/test_subrip_writer.srt");
-	string line;
-	vector<string> lines;
-	while (getline(f, line)) {
-		lines.push_back(line);
-	}
-	f.close();
+	auto lines = read_lines("build/test/test_subrip_writer.srt");
 
 	BOOST_CHECK_EQUAL(lines[0], "1");
 	BOOST_CHECK_EQUAL(lines[1], "00:00:41,090 --> 00:00:42,210");

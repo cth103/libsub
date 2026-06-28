@@ -120,3 +120,17 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 	fclose (ref_file);
 	fclose (check_file);
 }
+
+
+vector<string>
+read_lines(boost::filesystem::path path)
+{
+	ifstream f(path.c_str());
+	string line;
+	vector<string> lines;
+	while (getline(f, line)) {
+		lines.push_back(line);
+	}
+	return lines;
+}
+
