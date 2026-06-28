@@ -28,14 +28,12 @@
 #include <string>
 #include <iostream>
 
-using std::string;
 using std::cerr;
-using std::cout;
-using std::min;
-using std::max;
-using std::hex;
-using std::ifstream;
 using std::getline;
+using std::ifstream;
+using std::min;
+using std::string;
+using std::vector;
 
 boost::filesystem::path private_test;
 
