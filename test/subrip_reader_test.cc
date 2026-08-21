@@ -584,7 +584,6 @@ BOOST_AUTO_TEST_CASE (subrip_reader_test4)
 	auto subs = sub::collect<std::vector<sub::Subtitle>>(reader.subtitles());
 
 	auto i = subs.begin();
-	std::cout << i->lines.front().blocks.front().text << "\n";
 
 	std::string const t = i->lines.front().blocks.front().text;
 	for (size_t i = 0; i < t.length() - 2; ++i) {
