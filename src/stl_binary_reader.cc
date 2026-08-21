@@ -33,7 +33,6 @@ using std::cout;
 using std::string;
 using std::istream;
 using boost::lexical_cast;
-using boost::algorithm::replace_all;
 using boost::is_any_of;
 using boost::locale::conv::utf_to_utf;
 using std::shared_ptr;
@@ -187,6 +186,14 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 	editor_name = reader->get_string(309, 32);
 	editor_contact_details = reader->get_string(341, 32);
 
+	auto maybe_add_with_text = [this](RawSubtitle& sub, string text) {
+		boost::algorithm::trim(text);
+		sub.text = utf_to_utf<char>(iso6937_to_utf16(text.c_str()));
+		if (!sub.text.empty()) {
+			_subs.push_back(sub);
+		}
+	};
+
 	int highest_line = 0;
 	for (int i = 0; i < tti_blocks; ++i) {
 
@@ -250,8 +257,7 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 
 				if (c <= 0x07 || (c >= 0x80 && c <= 0x83)) {
 					/* Colour, italic or underline control code */
-					sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
-					_subs.push_back (sub);
+					maybe_add_with_text(sub, text);
 					text.clear ();
 				}
 
@@ -309,10 +315,7 @@ void STLBinaryReader::read (shared_ptr<InputReader> reader)
 				sub.underline = underline;
 			}
 
-			if (!text.empty ()) {
-				sub.text = utf_to_utf<char> (iso6937_to_utf16 (text.c_str()));
-				_subs.push_back (sub);
-			}
+			maybe_add_with_text(sub, text);
 
 			/* XXX: justification */
 		}

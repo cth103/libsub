@@ -106,19 +106,12 @@ BOOST_AUTO_TEST_CASE(stl_binary_reader_with_colour)
 	auto reader = make_shared<sub::STLBinaryReader>(in);
 
 	vector<sub::Colour> reference = {
-		{ 1, 1, 1 },
 		{ 1, 0, 1 },
-		{ 1, 1, 1 },
 		{ 1, 0, 1 },
-		{ 1, 1, 1 },
 		{ 1, 1, 0 },
-		{ 1, 1, 1 },
 		{ 1, 1, 0 },
-		{ 1, 1, 1 },
 		{ 1, 1, 0 },
-		{ 1, 1, 1 },
 		{ 1, 1, 0 },
-		{ 1, 1, 1 },
 		{ 1, 1, 0 }
 	};
 
@@ -131,3 +124,22 @@ BOOST_AUTO_TEST_CASE(stl_binary_reader_with_colour)
 	}
 }
 
+
+BOOST_AUTO_TEST_CASE(stl_binary_reader_with_whitespace_all_over_the_place)
+{
+	auto path = private_test / "tsu.stl";
+	ifstream in(path.string().c_str());
+	auto reader = make_shared<sub::STLBinaryReader>(in);
+
+	auto subs = reader->subtitles();
+	for (auto const& i: subs) {
+		if (i.text.length() >= 2) {
+			BOOST_REQUIRE(i.text[0] != '\0');
+			BOOST_REQUIRE(i.text[0] != '\r');
+			BOOST_REQUIRE(i.text[0] != '\n');
+			BOOST_REQUIRE(i.text[i.text.length() - 1] != '\0');
+			BOOST_REQUIRE(i.text[i.text.length() - 1] != '\r');
+			BOOST_REQUIRE(i.text[i.text.length() - 1] != '\n');
+		}
+	}
+}
